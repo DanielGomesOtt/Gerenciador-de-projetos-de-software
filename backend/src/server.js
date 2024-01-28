@@ -1,0 +1,16 @@
+const express = require('express');
+const cors = require('cors');
+require('./database');
+const homeRoute = require('../src/routes/homeRoute');
+const loginRoute = require('../src/routes/loginRoute');
+const tokenRoute = require('../src/routes/tokenRoute');
+const app = express();
+
+app.use(cors());
+app.use(express.json())
+app.use(homeRoute);
+app.use(loginRoute);
+app.use(tokenRoute);
+app.use(express.urlencoded({ extended: true }));
+
+app.listen(3333);

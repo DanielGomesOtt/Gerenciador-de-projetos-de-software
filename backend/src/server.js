@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('./database');
+require('dotenv').config()
 const homeRoute = require('../src/routes/homeRoute');
 const loginRoute = require('../src/routes/loginRoute');
 const tokenRoute = require('../src/routes/tokenRoute');
@@ -13,4 +14,4 @@ app.use(loginRoute);
 app.use(tokenRoute);
 app.use(express.urlencoded({ extended: true }));
 
-app.listen(3333);
+app.listen(process.env.APP_PORT);

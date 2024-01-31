@@ -17,6 +17,11 @@ const runtimeConfig = useRuntimeConfig();
 const submit = async (event) => {
     try{
         event.preventDefault();
+        let validate = validateForm();
+        if(validate !== true){
+            errorMessage.value = validate;
+            return;
+        }
         let { data } = await axios.post(runtimeConfig.public.BASE_URL, form);
         if(data.user && data.token){
             let storage = {
@@ -34,6 +39,33 @@ const submit = async (event) => {
         errorMessage.value = error.response.data.message;
     }
 }
+
+function validateForm(){
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if(form.email == null || form.email.length == 0){
+        return 'The email field is required';
+    }else if(form.name == null || form.name.length == 0){
+        return 'The name field is required';
+    }else if(form.password == null || form.password.length == 0){
+        return 'The password field is required';
+    }
+
+    if(!emailPattern.test(String(form.email).toLowerCase())){
+        return 'The provided email is invalid';
+    }
+
+    if(form.password.length < 8){
+        return 'The password must be 8 characters or longer';
+    }
+    
+    if(!/[0-9]/.test(form.password) || !/[a-zA-Z]/.test(form.password)){
+        return 'The password must contain letters and numbers';
+    }
+
+    return true;
+}
+
 </script>
 
 <template>

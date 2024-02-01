@@ -1,6 +1,6 @@
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
-    if(process.client && to.path !== '/' && to.path.toLowerCase() !== '/password_recovery'){
+    if(process.client && to.path !== '/' && !to.path.toLowerCase().startsWith('/password_recovery')){
         try {
             let storage = JSON.parse(localStorage.getItem('userStorage'));
             if(storage && storage.token){

@@ -4,9 +4,10 @@ import axios from 'axios';
 let form = {
     'email': "",
     'password': "",
-}
+};
+
 let errorRequest = ref();
-let errorVisibility = ref(true);
+let errorMessageVisibility = ref(true);
 
 const runtimeConfig = useRuntimeConfig();
 
@@ -33,7 +34,7 @@ const submit = async (event) => {
         <div>
             <h2 class="text-indigo-800 font-bold text-3xl md:text-4xl lg:text-4xl text-center">Access your account</h2>
             <p class="text-gray-500 font-lg text-lg md:text-xl lg:text-xl text-center mt-5">Log in and enjoy</p>
-            <p class="text-red-500 text-center text-lg mt-5" v-if="errorVisibility">{{ errorRequest }}</p>
+            <p class="text-red-500 text-center text-lg mt-5" v-if="errorMessageVisibility">{{ errorRequest }}</p>
 
             <div>
                 <form @submit="submit($event)">

@@ -22,5 +22,4 @@ async function setUser(req, res) {
     }
 }
 
-
 module.exports = {setUser};

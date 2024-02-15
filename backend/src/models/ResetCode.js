@@ -4,7 +4,8 @@ class ResetCode extends Model {
   static init(sequelize){
     super.init({
       code: DataTypes.STRING,
-      status: DataTypes.INTEGER
+      status: DataTypes.INTEGER,
+      id_user: DataTypes.INTEGER,
     },
     {
       sequelize,

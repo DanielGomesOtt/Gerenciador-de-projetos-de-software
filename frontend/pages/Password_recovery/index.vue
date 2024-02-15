@@ -10,7 +10,7 @@ import axios from 'axios';
 
     const sendResetCode = async () => {
        try{
-            let { data }  = await axios.get(runtimeConfig.public.BASE_URL + 'password_recovery', {'headers': form});
+            let { data }  = await axios.get(runtimeConfig.public.BASE_URL + 'password_recovery', {headers: form});
             console.log(data)    
        }catch(error){
             console.log(error);

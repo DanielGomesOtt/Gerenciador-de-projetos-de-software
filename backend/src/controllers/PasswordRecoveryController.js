@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const resetCode = require('../utils/resetCode');
 const ResetCode = require('../models/ResetCode');
+const Email = require('../utils/email');
 const { Op } = require('sequelize');
 
 async function sendResetCode(req, res){
@@ -17,6 +18,7 @@ async function sendResetCode(req, res){
             let code = resetCode.getResetCode();
             const codeId = await ResetCode.create({ 'code': code, 'status': 1, 'id_user': user.dataValues.id });
             if(codeId.id){
+              Email.sendEmail(email, code);
               res.send(code);
             }else{
               res.status(500).json({message: 'Code cannot be generated, please try again later.'});

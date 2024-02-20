@@ -2,9 +2,7 @@ require('dotenv').config();
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
-  secure: false,
+  service: process.env.SMTP_SERVICE,
   auth: {    
     user: process.env.USER_EMAIL,
     pass: process.env.PASSWORD_EMAIL,

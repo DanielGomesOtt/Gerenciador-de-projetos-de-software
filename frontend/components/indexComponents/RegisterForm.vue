@@ -36,7 +36,7 @@ const submit = async (event) => {
             errorMessage.value = data.message
         }
     }catch(error){
-        errorMessage.value = error.response.data.message;
+        errorMessage.value = error;
     }
 }
 

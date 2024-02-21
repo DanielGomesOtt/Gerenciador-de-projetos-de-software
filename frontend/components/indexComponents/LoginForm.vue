@@ -48,7 +48,7 @@ const submit = async (event) => {
                         <button class="bg-gradient-to-r from-blue-800 to-indigo-800 rounded-lg border-2 w-4/5 md:w-full lg:w-full h-12 text-white font-semibold mb-5">Sign In</button>
                     </div>
                     <div class="flex justify-center mb-5">
-                        <button type="submit"><a class="text-blue-800 font-medium hover:underline">Forgot your password?</a></button>
+                        <button type="submit"><a class="text-blue-800 font-medium hover:underline" href="/password_recovery">Forgot your password?</a></button>
                     </div>
                 </form>
             </div>

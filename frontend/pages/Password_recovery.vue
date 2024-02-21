@@ -11,12 +11,12 @@ import axios from 'axios';
     const sendResetCode = async (event) => {
        event.preventDefault();
        try{
-            let { data, status }  = await axios.get(runtimeConfig.public.BASE_URL + 'password_recovery', {headers: form});
-            if(data && status == 200){
-                //change to code input in the screen by a control view variable.
+            let response = await axios.get(runtimeConfig.public.BASE_URL + 'password_recovery', {headers: form});
+            if(response.data && response.status == 200){
+                
             }   
        }catch(error){
-            console.log(error);
+            errorMessage.value = error.response.data.message;
        }
     }
 </script>

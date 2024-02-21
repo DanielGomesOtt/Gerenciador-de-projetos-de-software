@@ -24,6 +24,8 @@ async function sendResetCode(req, res){
               res.status(500).json({message: 'Code cannot be generated, please try again later.'});
             }
             
+        }else{
+          res.status(404).json({message: 'User not found.'});
         }
 
     }catch(error){

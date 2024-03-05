@@ -53,13 +53,13 @@ let menuVisibility = ref(true);
   transition: transform 0.5s ease-in-out;
 }
 
-.slide-enter, .slide-leave-to {
+.slide-enter-from, .slide-leave-to {
   transform: translateX(-100%);
   z-index: -1;
 }
 
-.slide-enter-to, .slide-leave {
-  transform: translateX(0%);
+.slide-enter-to, .slide-leave-from {
+  z-index: -1;
 }
 
 </style>

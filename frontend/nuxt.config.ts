@@ -6,6 +6,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       BASE_URL: process.env.BASE_URL,
+      BASE_AVATAR_PATH: process.env.BASE_AVATAR_PATH,
     },
   },
 })

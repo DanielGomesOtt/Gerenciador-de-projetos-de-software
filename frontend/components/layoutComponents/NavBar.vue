@@ -1,8 +1,31 @@
 <script setup lang="js">
-import { ref } from 'vue';
+import { ref, onBeforeMount } from 'vue';
 import { Icon } from '#components'
+import axios from 'axios';
+
+const runtimeConfig = useRuntimeConfig();
 
 let menuVisibility = ref(true);
+let accountIcon = ref('mdi:user')
+
+
+const getUserAvatar = async () => {
+    const response = await axios.get(runtimeConfig.public.BASE_URL + 'account/avatar', 
+    {
+        headers: {
+            'id_user': localStorage.getItem('userStorage')
+        }
+    });
+    if(response && response.data){
+        accountIcon.value = data.avatar_path
+    }
+}
+
+onBeforeMount(() => {
+    getUserAvatar();
+})
+
+
 </script>
 
 <template>
@@ -14,7 +37,10 @@ let menuVisibility = ref(true);
                 <li class="text-center"><Icon name="mdi:people" color="white" size="2em" class="mt-5"/></li>
                 <li class="text-center"><Icon name="material-symbols:task" color="white" size="2em" class="mt-5"/></li>
                 <li class="text-center"><Icon name="grommet-icons:projects" color="white" size="2em" class="mt-5"/></li>
-                <li class="text-center"><Icon name="mdi:user" color="white" size="2em" class="mt-5"/></li>
+                <li class="text-center">
+                    <Icon name="mdi:user" color="white" size="2em" class="mt-5" v-if="accountIcon == 'mdi:user'"/>
+                    <img :src="runtimeConfig.public.BASE_AVATAR_PATH" v-if="accountIcon !== 'mdi:user'"/>
+                </li>
             </ul>
         </div>
         <transition name="slide">

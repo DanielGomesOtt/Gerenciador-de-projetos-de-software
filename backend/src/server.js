@@ -6,6 +6,7 @@ const homeRoute = require('../src/routes/homeRoute');
 const loginRoute = require('../src/routes/loginRoute');
 const tokenRoute = require('../src/routes/tokenRoute');
 const passwordRecoveryRoute = require('../src/routes/passwordRecoveryRoute');
+const accountRoute = require('../src/routes/accountRoute');
 const app = express();
 
 app.use(cors());

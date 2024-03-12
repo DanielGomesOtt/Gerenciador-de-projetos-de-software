@@ -15,6 +15,7 @@ app.use(homeRoute);
 app.use(loginRoute);
 app.use(tokenRoute);
 app.use(passwordRecoveryRoute);
+app.use(accountRoute);
 app.use(express.urlencoded({ extended: true }));
 
 app.listen(process.env.APP_PORT);

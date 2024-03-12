@@ -13,19 +13,17 @@ const getUserAvatar = async () => {
     const response = await axios.get(runtimeConfig.public.BASE_URL + 'account/avatar', 
     {
         headers: {
-            'id_user': localStorage.getItem('userStorage')
+            'user': localStorage.getItem('userStorage')
         }
     });
-    if(response && response.data){
-        accountIcon.value = data.avatar_path
+    if(response && response.data && response.data.avatar_path){
+        accountIcon.value = response.data.avatar_path
     }
 }
 
 onBeforeMount(() => {
     getUserAvatar();
 })
-
-
 </script>
 
 <template>

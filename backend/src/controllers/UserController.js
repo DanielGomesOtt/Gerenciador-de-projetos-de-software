@@ -22,4 +22,21 @@ async function setUser(req, res) {
     }
 }
 
-module.exports = {setUser};
+async function getUserAvatar(req, res){
+    try{
+        let user = JSON.parse(req.headers.user);
+        const avatar_path = await User.findOne({
+            attributes: ['avatar_path'],
+            where : {
+                'id': user.id
+            }
+        })
+        if(avatar_path){
+            res.status(200).send(user);
+        }
+    }catch(error){
+        res.status(500).json({message: error.message});
+    }
+}
+
+module.exports = {setUser, getUserAvatar};

@@ -19,6 +19,7 @@ const submit = async (event) => {
             'id': data.user.id,
             'id_category': data.user.id_category,
             'id_group': data.user.id_group,
+            'name': data.user.name,
             'token': data.token 
         };
         localStorage.setItem('userStorage', JSON.stringify(storage));

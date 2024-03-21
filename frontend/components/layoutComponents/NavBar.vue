@@ -20,9 +20,7 @@ const openMenuMobile = () => {
             <li><a href="#" class="font-medium text-lg nav-link">Projects</a></li>
             <li><a href="#" class="font-medium text-lg nav-link">Tasks</a></li>
         </ul>
-        <a href="/account" id="account-avatar">
-            <Icon name="mdi:user" color="black" size="3em"/>
-        </a>
+        
         
         <button class="bg-transparent" id="nav-toggle" @click="openMenuMobile()">
             <Icon name="mdi:format-list-bulleted" color="white" size="2em"/>

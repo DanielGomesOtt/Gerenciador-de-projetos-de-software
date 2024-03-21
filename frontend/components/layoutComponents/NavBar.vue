@@ -10,9 +10,9 @@ const openMenuMobile = () => {
 
 
 <template>
-    <nav class="w-screen h-16 flex justify-around items-center">
+    <nav class="w-screen h-16 flex justify-around items-center" id="nav-bar">
         <div id="nav-brand">
-            <button class="bg-gradient-to-r from-blue-800 to-indigo-800 text-white rounded-md px-4 py-2 text-lg"><a href="/home">Task Life</a></button>
+            <button class="bg-blue-800 text-white rounded-md px-4 py-2 text-lg"><a href="/home">Task Life</a></button>
         </div>
         <ul class="flex justify-around items-center w-[50%]" id="nav-items">
             <li><a href="/home" class="font-medium text-lg nav-link">Home</a></li>
@@ -25,15 +25,15 @@ const openMenuMobile = () => {
         </a>
         
         <button class="bg-transparent" id="nav-toggle" @click="openMenuMobile()">
-            <Icon name="mdi:format-list-bulleted" color="black" size="3em"/>
+            <Icon name="mdi:format-list-bulleted" color="white" size="2em"/>
         </button>
 
-        <ul class="w-screen top-20 absolute bg-gradient-to-r from-blue-400 to-indigo-400 text-center rounded-sm" v-if="isOpenMobile" id="menu-mobile">
-            <li><a href="/home" class="font-medium text-lg text-center nav-link">Home</a></li>
-            <li><a href="#" class="font-medium text-lg text-center nav-link">Groups</a></li>
-            <li><a href="#" class="font-medium text-lg text-center nav-link">Projects</a></li>
-            <li><a href="#" class="font-medium text-lg text-center nav-link">Tasks</a></li>
-            <li><a href="/account" class="font-medium text-lg text-center nav-link">Account</a></li>
+        <ul class="w-screen absolute text-center pb-2" v-if="isOpenMobile" id="menu-mobile" style="top: 4em;background-color:rgb(59, 59, 60);">
+            <li><a href="/home" class="text-lg text-center nav-link text-blue-800" style="color: #fff">Home</a></li>
+            <li><a href="#" class="text-lg text-center nav-link text-blue-800" style="color:#fff">Groups</a></li>
+            <li><a href="#" class="text-lg text-center nav-link text-blue-800" style="color: #fff">Projects</a></li>
+            <li><a href="#" class="text-lg text-center nav-link text-blue-800" style="color: #fff">Tasks</a></li>
+            <li><a href="/account" class="text-lg text-center nav-link text-blue-800" style="color: #fff">Account</a></li>
         </ul>
         
     </nav>
@@ -55,6 +55,10 @@ const openMenuMobile = () => {
 
   #menu-mobile {
     display: absolute;
+  }
+
+  #nav-bar {
+    background-color: rgb(59, 59, 60);
   }
 }
 

@@ -25,7 +25,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-    <div class="w-screen h-screen bg-slate-100">
+    <div class="w-screen h-screen">
         <NavBar />
     </div>
 </template>

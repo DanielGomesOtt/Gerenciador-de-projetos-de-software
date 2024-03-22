@@ -6,6 +6,11 @@ let isOpenMobile = ref(false);
 const openMenuMobile = () => {
     isOpenMobile.value = !isOpenMobile.value;
 }
+
+const logOut = () => {
+  localStorage.removeItem('userStorage');
+  navigateTo('/');
+}
 </script>
 
 
@@ -14,24 +19,58 @@ const openMenuMobile = () => {
         <div id="nav-brand">
             <button class="bg-blue-800 text-white rounded-md px-4 py-2 text-lg"><a href="/home">Task Life</a></button>
         </div>
-        <ul class="flex justify-around items-center w-[50%]" id="nav-items">
+        <ul class="flex justify-around items-center w-[45%]" id="nav-items">
             <li><a href="/home" class="font-medium text-lg nav-link">Home</a></li>
             <li><a href="#" class="font-medium text-lg nav-link">Groups</a></li>
             <li><a href="#" class="font-medium text-lg nav-link">Projects</a></li>
             <li><a href="#" class="font-medium text-lg nav-link">Tasks</a></li>
         </ul>
         
-        
+        <div class="flex justify-around w-[15%]" id="nav-buttons-container">
+          <a href="/account"><Icon name="mdi:user" size="2em"/></a>
+          <button class="bg-transparent" @click="logOut()"><Icon name="mdi:logout" size="2em" color="red"/></button>
+        </div>
         <button class="bg-transparent" id="nav-toggle" @click="openMenuMobile()">
             <Icon name="mdi:format-list-bulleted" color="white" size="2em"/>
         </button>
 
-        <ul class="w-screen absolute text-center pb-2" v-if="isOpenMobile" id="menu-mobile" style="top: 4em;background-color:rgb(59, 59, 60);">
-            <li><a href="/home" class="text-lg text-center nav-link text-blue-800" style="color: #fff">Home</a></li>
-            <li><a href="#" class="text-lg text-center nav-link text-blue-800" style="color:#fff">Groups</a></li>
-            <li><a href="#" class="text-lg text-center nav-link text-blue-800" style="color: #fff">Projects</a></li>
-            <li><a href="#" class="text-lg text-center nav-link text-blue-800" style="color: #fff">Tasks</a></li>
-            <li><a href="/account" class="text-lg text-center nav-link text-blue-800" style="color: #fff">Account</a></li>
+        <ul class="w-screen absolute pb-2" v-if="isOpenMobile" id="menu-mobile" style="top: 4em;background-color:rgb(59, 59, 60);">
+            <li>
+              <div class="flex justify-start items-center">
+                <Icon name="mdi:home" size="1.5em" color="white" class="ml-5" />
+                <a href="/home" class="text-lg nav-link text-blue-800 ml-10" style="color: #fff">Home</a>
+              </div>
+            </li>
+            <li>
+              <div class="flex justify-start items-center">
+                <Icon name="mdi:people" size="1.5em" color="white" class="ml-5"/>
+                <a href="#" class="text-lg nav-link text-blue-800 ml-10" style="color:#fff">Groups</a>
+              </div>
+            </li>
+            <li>
+              <div class="flex justify-start items-center">
+                <Icon name="mdi:clipboard-list" size="1.5em" color="white" class="ml-5"/>
+                <a href="#" class="text-lg nav-link text-blue-800 ml-10" style="color: #fff">Projects</a>
+              </div>
+            </li>
+            <li>
+              <div class="flex justify-start items-center">
+                <Icon name="mdi:check-underline" size="1.5em" color="white" class="ml-5"/>
+                <a href="#" class="text-lg nav-link text-blue-800 ml-10" style="color: #fff">Tasks</a>
+              </div>
+            </li>
+            <li>
+              <div class="flex justify-start items-center">
+                <Icon name="mdi:account-arrow-right" size="1.5em" color="white" class="ml-5"/>
+                <a href="/account" class="text-lg nav-link text-blue-800 ml-10" style="color: #fff">Account</a>
+              </div>
+            </li>
+            <li>
+              <div class="flex justify-start items-center">
+                <Icon name="mdi:logout" size="1.5em" color="white" class="ml-5"/>
+                <button  class="text-lg nav-link text-blue-800 bg-transparent ml-10" style="color: #fff" @click="logOut()">Logout</button>
+              </div>
+            </li>
         </ul>
         
     </nav>
@@ -58,6 +97,10 @@ const openMenuMobile = () => {
   #nav-bar {
     background-color: rgb(59, 59, 60);
   }
+
+  #nav-buttons-container {
+    display: none;
+  }
 }
 
 @media (min-width: 600px) {
@@ -75,6 +118,10 @@ const openMenuMobile = () => {
 
   #menu-mobile {
     display: none;
+  }
+
+  #nav-buttons-container {
+    display: flex;
   }
 }
 

@@ -7,6 +7,13 @@ let visible = ref(false);
 
 const changeScreenSide = () => {
     visible.value = !visible.value;
+    if(visible.value == true){
+        document.getElementById('apresentation-container').classList.remove('h-72');
+        document.getElementById('apresentation-container').classList.add('h-screen');
+    }else{
+        document.getElementById('apresentation-container').classList.add('h-72');
+        document.getElementById('apresentation-container').classList.remove('h-screen');
+    }
 }
 
 </script>
@@ -14,7 +21,7 @@ const changeScreenSide = () => {
 <template>
     <div class=" grid grid-cols-1 md:flex lg:flex w-full h-full md:h-screen">
         <LoginForm v-if="visible" />
-        <div class="grid grid-cols-1 w-full md:flex md:justify-center md:items-center md:w-3/6 lg:flex lg:justify-center lg:items-center lg:w-4/ h-72 md:h-screen lg:h-screen shadow-lg bg-gradient-to-r from-blue-800 to-indigo-800">
+        <div class="grid grid-cols-1 w-full pt-10 md:flex md:justify-center md:items-center md:w-3/6 lg:flex lg:justify-center lg:items-center lg:w-4/ h-72 md:h-screen lg:h-screen shadow-lg bg-gradient-to-r from-blue-800 to-indigo-800" id="apresentation-container">
             <div>
                 <div class="flex justify-center items-end">
                     <h2 class="text-white font-bold text-3xl md:text-5xl lg:text-5xl text-center" v-if="visible">Create your account !</h2>

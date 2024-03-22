@@ -31,7 +31,7 @@ const submit = async (event) => {
 </script>
 
 <template>
-    <div class="grid grid-cols-1 w-full md:flex md:flex-1 md:justify-center md:items-center lg:flex lg:flex-1 lg:justify-center lg:items-center md:rounded-l-3xl lg:rounded-l-3xl">
+    <div class="grid grid-cols-1 pt-10 w-full md:flex md:flex-1 md:justify-center md:items-center lg:flex lg:flex-1 lg:justify-center lg:items-center md:rounded-l-3xl lg:rounded-l-3xl">
         <div>
             <h2 class="text-indigo-800 font-bold text-3xl md:text-4xl lg:text-4xl text-center">Access your account</h2>
             <p class="text-gray-500 font-lg text-lg md:text-xl lg:text-xl text-center mt-5">Log in and enjoy</p>

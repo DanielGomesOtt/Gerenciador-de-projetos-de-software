@@ -5,6 +5,6 @@ const accessTokenMiddleware = require('../middlewares/accessTokenMiddleware');
 
 
 route.get('/account/avatar', UserController.getUserAvatar);
-// route.post('/account', accessTokenMiddleware.verifyToken, UserController.updateUser);
+
 
 module.exports =  route;

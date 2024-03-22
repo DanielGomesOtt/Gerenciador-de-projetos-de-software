@@ -39,12 +39,6 @@ async function getUserAvatar(req, res){
     }
 }
 
-async function updateUser(req, res){
-    try{
 
-    }catch(error){
-        res.status(500).json({message: error.message});
-    }
-}
 
-module.exports = {setUser, getUserAvatar, updateUser};
+module.exports = {setUser, getUserAvatar};

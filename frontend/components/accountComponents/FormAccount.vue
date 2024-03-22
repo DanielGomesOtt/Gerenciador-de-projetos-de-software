@@ -1,5 +1,6 @@
 <script lang="js" setup>
-import verifyValidEmail from '~/utils/verifyValidEmail';
+import {isValidEmail} from '~/utils/verifyValidEmail'
+
 let passwordConfirmIsVisible = ref(false);
 
 let form = {
@@ -16,7 +17,7 @@ const submit = async (event) => {
         let storage = JSON.parse(localStorage.getItem('userStorage'));
         let formData = {};
         if(form.email.length > 0){
-            let verifyEmail = verifyValidEmail.isValidEmail(form.email);
+            let verifyEmail = isValidEmail(form.email);
             if(verifyEmail){
                 formData.email = form.email;
             }else{
@@ -44,7 +45,7 @@ const submit = async (event) => {
         }
         formData.idUser = storage.id;
         
-        let { data } = await axios.post(runtimeConfig.public.BASE_URL + '/account', formData, {
+        let { data } = await axios.post(runtimeConfig.public.BASE_URL + 'account', formData, {
             headers: `Bearer ${storage.token}`
         });
         if(data){

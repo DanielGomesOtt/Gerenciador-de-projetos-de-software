@@ -22,10 +22,10 @@ onBeforeMount(() => {
             <div class="flex">
                 <div class="mx-24">
                     <div class="flex">
-                        <UserAvatar />
+                        <UserAvatar class="ml-10"/>
                         <button class="bg-transparent mt-24"><Icon name="mdi:account-box-plus-outline" size="2.4em" color="black" class=" bg-transparent rounded-lg"/></button>
                     </div>
-                    <span class="text-slate-800 text-xl font-semibold">{{ userName }}</span>
+                    <span class="text-slate-800 text-xl font-semibold ml-10">{{ userName }}</span>
                 </div>
             </div>
         </div>

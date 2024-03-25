@@ -18,7 +18,7 @@ onBeforeMount(() => {
 <template>
     <div class="w-screen h-screen overflow-x-hidden">
         <NavBar />
-        <div class=" mt-24 flex justify-center">
+        <div class=" mt-16 flex justify-center">
             <div class="flex">
                 <div class="mx-24">
                     <div class="flex">

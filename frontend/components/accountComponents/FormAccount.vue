@@ -1,5 +1,8 @@
 <script lang="js" setup>
 import {isValidEmail} from '~/utils/verifyValidEmail'
+import axios from 'axios';
+
+const runtimeConfig = useRuntimeConfig();
 
 let passwordConfirmIsVisible = ref(false);
 
@@ -10,6 +13,7 @@ let form = {
 };
 
 let submitMessage = ref('');
+
 
 const submit = async (event) => {
     event.preventDefault();
@@ -66,6 +70,9 @@ const changeFormFieldsVisibility = () => {
     passwordConfirmIsVisible.value = !passwordConfirmIsVisible.value;
 }
 
+onMounted(() => {
+    getUserData();
+})
 
 </script>
 
@@ -90,7 +97,7 @@ const changeFormFieldsVisibility = () => {
                 <input type="password" name="password-confirm" id="user-password-confirm-account" class="border-2 border-slate-200 rounded-md w-full h-12 my-4 bg-slate-100 pl-1">
             </div>
             <div class="w-full flex justify-center">
-                <div>
+                <div class="w-full">
                     <button type="submit" class="text-green-600 rounded-md border-2 border-green-600 p-1 hover:text-white hover:bg-green-600 shadow-md w-full mb-3">Save Changes</button>
                     <button type="button" class="text-blue-600 rounded-md border-2 border-blue-600 p-1 hover:text-white hover:bg-blue-600 shadow-md w-full mb-3" @click="changeFormFieldsVisibility()" v-if="!passwordConfirmIsVisible">Change password</button>
                     <button type="button" class="text-red-600 rounded-md border-2 border-red-600 p-1 hover:text-white hover:bg-red-600 shadow-md w-full mb-3" @click="changeFormFieldsVisibility()" v-if="passwordConfirmIsVisible">Cancel password change</button>

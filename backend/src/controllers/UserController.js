@@ -40,5 +40,4 @@ async function getUserAvatar(req, res){
 }
 
 
-
 module.exports = {setUser, getUserAvatar};

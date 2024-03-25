@@ -15,15 +15,17 @@ const submit = async (event) => {
     event.preventDefault();
     try{
         let { data } = await axios.post(runtimeConfig.public.BASE_URL + 'login', form);
-        let storage = {
-            'id': data.user.id,
-            'id_category': data.user.id_category,
-            'id_group': data.user.id_group,
-            'name': data.user.name,
-            'token': data.token 
-        };
-        localStorage.setItem('userStorage', JSON.stringify(storage));
-        navigateTo('/home');
+        if(data){
+            let storage = {
+                'id': data.user.id,
+                'id_category': data.user.id_category,
+                'id_group': data.user.id_group,
+                'name': data.user.name,
+                'token': data.token 
+            };
+            localStorage.setItem('userStorage', JSON.stringify(storage));
+            navigateTo('/home');
+        }
     }catch(error){
         errorRequest.value = error.response.data.message;
     }

@@ -4,8 +4,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         try {
             let storage = JSON.parse(localStorage.getItem('userStorage'));
             if(storage && storage.token){
-                const response = await useFetch('http://localhost:3333/verifyToken', {
-                    headers: [ {"token": storage.token} ]
+                const response = await $fetch('http://localhost:3333/verifyToken', {
+                    headers: {"token": storage.token}
                 });
                 if (!response) {
                     return navigateTo('/');
@@ -20,8 +20,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
         try {
             let storage = JSON.parse(localStorage.getItem('userStorage'));
             if(storage && storage.token){
-                const response = await useFetch('http://localhost:3333/verifyToken', {
-                    headers: [ {"token": storage.token} ]
+                const response = await $fetch('http://localhost:3333/verifyToken', {
+                    headers: {"token": storage.token} 
                 });
                 if (response) {
                     return navigateTo('/home');    

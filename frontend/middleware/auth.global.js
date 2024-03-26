@@ -7,12 +7,15 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
                     headers: { "token": storage.token }
                 });
                 if (!response) {
+                    localStorage.removeItem('userStorage');
                     return navigateTo('/');
                 }
             } else {
+                localStorage.removeItem('userStorage');
                 return navigateTo('/');
             }
         } catch (error) {
+            localStorage.removeItem('userStorage');
             console.error(error);
             return navigateTo('/');
         }
@@ -28,6 +31,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
                 }
             }
         } catch (error) {
+            localStorage.removeItem('userStorage');
             console.error(error);
             return navigateTo('/');
         }

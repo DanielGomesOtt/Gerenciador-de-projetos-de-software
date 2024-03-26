@@ -17,6 +17,10 @@ let submitMessage = ref('');
 
 const changeFormFieldsVisibility = () => {
     passwordConfirmIsVisible.value = !passwordConfirmIsVisible.value;
+    if(passwordConfirmIsVisible.value == false){
+        document.getElementById('user-name-account').value = form.name;
+        document.getElementById('user-email-account').value = form.email;
+    }
 }
 
 const getUserData = async () => {
@@ -29,6 +33,8 @@ const getUserData = async () => {
         if(response && response.data){
             document.getElementById('user-name-account').value = response.data.name;
             document.getElementById('user-email-account').value = response.data.email;
+            form.name = response.data.name;
+            form.email = response.data.email;
         }
     }catch(error){
         console.error(error);

@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr: false,
-  modules: ["@nuxtjs/tailwindcss", "nuxt-icon"],
+  modules: ['@nuxt/ui'],
   runtimeConfig: {
     public: {
       BASE_URL: process.env.BASE_URL,

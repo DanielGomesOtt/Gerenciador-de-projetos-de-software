@@ -3,25 +3,17 @@ require('dotenv').config();
 
 exports.sign = payload => jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: process.env.ACCESS_TOKEN_EXPIRATION});
 
-exports.verify = token => {
+exports.verifyToken = async (req, res, next) => {
     try{
+        let headers = req.headers.authorization.split(' ');
+        let token = headers[1];
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET, {expiresIn: process.env.ACCESS_TOKEN_EXPIRATION});
-        return decodedToken;
+        next();
     }catch(error){
         if(error.name === 'TokenExpiredError' || error.name === 'JsonWebTokenError' || error.name === 'NotBeforeError'){
-            return 401;
+            res.status(401);
         }else{
-            return 500;
+            res.status(500);
         }
     }
-};
-
-exports.verifyToken = (req, res, next) => {
-    let headers = req.headers.authorization.split(' ');
-    let token = headers[1];
-    let verify = verify(token);
-    if(verify === 401 || verify === 500){
-        return verify;
-    }
-    next();
 }

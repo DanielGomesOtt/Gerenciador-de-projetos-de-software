@@ -8,8 +8,8 @@ async function verify(req, res) {
         if (!token) {
             res.send(false);
         }
-        const decodedToken = await jwt.verify(token, process.env.JWT_SECRET, {expiresIn: process.env.ACCESS_TOKEN_EXPIRATION});
-        res.send(true);
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET, {expiresIn: process.env.ACCESS_TOKEN_EXPIRATION});
+        res.send(decodedToken);
     } catch (error) {
         res.send(false);
     }

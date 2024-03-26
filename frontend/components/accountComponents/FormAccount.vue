@@ -15,64 +15,31 @@ let form = {
 let submitMessage = ref('');
 
 
-const submit = async (event) => {
-    event.preventDefault();
-    try{
-        let storage = JSON.parse(localStorage.getItem('userStorage'));
-        let formData = {};
-        if(form.email.length > 0){
-            let verifyEmail = isValidEmail(form.email);
-            if(verifyEmail){
-                formData.email = form.email;
-            }else{
-                document.getElementById('submit-message').classList.add('text-red-600');
-                document.getElementById('submit-message').classList.remove('text-green-600');
-                submitMessage.value = 'Invalid email address';
-                return false;
-            }
-        }
-
-        if(form.password.length > 0){
-            if(form.password.length < 8){
-                document.getElementById('submit-message').classList.add('text-red-600');
-                document.getElementById('submit-message').classList.remove('text-green-600');
-                submitMessage.value = 'The password must be 8 characters or longer';
-                return false;
-            }else if(!/[0-9]/.test(form.password) || !/[a-zA-Z]/.test(form.password)){
-                document.getElementById('submit-message').classList.add('text-red-600');
-                document.getElementById('submit-message').classList.remove('text-green-600');
-                submitMessage.value =  'The password must contain letters and numbers';
-                return false;
-            }else{
-                formData.password = form.password;
-            }
-        }
-        formData.idUser = storage.id;
-        
-        let { data } = await axios.post(runtimeConfig.public.BASE_URL + 'account', formData, {
-            headers: `Bearer ${storage.token}`
-        });
-        if(data){
-            submitMessage.value = data.message;
-            document.getElementById('submit-message').classList.remove('text-red-600');
-            document.getElementById('submit-message').classList.add('text-green-600');
-        }else{
-            submitMessage.value = data.message;
-            document.getElementById('submit-message').classList.add('text-red-600');
-            document.getElementById('submit-message').classList.remove('text-green-600');
-        }
-    }catch(error){
-        submitMessage.value = error.response.data.message;
-    }
-}
-
 const changeFormFieldsVisibility = () => {
     passwordConfirmIsVisible.value = !passwordConfirmIsVisible.value;
 }
 
+const getUserData = async () => {
+    try{
+        const response = await axios.get(runtimeConfig.public.BASE_URL + 'account', {headers: {
+            'user': localStorage.getItem('userStorage'),
+            'authorization': `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
+        }});
+
+        if(response && response.data){
+            document.getElementById('user-name-account').value = response.data.name;
+            document.getElementById('user-email-account').value = response.data.email;
+        }
+    }catch(error){
+        console.error(error);
+    }
+}
+
 onMounted(() => {
-    getUserData();
+    getUserData()
 })
+
+
 
 </script>
 

@@ -18,19 +18,21 @@ onBeforeMount(() => {
 <template>
     <div class="w-screen h-screen overflow-x-hidden">
         <NavBar />
-        <div class=" mt-16 flex justify-center">
-            <div class="flex">
-                <div class="mx-24">
-                    <div class="flex">
-                        <UserAvatar class="ml-10"/>
-                        <button class="bg-transparent mt-24"><Icon name="mdi:account-box-plus-outline" size="2.4em" color="black" class=" bg-transparent rounded-lg"/></button>
+        <div class="flex flex-col justify-center items-center mt-5">
+            <div>
+                <div class="flex">
+                    <div class="mx-24 text-center">
+                        <div class="flex">
+                            <UserAvatar class="ml-10"/>
+                            <button class="bg-transparent mt-24"><Icon name="mdi:account-box-plus-outline" size="2.4em" color="black" class=" bg-transparent rounded-lg"/></button>
+                        </div>
+                        <span class="text-slate-800 text-xl font-semibold text-center">{{ userName }}</span>
                     </div>
-                    <span class="text-slate-800 text-xl font-semibold ml-10">{{ userName }}</span>
                 </div>
             </div>
-        </div>
-        <div class="w-screen flex justify-center">
-            <FormAccount />
+            <div class="w-screen flex justify-center">
+                <FormAccount />
+            </div>
         </div>
     </div>
 </template>

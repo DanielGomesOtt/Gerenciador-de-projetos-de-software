@@ -13,7 +13,7 @@ exports.verifyToken = async (req, res, next) => {
         if(error.name === 'TokenExpiredError' || error.name === 'JsonWebTokenError' || error.name === 'NotBeforeError'){
             res.status(401);
         }else{
-            res.status(500);
+            res.status(401);
         }
     }
 }

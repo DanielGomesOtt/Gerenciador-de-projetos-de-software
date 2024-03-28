@@ -4,7 +4,7 @@ const jwt = require('../middlewares/accessTokenMiddleware');
 async function setUser(req, res) {
     try {
         const [user, created] = await User.findOrCreate({
-            where: { email: req.body.email },
+            where: { email: req.body.email, status: 1 },
             defaults: req.body
         });
 

@@ -40,3 +40,4 @@ const changeScreenSide = () => {
         <RegisterForm v-if="!visible" />
     </div>
 </template>
+

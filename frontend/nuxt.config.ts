@@ -9,4 +9,7 @@ export default defineNuxtConfig({
       BASE_AVATAR_PATH: process.env.BASE_AVATAR_PATH,
     },
   },
+  colorMode: {
+    preference: 'no-preference'
+  },
 })

@@ -70,7 +70,7 @@ function validateForm(){
 </script>
 
 <template>
-    <div class="grid pt-10 grid-cols-1 w-full md:flex md:flex-1 md:justify-center md:items-center lg:flex lg:flex-1 lg:justify-center lg:items-center md:rounded-l-3xl lg:rounded-l-3xl">
+    <div class="grid pt-10 grid-cols-1 w-full md:flex md:flex-1 md:justify-center md:items-center lg:flex lg:flex-1 lg:justify-center lg:items-center">
         <div>
             <h2 class="text-indigo-800 font-bold text-3xl md:text-4xl lg:text-4xl text-center">Create your account</h2>
             <p class="text-gray-500 font-lg text-lg md:text-xl lg:text-xl text-center mt-5">Create an account and enjoy</p>

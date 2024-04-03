@@ -2,6 +2,6 @@
 import NavBar from '~/components/layoutComponents/NavBar.vue';
 </script>
 
-<template>
+<template class="">
     <NavBar />
 </template>

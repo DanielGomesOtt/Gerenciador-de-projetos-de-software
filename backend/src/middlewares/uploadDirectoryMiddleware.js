@@ -4,9 +4,9 @@ const path = require('path');
 
 async function findOrCreateUserUploadDirectory(req, res, next){
     try{    
-        if(!fs.existsSync(path.resolve(__dirname, `uploads/${req.body.id}`))){
-            let directory = `uploads/${req.body.id}`;
-            fs.mkdirSync(path.resolve(__dirname, `uploads/${req.body.id}`));
+        if(!fs.existsSync(path.resolve(__dirname, 'uploads', `user_${req.body.id}`))){
+            let directory = `uploads/user_${req.body.id}`;
+            fs.mkdirSync(path.resolve(__dirname, 'uploads', `user_${req.body.id}`));
             req.body.directory =  directory;
             next();
         }else{

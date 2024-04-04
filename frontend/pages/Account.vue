@@ -2,12 +2,44 @@
 import NavBar from '~/components/layoutComponents/NavBar.vue';
 import UserAvatar from '~/components/accountComponents/UserAvatar.vue';
 import FormAccount from '~/components/accountComponents/FormAccount.vue';
+import axios from 'axios';
+
+const runtimeConfig = useRuntimeConfig();
+
 let userName = ref('');
+let avatar_path = ''
+
+const isOpen = false;
 
 const showUserName = () => {
     let storage = JSON.parse(localStorage.getItem('userStorage'));
     userName.value = storage.name;
 }
+
+const uploadAvatarPath = async (event) => {
+    try{
+        event.preventDefault();
+        let upload = {
+            'id': JSON.parse(localStorage.getItem('userStorage')).id,
+            'avatar_path': avatar_path,
+        }
+
+        const response = await axios.patch(runtimeConfig.public.BASE_URL + 'account/upload_avatar', upload, {
+            headers: {
+                authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`
+            }
+        });
+        console.log(response);
+    }catch(error){
+        console.log(error);
+    }
+}
+
+const handleUploadInput = () => {
+    document.getElementById('upload-avatar-input').click();
+}
+
+
 
 onBeforeMount(() => {
     showUserName();
@@ -24,7 +56,10 @@ onBeforeMount(() => {
                     <div class="mx-24 text-center">
                         <div class="flex">
                             <UserAvatar class="ml-10"/>
-                            <button class="bg-transparent mt-24"><Icon name="mdi:account-box-plus-outline" size="2.4em" color="black" class=" bg-transparent rounded-lg"/></button>
+                            <form enctype="multipart/form-data" hidden>
+                                <input type="file" id="upload-avatar-input" name="avatar_path"> 
+                            </form>
+                            <button class="bg-transparent mt-24" @click="handleUploadInput()"><Icon name="mdi:account-box-plus-outline" size="2.4em" color="black" class=" bg-transparent rounded-lg"/></button>
                         </div>
                         <span class="text-slate-800 text-xl font-semibold text-center" id="user-name-account-page">{{ userName }}</span>
                     </div>
@@ -35,4 +70,17 @@ onBeforeMount(() => {
             </div>
         </div>
     </div>
+    <UModal v-model="isOpen">
+        <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
+
+            <p class="text-center text-2xl font-semibold">Confirm your avatar upload</p>
+
+            <template #footer>
+                <div class="flex justify-around items-center">
+                    <button class="bg-green-600 text-white rounded-md w-28 h-10" @click="uploadAvatarPath($event)">Confirm</button>
+                    <button type="button" class="bg-red-600 text-white rounded-md ml-10 w-28 h-10" @click="isOpen = false">Cancel</button>
+                </div>
+            </template>
+        </UCard>
+    </UModal>
 </template>

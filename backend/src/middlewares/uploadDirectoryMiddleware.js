@@ -4,10 +4,10 @@ const path = require('path');
 const multer = require('multer');
 
 async function findOrCreateUserUploadDirectory(req, res, next){
-    try {    
-        const userDirectory = path.resolve(__dirname, 'uploads', `user_${req.body.id}`);
+    try {
+        
+        const userDirectory = path.resolve('uploads', `user_${req.body.id}`);
         if(!fs.existsSync(userDirectory)){
-            
             fs.mkdirSync(userDirectory);
             req.body.directory = userDirectory;
             
@@ -21,8 +21,9 @@ async function findOrCreateUserUploadDirectory(req, res, next){
                 }
             });
 
-            
-            req.uploadMiddleware = multer({ storage: storage }).single('avatar');
+            let upload = multer({storage: storage});
+            upload.single('avatar_path');
+
         } else {
             
             const user = await User.findOne({
@@ -42,10 +43,10 @@ async function findOrCreateUserUploadDirectory(req, res, next){
                 }
             });
 
-            
-            req.uploadMiddleware = multer({ storage: storage }).single('avatar');
+            let upload = multer({storage: storage});
+            upload.single('avatar_path');
         }
-        res.status(200);
+        next();
     } catch(error) {
         res.status(500).send(error);
     }

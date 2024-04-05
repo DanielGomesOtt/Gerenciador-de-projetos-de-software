@@ -7,9 +7,9 @@ import axios from 'axios';
 const runtimeConfig = useRuntimeConfig();
 
 let userName = ref('');
-let avatar_path = ''
-
-const isOpen = false;
+let avatar_path = ref('');
+let idUser = ref('');
+const isOpen = ref(false);
 
 const showUserName = () => {
     let storage = JSON.parse(localStorage.getItem('userStorage'));
@@ -19,17 +19,15 @@ const showUserName = () => {
 const uploadAvatarPath = async (event) => {
     try{
         event.preventDefault();
-        let upload = {
-            'id': JSON.parse(localStorage.getItem('userStorage')).id,
-            'avatar_path': avatar_path,
-        }
-
-        const response = await axios.patch(runtimeConfig.public.BASE_URL + 'account/upload_avatar', upload, {
+        let form = document.getElementById('upload-form');
+        let formData = new FormData(form);
+       
+        const response = await axios.post(runtimeConfig.public.BASE_URL + 'account/upload_avatar', formData, {
             headers: {
-                authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`
+                authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
+                'Content-Type': 'multipart/form-data',
             }
         });
-        console.log(response);
     }catch(error){
         console.log(error);
     }
@@ -39,10 +37,14 @@ const handleUploadInput = () => {
     document.getElementById('upload-avatar-input').click();
 }
 
-
+const handleInputFile = (event) => {
+    avatar_path.value = event.target.files[0];
+    isOpen.value = true;
+}
 
 onBeforeMount(() => {
     showUserName();
+    idUser.value = JSON.parse(localStorage.getItem('userStorage')).id;
 })
 
 </script>
@@ -56,8 +58,9 @@ onBeforeMount(() => {
                     <div class="mx-24 text-center">
                         <div class="flex">
                             <UserAvatar class="ml-10"/>
-                            <form enctype="multipart/form-data" hidden>
-                                <input type="file" id="upload-avatar-input" name="avatar_path"> 
+                            <form id="upload-form" enctype="multipart/form-data" hidden>
+                                <input type="text" id="upload-id-user" name="id" :value="idUser">
+                                <input type="file" id="upload-avatar-input" name="avatar_path" @input="handleInputFile($event)"> 
                             </form>
                             <button class="bg-transparent mt-24" @click="handleUploadInput()"><Icon name="mdi:account-box-plus-outline" size="2.4em" color="black" class=" bg-transparent rounded-lg"/></button>
                         </div>
@@ -78,7 +81,7 @@ onBeforeMount(() => {
             <template #footer>
                 <div class="flex justify-around items-center">
                     <button class="bg-green-600 text-white rounded-md w-28 h-10" @click="uploadAvatarPath($event)">Confirm</button>
-                    <button type="button" class="bg-red-600 text-white rounded-md ml-10 w-28 h-10" @click="isOpen = false">Cancel</button>
+                    <button type="button" class="bg-red-600 text-white rounded-md ml-10 w-28 h-10" @click="() => {isOpen = false}">Cancel</button>
                 </div>
             </template>
         </UCard>

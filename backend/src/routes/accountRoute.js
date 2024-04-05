@@ -7,5 +7,7 @@ const uploadDirectoryMiddleware = require('../middlewares/uploadDirectoryMiddlew
 route.get('/account', accessTokenMiddleware.verifyToken, AccountController.getUserData);
 route.patch('/account', accessTokenMiddleware.verifyToken, AccountController.updateUserData);
 route.patch('/account/disable_account', accessTokenMiddleware.verifyToken, AccountController.disableAccount);
-route.patch('/account/upload_avatar', accessTokenMiddleware.verifyToken, uploadDirectoryMiddleware.findOrCreateUserUploadDirectory);
+route.post('/account/upload_avatar', accessTokenMiddleware.verifyToken, uploadDirectoryMiddleware.findOrCreateUserUploadDirectory, (req, res) => {
+    res.status(200);
+});
 module.exports =  route;

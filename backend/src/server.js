@@ -9,6 +9,7 @@ const passwordRecoveryRoute = require('../src/routes/passwordRecoveryRoute');
 const accountRoute = require('../src/routes/accountRoute');
 const app = express();
 
+app.use('/uploads', express.static('uploads'));
 app.use(cors());
 app.use(express.json())
 app.use(homeRoute);

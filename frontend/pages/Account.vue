@@ -7,46 +7,70 @@ import axios from 'axios';
 const runtimeConfig = useRuntimeConfig();
 
 let userName = ref('');
-let avatar_path = ref('');
 let idUser = ref('');
-const isOpen = ref(false);
+let avatarPath = ref('');
+let isOpen = ref(false);
 
 const showUserName = () => {
     let storage = JSON.parse(localStorage.getItem('userStorage'));
     userName.value = storage.name;
 }
 
-const uploadAvatarPath = async (event) => {
-    try{
-        event.preventDefault();
-        let form = document.getElementById('upload-form');
-        let formData = new FormData(form);
-       
+const uploadAvatarPath = async () => {
+    try {
+        let formData = new FormData();
+        formData.append('id', idUser.value);
+        formData.append('avatar_path', document.getElementById('upload-avatar-input').files[0]);
+
         const response = await axios.post(runtimeConfig.public.BASE_URL + 'account/upload_avatar', formData, {
             headers: {
-                authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
                 'Content-Type': 'multipart/form-data',
-            }
+            },
         });
-    }catch(error){
-        console.log(error);
+
+        isOpen.value = false;
+
+        if(response.status == 200){
+            avatarPath.value = runtimeConfig.public.BASE_URL + response.data;
+        }
+    } catch(error) {
+        console.error(error);
     }
 }
+
 
 const handleUploadInput = () => {
     document.getElementById('upload-avatar-input').click();
 }
 
 const handleInputFile = (event) => {
-    avatar_path.value = event.target.files[0];
     isOpen.value = true;
+}
+
+const getAvatarPath = async () => {
+    try{
+        const response = await axios.get(runtimeConfig.public.BASE_URL + 'account/upload_avatar', {
+            headers: {
+                'id': JSON.parse(localStorage.getItem('userStorage')).id,
+            }
+        });
+        
+        if(response.status == 200 && response.data && response.data.length > 0){
+            avatarPath.value = runtimeConfig.public.BASE_URL + response.data.replace('\\', '/');
+        }else{
+            avatarPath.value = '';
+        }
+    }catch(error){
+        console.log(error);
+    }
 }
 
 onBeforeMount(() => {
     showUserName();
+    getAvatarPath();
     idUser.value = JSON.parse(localStorage.getItem('userStorage')).id;
 })
-
 </script>
 
 <template>
@@ -57,12 +81,13 @@ onBeforeMount(() => {
                 <div class="flex">
                     <div class="mx-24 text-center">
                         <div class="flex">
-                            <UserAvatar class="ml-10"/>
+                            <UserAvatar class="ml-10" v-if="avatarPath.length == 0"/>
+                            <img class="rounded-full ml-10 w-[10em]" :src="avatarPath.replace('\\', '/')" v-else/>
                             <form id="upload-form" enctype="multipart/form-data" hidden>
-                                <input type="text" id="upload-id-user" name="id" :value="idUser">
-                                <input type="file" id="upload-avatar-input" name="avatar_path" @input="handleInputFile($event)"> 
+                                <input type="text" id="upload-id-user" name="id" :value="idUser" hidden>
+                                <input type="file" id="upload-avatar-input" name="avatar_path" @change="handleInputFile"> 
                             </form>
-                            <button class="bg-transparent mt-24" @click="handleUploadInput()"><Icon name="mdi:account-box-plus-outline" size="2.4em" color="black" class=" bg-transparent rounded-lg"/></button>
+                            <button class="bg-transparent mt-24" @click="handleUploadInput"><Icon name="mdi:account-box-plus-outline" size="2.4em" color="black" class="bg-transparent rounded-lg"/></button>
                         </div>
                         <span class="text-slate-800 text-xl font-semibold text-center" id="user-name-account-page">{{ userName }}</span>
                     </div>
@@ -75,12 +100,10 @@ onBeforeMount(() => {
     </div>
     <UModal v-model="isOpen">
         <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
-
             <p class="text-center text-2xl font-semibold">Confirm your avatar upload</p>
-
             <template #footer>
                 <div class="flex justify-around items-center">
-                    <button class="bg-green-600 text-white rounded-md w-28 h-10" @click="uploadAvatarPath($event)">Confirm</button>
+                    <button class="bg-green-600 text-white rounded-md w-28 h-10" @click="uploadAvatarPath()">Confirm</button>
                     <button type="button" class="bg-red-600 text-white rounded-md ml-10 w-28 h-10" @click="() => {isOpen = false}">Cancel</button>
                 </div>
             </template>

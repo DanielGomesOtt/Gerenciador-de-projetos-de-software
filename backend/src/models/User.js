@@ -8,7 +8,8 @@ class User extends Model {
       password: DataTypes.STRING,
       id_group: DataTypes.INTEGER,
       id_category: DataTypes.INTEGER,
-      status: DataTypes.INTEGER
+      status: DataTypes.INTEGER,
+      avatar_path: DataTypes.STRING,
     },
     {
       sequelize,

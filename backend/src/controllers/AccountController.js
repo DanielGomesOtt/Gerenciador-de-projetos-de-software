@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const hashPassword = require('../utils/hashPassword');
+const path = require('path');
 
 async function getUserData(req, res){
     try{
@@ -52,4 +53,37 @@ async function disableAccount(req, res){
 }
 
 
-module.exports = { getUserData, updateUserData, disableAccount };
+async function setAvatarPath(req, res){
+    try{
+        const avatarPath = await User.update({'avatar_path': req.body.avatar_directory}, {
+            where: {
+                'id': req.body.id
+            }
+        })
+        if(avatarPath){
+            res.status(200).send(req.body.avatar_directory);
+        }
+    }catch(error){
+        res.status(500).json({message: error});
+    }
+}
+
+async function getAvatarPath(req, res){
+    try{
+        const avatarPath = await User.findOne({
+            where: {
+                'id': req.headers.id,
+            }
+        });
+
+        if(avatarPath && avatarPath.dataValues && avatarPath.dataValues.avatar_path){
+            res.status(200).send(avatarPath.dataValues.avatar_path);
+        }else{
+            res.status(404);
+        }
+    }catch(error){
+        res.status(500).json({message: error});
+    }
+}
+
+module.exports = { getUserData, updateUserData, disableAccount, setAvatarPath, getAvatarPath};

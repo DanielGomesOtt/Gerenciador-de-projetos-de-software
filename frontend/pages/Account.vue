@@ -33,6 +33,7 @@ const uploadAvatarPath = async () => {
 
         if(response.status == 200){
             avatarPath.value = runtimeConfig.public.BASE_URL + response.data;
+            window.location.reload();
         }
     } catch(error) {
         console.error(error);
@@ -82,7 +83,7 @@ onBeforeMount(() => {
                     <div class="mx-24 text-center">
                         <div class="flex">
                             <UserAvatar class="ml-10" v-if="avatarPath.length == 0"/>
-                            <img class="rounded-full ml-10 w-[10em]" :src="avatarPath.replace('\\', '/')" v-else/>
+                            <img class="rounded-full ml-10 w-[10em] h-[10em] object-cover object-center" :src="avatarPath.replace('\\', '/')" v-else/>
                             <form id="upload-form" enctype="multipart/form-data" hidden>
                                 <input type="text" id="upload-id-user" name="id" :value="idUser" hidden>
                                 <input type="file" id="upload-avatar-input" name="avatar_path" @change="handleInputFile"> 

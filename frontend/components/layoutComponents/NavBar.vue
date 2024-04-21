@@ -1,7 +1,11 @@
 <script lang="js" setup>
-import { Icon } from '#components'
+import { Icon } from '#components';
+import axios from 'axios';
+
+const runtimeConfig = useRuntimeConfig();
 
 let isOpenMobile = ref(false);
+let avatarPath = ref('');
 
 const openMenuMobile = () => {
     isOpenMobile.value = !isOpenMobile.value;
@@ -11,6 +15,29 @@ const logOut = () => {
   localStorage.removeItem('userStorage');
   navigateTo('/');
 }
+
+const getAvatarPath = async () => {
+    try{
+        const response = await axios.get(runtimeConfig.public.BASE_URL + 'account/upload_avatar', {
+            headers: {
+                'id': JSON.parse(localStorage.getItem('userStorage')).id,
+            }
+        });
+        
+        if(response.status == 200 && response.data && response.data.length > 0){
+            avatarPath.value = runtimeConfig.public.BASE_URL + response.data.replace('\\', '/');
+        }else{
+            avatarPath.value = '';
+        }
+    }catch(error){
+        console.log(error);
+    }
+}
+
+onBeforeMount(() => {
+  getAvatarPath();
+})
+
 </script>
 
 
@@ -27,8 +54,13 @@ const logOut = () => {
         </ul>
         
         <div class="flex justify-around w-[15%]" id="nav-buttons-container">
-          <a href="/account"><Icon name="mdi:user" size="2em"/></a>
-          <button class="bg-transparent" @click="logOut()"><Icon name="mdi:logout" size="2em" color="red"/></button>
+          <a href="/account">
+            <Icon name="mdi:user" size="2em" v-if="avatarPath.length == 0"/>
+            <img class="w-[2em] h-[2em] object-cover object-center rounded-full" :src="avatarPath.replace('\\', '/')" v-else/>
+          </a>
+          <button class="bg-transparent" @click="logOut()">
+            <Icon name="mdi:logout" size="2em" color="red"/>
+          </button>
         </div>
         <button class="bg-transparent" id="nav-toggle" @click="openMenuMobile()">
             <Icon name="mdi:format-list-bulleted" color="white" size="2em"/>

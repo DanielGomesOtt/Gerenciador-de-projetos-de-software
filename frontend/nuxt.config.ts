@@ -12,4 +12,9 @@ export default defineNuxtConfig({
   colorMode: {
     preference: 'no-preference'
   },
+  app: {
+    head: {
+      title: 'Task Life'
+    }
+  }
 })

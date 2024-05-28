@@ -46,26 +46,26 @@ onBeforeMount(() => {
       <div id="nav-brand">
           <button class="bg-blue-800 text-white rounded-md px-4 py-2 text-lg"><a href="/home">Task Life</a></button>
       </div>
-      <ul class="flex justify-around items-center w-[45%]" id="nav-items">
+      <ul class="flex justify-around items-center w-[45%]" id="nav-items" v-if="!isOpenMobileMobile">
           <li><a href="/home" class="font-medium text-lg nav-link">Home</a></li>
           <li><a href="/project" class="font-medium text-lg nav-link">Projects</a></li>
           <li><a href="#" class="font-medium text-lg nav-link">Tasks</a></li>
       </ul>
       
-      <div class="flex justify-around w-[15%]" id="nav-buttons-container">
+      <div class="flex justify-around w-[15%]" id="nav-buttons-container" v-if="!isOpenMobileMobile">
         <a href="/account">
           <Icon name="mdi:user" size="2em" v-if="avatarPath.length == 0"/>
           <img class="w-[2em] h-[2em] object-cover object-center rounded-full" :src="avatarPath.replace('\\', '/')" v-else/>
         </a>
         <button class="bg-transparent" @click="logOut()">
-          <Icon name="mdi:logout" size="2em" color="red"/>
+          <Icon name="mdi:logout" size="1.8em" color="red"/>
         </button>
       </div>
       <button class="bg-transparent" id="nav-toggle" @click="openMenuMobile()">
           <Icon name="mdi:format-list-bulleted" color="white" size="2em"/>
       </button>
 
-      <ul class="w-screen absolute pb-2" v-if="isOpenMobile" id="menu-mobile" style="top: 4em;background-color:rgb(59, 59, 60);">
+      <ul class="w-screen absolute pb-2 bg-blue-400" v-if="isOpenMobile" id="menu-mobile" style="top: 4em;">
           <li>
             <div class="flex justify-start items-center">
               <Icon name="mdi:home" size="1.5em" color="white" class="ml-5" />
@@ -119,7 +119,7 @@ onBeforeMount(() => {
   }
 
   #nav-bar {
-    background-color: rgb(59, 59, 60);
+    background-color: #60a5fa;
   }
 
   #nav-buttons-container {

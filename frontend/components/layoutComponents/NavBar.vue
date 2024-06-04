@@ -18,25 +18,33 @@ const logOut = () => {
 
 const getAvatarPath = async () => {
     try{
-        const response = await axios.get(runtimeConfig.public.BASE_URL + 'account/upload_avatar', {
-            headers: {
-                'id': JSON.parse(localStorage.getItem('userStorage')).id,
-            }
-        });
-        
-        if(response.status == 200 && response.data && response.data.length > 0){
-            avatarPath.value = runtimeConfig.public.BASE_URL + response.data.replace('\\', '/');
-        }else{
-            avatarPath.value = '';
+      const response = await axios.get(runtimeConfig.public.BASE_URL + 'account/upload_avatar', {
+        headers: {
+          'id': JSON.parse(localStorage.getItem('userStorage')).id,
         }
+      });
+      
+      if(response.status == 200 && response.data && response.data.length > 0){
+        avatarPath.value = runtimeConfig.public.BASE_URL + response.data.replace('\\', '/');
+      }else{
+        avatarPath.value = '';
+      }
     }catch(error){
-        console.log(error);
+      console.log(error);
     }
 }
 
 onBeforeMount(() => {
   getAvatarPath();
-})
+});
+
+window.addEventListener('resize', function() {
+  if(window.innerWidth > '600'){
+    if(isOpenMobile.value == true){
+      isOpenMobile.value = false;
+    }
+  }
+});
 
 </script>
 
@@ -46,13 +54,13 @@ onBeforeMount(() => {
       <div id="nav-brand">
           <button class="bg-blue-800 text-white rounded-md px-4 py-2 text-lg"><a href="/home">Task Life</a></button>
       </div>
-      <ul class="flex justify-around items-center w-[45%]" id="nav-items" v-if="!isOpenMobileMobile">
+      <ul class="flex justify-around items-center w-[45%]" id="nav-items" v-if="!isOpenMobile">
           <li><a href="/home" class="font-medium text-lg nav-link">Home</a></li>
           <li><a href="/project" class="font-medium text-lg nav-link">Projects</a></li>
           <li><a href="#" class="font-medium text-lg nav-link">Tasks</a></li>
       </ul>
       
-      <div class="flex justify-around w-[15%]" id="nav-buttons-container" v-if="!isOpenMobileMobile">
+      <div class="flex justify-around w-[15%]" id="nav-buttons-container" v-if="!isOpenMobile">
         <a href="/account">
           <Icon name="mdi:user" size="2em" v-if="avatarPath.length == 0"/>
           <img class="w-[2em] h-[2em] object-cover object-center rounded-full" :src="avatarPath.replace('\\', '/')" v-else/>
@@ -65,7 +73,7 @@ onBeforeMount(() => {
           <Icon name="mdi:format-list-bulleted" color="white" size="2em"/>
       </button>
 
-      <ul class="w-screen absolute pb-2 bg-blue-400" v-if="isOpenMobile" id="menu-mobile" style="top: 4em;">
+      <ul class="w-screen absolute pb-2 bg-blue-400 shadow-xl" v-if="isOpenMobile" id="menu-mobile" style="top: 4em;">
           <li>
             <div class="flex justify-start items-center">
               <Icon name="mdi:home" size="1.5em" color="white" class="ml-5" />

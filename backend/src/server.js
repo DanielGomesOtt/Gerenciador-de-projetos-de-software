@@ -7,6 +7,7 @@ const loginRoute = require('../src/routes/loginRoute');
 const tokenRoute = require('../src/routes/tokenRoute');
 const passwordRecoveryRoute = require('../src/routes/passwordRecoveryRoute');
 const accountRoute = require('../src/routes/accountRoute');
+const projectRoute = require('../src/routes/projectRoute');
 const app = express();
 
 app.use('/uploads', express.static('uploads'));
@@ -17,6 +18,7 @@ app.use(loginRoute);
 app.use(tokenRoute);
 app.use(passwordRecoveryRoute);
 app.use(accountRoute);
+app.use(projectRoute);
 app.use(express.urlencoded({ extended: true }));
 
 app.listen(process.env.APP_PORT);

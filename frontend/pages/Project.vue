@@ -1,6 +1,13 @@
 <script setup lang="js">
 import NavBar from '~/components/layoutComponents/NavBar.vue';
 import { Icon } from '#components';
+import CreateProjectForm from '~/components/projectComponents/CreateProjectForm.vue';
+
+let visibilityCreateProjectModal = ref(false);
+
+const changeVisibilityCreateProjectModal = () => {
+    visibilityCreateProjectModal.value = !visibilityCreateProjectModal.value;
+}
 </script>
 
 <template>
@@ -11,10 +18,10 @@ import { Icon } from '#components';
                 <input type="text" class="w-70 h-10 rounded-sm pl-2" placeholder="Search">
             </div>
             <div class="flex items-center">
-                <button class="text-white"><Icon name="mdi:plus" color="white" size="1.8em"/>New Project</button>
+                <button class="text-white" @click="changeVisibilityCreateProjectModal()"><Icon name="mdi:plus" color="white" size="1.8em"/>New Project</button>
             </div>
         </div>
-        <div class="h-2/4">
+        <div>
 
         </div>
     </div>

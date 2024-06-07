@@ -3,11 +3,15 @@ const dbConfig = require('../config/database');
 const User = require('../models/User');
 const Category = require('../models/Category');
 const ResetCode = require('../models/ResetCode');
+const Project = require('../models/Project');
+const UserProject = require('../models/UserProject');
 
 const connection = new Sequelize(dbConfig);
 
 User.init(connection);
 Category.init(connection);
 ResetCode.init(connection);
+Project.init(connection);
+UserProject.init(connection);
 
 module.exports = connection;

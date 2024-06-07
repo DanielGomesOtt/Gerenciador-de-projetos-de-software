@@ -21,8 +21,20 @@ const changeVisibilityCreateProjectModal = () => {
                 <button class="text-white" @click="changeVisibilityCreateProjectModal()"><Icon name="mdi:plus" color="white" size="1.8em"/>New Project</button>
             </div>
         </div>
-        <div>
+        <UModal v-model="visibilityCreateProjectModal">
+            <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
+                <template #header>
+                    <div class="h-8">
+                        <p class="text-black font-bold text-center text-2xl">Create a project</p>
+                    </div>
+                </template>
 
-        </div>
+                <Placeholder class="h-32" />
+
+                <template #footer>
+                    <Placeholder class="h-8" />
+                </template>
+            </UCard>
+        </UModal>
     </div>
 </template>

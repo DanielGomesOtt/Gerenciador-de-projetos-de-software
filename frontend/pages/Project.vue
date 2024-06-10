@@ -1,7 +1,7 @@
 <script setup lang="js">
 import NavBar from '~/components/layoutComponents/NavBar.vue';
 import { Icon } from '#components';
-import CreateProjectForm from '~/components/projectComponents/CreateProjectForm.vue';
+import CreateProjectForm from '../components/projectComponents/CreateProjectForm';
 
 let visibilityCreateProjectModal = ref(false);
 
@@ -23,17 +23,7 @@ const changeVisibilityCreateProjectModal = () => {
         </div>
         <UModal v-model="visibilityCreateProjectModal">
             <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
-                <template #header>
-                    <div class="h-8">
-                        <p class="text-black font-bold text-center text-2xl">Create a project</p>
-                    </div>
-                </template>
-
-                <Placeholder class="h-32" />
-
-                <template #footer>
-                    <Placeholder class="h-8" />
-                </template>
+                <CreateProjectForm />
             </UCard>
         </UModal>
     </div>

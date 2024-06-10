@@ -2,7 +2,7 @@
 .env
 .env.*
 !.env.example
-/upload/*
+
 # Node dependencies
 node_modules
 

@@ -11,9 +11,8 @@ async function setProject(req, res){
             'status': req.body.status,
             'priority': req.body.priority,
         }
-
         const createdProject = await Project.create(project);
-
+        
         if(createdProject){
             const createdUserProject = await UserProject.create({'id_project': createdProject.id, id_user: req.body.id_user, status: 1});
             if(createdUserProject){

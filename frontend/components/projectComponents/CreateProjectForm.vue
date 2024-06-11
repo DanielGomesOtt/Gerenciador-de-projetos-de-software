@@ -2,6 +2,7 @@
 import axios from 'axios';
 
 const runtimeConfig = useRuntimeConfig();
+const emit = defineEmits(['changeVisibilityCreateProjectModal', 'getProjects']);
 
 let project = {
     'name': '',
@@ -27,6 +28,9 @@ const createProject = async () => {
                     Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
             },
         });
+
+        emit('changeVisibilityCreateProjectModal');
+        emit('getProjects')
     }catch(error){
         console.log(error);
     }

@@ -29,5 +29,23 @@ async function setProject(req, res){
     }
 }
 
+async function getProjects(req, res){
+    try{
+        const projects = await Project.findAll({
+            include: [{
+                model: UserProject,
+                where: {
+                    status: 1,
+                    id_user: req.headers.id_user,
+                }
+            }]
+        });
 
-module.exports = { setProject };
+        res.send(projects);
+    }catch(error){
+        res.status(500).json({ message: error.message });
+    }
+}
+
+
+module.exports = { setProject, getProjects };

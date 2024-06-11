@@ -16,6 +16,10 @@ class Project extends Model {
       tableName: 'project'
     })
   }
+
+  static associate(models) {
+    this.hasMany(models.UserProject, { foreignKey: 'id_project', as: 'userProjects' });
+  }
 }
 
 module.exports = Project;

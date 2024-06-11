@@ -5,5 +5,6 @@ const accessTokenMiddleware = require('../middlewares/accessTokenMiddleware');
 
 
 route.post('/project', accessTokenMiddleware.verifyToken, ProjectController.setProject);
+route.get('/project', accessTokenMiddleware.verifyToken, ProjectController.getProjects);
 
 module.exports =  route;

@@ -2,12 +2,37 @@
 import NavBar from '~/components/layoutComponents/NavBar.vue';
 import { Icon } from '#components';
 import CreateProjectForm from '../components/projectComponents/CreateProjectForm';
+import axios from  'axios';
+
+const runtimeConfig = useRuntimeConfig();
 
 let visibilityCreateProjectModal = ref(false);
+let projects = ref([]);
 
 const changeVisibilityCreateProjectModal = () => {
     visibilityCreateProjectModal.value = !visibilityCreateProjectModal.value;
 }
+
+
+
+const getProjects = async () => {
+    try{
+        const response = await axios.get(runtimeConfig.public.BASE_URL + 'project', {
+            headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
+                id_user: JSON.parse(localStorage.getItem('userStorage')).id,
+            },
+        });
+
+        projects.value = response.data;
+    }catch(error){
+        console.log(error);
+    }
+}
+
+ onBeforeMount(() => {
+    getProjects();
+ })
 </script>
 
 <template>
@@ -21,9 +46,25 @@ const changeVisibilityCreateProjectModal = () => {
                 <button class="text-white" @click="changeVisibilityCreateProjectModal()"><Icon name="mdi:plus" color="white" size="1.8em"/>New Project</button>
             </div>
         </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+            <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }" v-for="project in projects">
+                <div class="text-center font-semibold">
+                    {{ project.name }}
+                </div>
+                <div>
+                    {{ project.description }}
+                </div>
+                <div>
+                    {{ project.status }}
+                </div>
+                <div>
+                    {{ project.priority }}
+                </div>
+            </UCard>
+        </div>
         <UModal v-model="visibilityCreateProjectModal">
             <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
-                <CreateProjectForm />
+                <CreateProjectForm  @changeVisibilityCreateProjectModal="changeVisibilityCreateProjectModal" @getProjects="getProjects"/>
             </UCard>
         </UModal>
     </div>

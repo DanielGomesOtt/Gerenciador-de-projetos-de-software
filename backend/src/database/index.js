@@ -14,4 +14,8 @@ ResetCode.init(connection);
 Project.init(connection);
 UserProject.init(connection);
 
+
+Project.hasMany(UserProject, { foreignKey: 'id_project' });
+UserProject.belongsTo(Project, { foreignKey: 'id_project' });
+
 module.exports = connection;

@@ -13,8 +13,6 @@ const changeVisibilityCreateProjectModal = () => {
     visibilityCreateProjectModal.value = !visibilityCreateProjectModal.value;
 }
 
-
-
 const getProjects = async () => {
     try{
         const response = await axios.get(runtimeConfig.public.BASE_URL + 'project', {
@@ -46,19 +44,33 @@ const getProjects = async () => {
                 <button class="text-white" @click="changeVisibilityCreateProjectModal()"><Icon name="mdi:plus" color="white" size="1.8em"/>New Project</button>
             </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-            <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }" v-for="project in projects">
-                <div class="text-center font-semibold">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 p-5 shadow">
+            <UCard 
+                :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }" 
+                v-for="project in projects" 
+                :key="project.id" 
+                :class="{
+                    'border-blue-500': project.priority === 'Medium Priority',
+                    'border-red-500': project.priority === 'High Priority',
+                    'border-green-500': project.priority === 'Low Priority'
+                }"
+                class="border-2 ml-5 mr-5 shadow mt-5 mb-5 hover:shadow-2xl"
+            >
+                <div class="text-center font-semibold border-b-2 pb-2" :class="{'border-b-blue-500': project.priority === 'Medium Priority', 'border-b-red-500': project.priority === 'High Priority', 'border-b-green-500': project.priority === 'Low Priority'}">
                     {{ project.name }}
                 </div>
-                <div>
+                <div class="text-center border-b-2 p-2" :class="{'border-b-blue-500': project.priority === 'Medium Priority', 'border-b-red-500': project.priority === 'High Priority', 'border-b-green-500': project.priority === 'Low Priority'}">
                     {{ project.description }}
                 </div>
-                <div>
+                <div class="text-center border-b-2 p-2" :class="{'border-b-blue-500': project.priority === 'Medium Priority', 'border-b-red-500': project.priority === 'High Priority', 'border-b-green-500': project.priority === 'Low Priority'}">
                     {{ project.status }}
                 </div>
-                <div>
+                <div class="text-center border-b-2 pt-2" :class="{'border-b-blue-500': project.priority === 'Medium Priority', 'border-b-red-500': project.priority === 'High Priority', 'border-b-green-500': project.priority === 'Low Priority'}">
                     {{ project.priority }}
+                </div>
+                <div class="flex justify-around items-center pt-5">
+                    <button class="text-white bg-blue-500 rounded-sm w-24">Edit</button>
+                    <button class="text-white bg-green-500 rounded-sm w-24">Enter</button>
                 </div>
             </UCard>
         </div>

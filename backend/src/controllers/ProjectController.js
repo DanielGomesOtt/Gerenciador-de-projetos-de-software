@@ -47,5 +47,30 @@ async function getProjects(req, res){
     }
 }
 
+async function updateProject(req, res){
+    try{
+        let today = new Date();
+        today = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
+        const update = await Project.update({
+            'name': req.body.name,
+            'description': req.body.description,
+            'expected_end_date': req.body.expected_end_date + ' 23:59:59',
+            'real_end_date': (req.body.status == 'completed' ? today : null),
+            'status': req.body.status,
+            'priority': req.body.priority,
+        }, {
+            where: {
+                'id': req.body.id_project
+            }
+        });
 
-module.exports = { setProject, getProjects };
+        if(update){
+            res.status(200).json({message: 'Project updated successfully'});
+        }
+    }catch(error){
+        res.status(500).json({message: error.message});
+    }
+}
+
+
+module.exports = { setProject, getProjects, updateProject };

@@ -1,6 +1,6 @@
 <script setup lang="js">
 import axios from 'axios';
-import { watch, reactive, defineProps } from 'vue';
+import { watch, reactive } from 'vue';
 
 const props = defineProps({
     responseProject: {

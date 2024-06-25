@@ -72,5 +72,14 @@ async function updateProject(req, res){
     }
 }
 
+async function getProjectById(req, res){
+    try{
+        const project = await Project.findByPk(req.params.id);
+        res.send(project);
+    }catch(error){
+        res.status(500).json({message: error.message});
+    }
+}
 
-module.exports = { setProject, getProjects, updateProject };
+
+module.exports = { setProject, getProjects, updateProject, getProjectById };

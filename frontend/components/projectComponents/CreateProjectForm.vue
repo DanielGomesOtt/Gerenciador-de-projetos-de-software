@@ -8,7 +8,7 @@ let project = {
     'name': '',
     'description': '',
     'expected_end_date': '',
-    'priority': '',
+    'priority': 'Low Priority',
 }
 
 const createProject = async () => {
@@ -63,9 +63,9 @@ const createProject = async () => {
                 <div class="md:ml-2">
                     <label for="priority-project" class="font-semibold">Priority</label>
                     <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="priority-project" name="priority-project" required v-model="project.priority">
-                        <option class="low">Low Priority</option>
-                        <option class="medium" selected>Medium Priority</option>
-                        <option class="high">High Priority</option>
+                        <option value="Low Priority">Low Priority</option>
+                        <option value="Medium Priority">Medium Priority</option>
+                        <option value="High Priority">High Priority</option>
                     </select>
                 </div>
             </div>

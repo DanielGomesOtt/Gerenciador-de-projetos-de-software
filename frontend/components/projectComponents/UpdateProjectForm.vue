@@ -1,21 +1,28 @@
 <script setup lang="js">
 import axios from 'axios';
+import { watch, reactive, defineProps } from 'vue';
 
-const props = defineProps([
-    'selectedProject'
-]);
+const props = defineProps({
+    responseProject: {
+        type: Object,
+        default: () => ({})
+    }
+});
+
+const localData = reactive({...props.responseProject});
+
+watch(
+  () => props.responseProject,
+  (newVal) => {
+    Object.assign(localData, newVal);
+  },
+  { deep: true }
+);
 
 const runtimeConfig = useRuntimeConfig();
 const emit = defineEmits(['changeVisibilityUpdateProjectModal', 'getProjects']);
 
-let project = {
-    'name': '',
-    'description': '',
-    'expected_end_date': '',
-    'priority': '',
-    'status': '',
-    'project_id': ''
-}
+
 
 const updateProject = async () => {
     try{
@@ -49,35 +56,35 @@ const updateProject = async () => {
 
     <div class="w-full mt-10">
         <form class="w-[100%]">
-            <input type="text" id="project-id" name="project-id" v-model="props.selectedProject.id" hidden>
+            <input type="text" id="project-id" name="project-id" hidden v-model="localData.id">
             <div>
                 <label for="update-name-project" class="font-semibold">Name</label>
-                <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="update-name-project" name="update-name-project" placeholder="Project Name" required v-model="props.selectedProject.name">
+                <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="update-name-project" name="update-name-project" placeholder="Project Name" required v-model="localData.name">
             </div>
 
             <div class="mt-2">
                 <label for="update-description-project" class="font-semibold">Description</label>
-                <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="update-description-project" name="update-description-project" placeholder="Project Description" required v-model="props.selectedProject.description">
+                <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="update-description-project" name="update-description-project" placeholder="Project Description" required v-model="localData.description">
             </div>
 
             <div class="mt-2 grid grid-cols-1 md:grid-cols-2">
                 <div class="md:mr-2">
                     <label for="update-end-date-project" class="font-semibold">End Date</label>
-                    <input type="date" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="update-end-date-project" name="update-end-date-project" required v-model="props.selectedProject.expected_end_date">
+                    <input type="date" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="update-end-date-project" name="update-end-date-project" required v-model="localData.expected_end_date">
                 </div>
                 <div class="md:ml-2">
                     <label for="update-priority-project" class="font-semibold">Priority</label>
-                    <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="update-priority-project" name="update-priority-project" required v-model="props.selectedProject.priority">
-                        <option class="low">Low Priority</option>
-                        <option class="medium">Medium Priority</option>
-                        <option class="high">High Priority</option>
+                    <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="update-priority-project" name="update-priority-project" required v-model="localData.priority">
+                        <option value="Low Priority">Low Priority</option>
+                        <option value="Medium Priority">Medium Priority</option>
+                        <option value="High Priority">High Priority</option>
                     </select>
                 </div>
             </div>
 
             <div class="mt-2">
                 <label for="update-project-status" class="font-semibold">Status</label>
-                <select name="update-project-status" id="update-project-status" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" required v-model="props.selectedProject.status">
+                <select name="update-project-status" id="update-project-status" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" required v-model="localData.status">
                     <option value="in progress">In progress</option>
                     <option value="completed">Completed</option>
                     <option value="cancelled">Cancelled</option>

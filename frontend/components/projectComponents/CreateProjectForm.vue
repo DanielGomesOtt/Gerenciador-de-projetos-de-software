@@ -18,7 +18,7 @@ const createProject = async () => {
             'id_user': JSON.parse(localStorage.getItem('userStorage')).id,
             'name': project.name,
             'description': project.description,
-            'expected_end_date': project.expected_end_date,
+            'expected_end_date': project.expected_end_date + ' 23:59:59',
             'priority': project.priority,
             'status': 'in progress',
             'initial_date': `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`,
@@ -64,7 +64,7 @@ const createProject = async () => {
                     <label for="priority-project" class="font-semibold">Priority</label>
                     <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="priority-project" name="priority-project" required v-model="project.priority">
                         <option class="low">Low Priority</option>
-                        <option class="medium">Medium Priority</option>
+                        <option class="medium" selected>Medium Priority</option>
                         <option class="high">High Priority</option>
                     </select>
                 </div>

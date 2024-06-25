@@ -2,17 +2,24 @@
 import NavBar from '~/components/layoutComponents/NavBar.vue';
 import { Icon } from '#components';
 import CreateProjectForm from '../components/projectComponents/CreateProjectForm';
+import UpdateProjectForm from '../components/projectComponents/UpdateProjectForm';
 import axios from  'axios';
 
 const runtimeConfig = useRuntimeConfig();
 
 let visibilityCreateProjectModal = ref(false);
+let visibilityUpdateProjectModal = ref(false);
 let projects = ref([]);
+let selectedProject = ref({});
 
 const changeVisibilityCreateProjectModal = () => {
     visibilityCreateProjectModal.value = !visibilityCreateProjectModal.value;
 }
 
+const changeVisibilityUpdateProjectModal = (project) => {
+    selectedProject.value = project;
+    visibilityUpdateProjectModal.value = !visibilityUpdateProjectModal.value;
+}
 const getProjects = async () => {
     try{
         const response = await axios.get(runtimeConfig.public.BASE_URL + 'project', {
@@ -55,7 +62,8 @@ const getProjects = async () => {
                     'border-green-500': project.priority === 'Low Priority'
                 }"
                 class="border-2 ml-5 mr-5 shadow mt-5 mb-5 hover:shadow-2xl"
-            >
+            >   
+                <input type="text" hidden>
                 <div class="text-center font-semibold border-b-2 pb-2" :class="{'border-b-blue-500': project.priority === 'Medium Priority', 'border-b-red-500': project.priority === 'High Priority', 'border-b-green-500': project.priority === 'Low Priority'}">
                     {{ project.name }}
                 </div>
@@ -69,7 +77,7 @@ const getProjects = async () => {
                     {{ project.priority }}
                 </div>
                 <div class="flex justify-around items-center pt-5">
-                    <button class="text-white bg-blue-500 rounded-sm w-24">Edit</button>
+                    <button class="text-white bg-blue-500 rounded-sm w-24" @click="changeVisibilityUpdateProjectModal(project)">Edit</button>
                     <button class="text-white bg-green-500 rounded-sm w-24">Enter</button>
                 </div>
             </UCard>
@@ -77,6 +85,12 @@ const getProjects = async () => {
         <UModal v-model="visibilityCreateProjectModal">
             <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
                 <CreateProjectForm  @changeVisibilityCreateProjectModal="changeVisibilityCreateProjectModal" @getProjects="getProjects"/>
+            </UCard>
+        </UModal>
+
+        <UModal v-model="visibilityUpdateProjectModal">
+            <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
+                <UpdateProjectForm  @changeVisibilityUpdateProjectModal="changeVisibilityUpdateProjectModal" @getProjects="getProjects" :project="selectedProject" @update:selectedProject="selectedProject = $event"/>
             </UCard>
         </UModal>
     </div>

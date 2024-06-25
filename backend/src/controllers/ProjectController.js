@@ -60,7 +60,7 @@ async function updateProject(req, res){
             'priority': req.body.priority,
         }, {
             where: {
-                'id': req.body.id_project
+                'id': req.body.project_id
             }
         });
 

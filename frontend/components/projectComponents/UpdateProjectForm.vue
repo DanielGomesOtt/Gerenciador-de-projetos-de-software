@@ -26,14 +26,14 @@ const emit = defineEmits(['changeVisibilityUpdateProjectModal', 'getProjects']);
 
 const updateProject = async () => {
     try{
-        let today = new Date();
         let data = {
-            'name': project.name,
-            'description': project.description,
-            'expected_end_date': project.expected_end_date + ' 23:59:59',
-            'priority': project.priority,
-            'status': project.status,
-            'project_id': project.project_id,
+            'id_user': JSON.parse(localStorage.getItem('userStorage')).id,
+            'name': localData.name,
+            'description': localData.description,
+            'expected_end_date': localData.expected_end_date + ' 23:59:59',
+            'priority': localData.priority,
+            'status': localData.status,
+            'project_id': localData.id,
         };
         const response = await axios.patch(runtimeConfig.public.BASE_URL + 'project', data, {
             headers: {
@@ -51,7 +51,7 @@ const updateProject = async () => {
 
 <template>
     <div class="h-8">
-        <p class="text-black font-bold text-center text-2xl">Project editing</p>
+        <p class="text-black font-bold text-center text-2xl">Project update</p>
     </div>
 
     <div class="w-full mt-10">

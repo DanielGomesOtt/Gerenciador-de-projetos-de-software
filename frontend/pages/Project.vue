@@ -11,7 +11,10 @@ let visibilityCreateProjectModal = ref(false);
 let visibilityUpdateProjectModal = ref(false);
 let projects = ref([]);
 let responseProject = ref({})
-
+let searchProject = ref('');
+let filter = ref('');
+let status = ref('');
+let priority = ref('');
 
 const changeVisibilityCreateProjectModal = () => {
     visibilityCreateProjectModal.value = !visibilityCreateProjectModal.value;
@@ -30,6 +33,40 @@ const getProjects = async () => {
                 Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
                 id_user: JSON.parse(localStorage.getItem('userStorage')).id,
             },
+        });
+
+        projects.value = response.data;
+    }catch(error){
+        console.log(error);
+    }
+}
+
+const getProjectsByFilter = async () => {
+    try{
+
+        let url = runtimeConfig.public.BASE_URL + 'project/';
+
+        if(filter.value.length > 0 && searchProject.value.length > 0){
+            url += filter.value + '/';
+        }
+
+        if(filter.value.length > 0 && searchProject.value.length > 0){
+            url += searchProject.value + '/';
+        }
+
+        if(status.value.length > 0){
+            url += status.value + '/';
+        }
+        
+        if(priority.value.length > 0){
+            url += priority.value + '/';
+        }
+
+        const response = await axios.get(url, {
+            headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
+                id_user: JSON.parse(localStorage.getItem('userStorage')).id,
+            }
         });
 
         projects.value = response.data;
@@ -62,10 +99,32 @@ const getProjectById = async (idProject) => {
     <NavBar />
     <div class="mt-20 w-10/12 shadow mx-auto rounded-lg">
         <div class="w-full bg-blue-400 flex flex-wrap justify-between p-5 rounded-t-lg">
-            <div>
-                <input type="text" class="w-70 h-10 rounded-sm pl-2" placeholder="Search">
+            <div class="mt-2">
+                <input type="text" class="w-56 md:w-52 lg:w-72 h-10 rounded-sm pl-2" placeholder="Search" v-model="searchProject" @keyup.enter="getProjectsByFilter">
             </div>
-            <div class="flex items-center">
+            <div class="mt-2">
+                <select class="w-56 md:w-48 lg:w-52 h-10 rounded-sm" v-model="filter">
+                    <option value="">All</option>
+                    <option value="name">Name</option>
+                </select>
+            </div>
+            <div class="mt-2">
+                <select class="w-56 md:w-32 h-10 rounded-sm" v-model="status" @change="getProjectsByFilter">
+                    <option value="">Status</option>
+                    <option value="in progress">In progress</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+            </div>
+            <div class="mt-2">
+                <select class="w-56 md:w-32 h-10 rounded-sm" v-model="priority" @change="getProjectsByFilter">
+                    <option value="">Priority</option>
+                    <option value="High Priority">High</option>
+                    <option value="Medium Priority">Medium</option>
+                    <option value="Low Priority">Low</option>
+                </select>
+            </div>
+            <div class="flex items-center mt-2">
                 <button class="text-white" @click="changeVisibilityCreateProjectModal()"><Icon name="mdi:plus" color="white" size="1.8em"/>New Project</button>
             </div>
         </div>

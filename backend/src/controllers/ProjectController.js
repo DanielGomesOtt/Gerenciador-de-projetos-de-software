@@ -1,5 +1,6 @@
 const Project = require('../models/Project');
 const UserProject = require('../models/UserProject');
+const { Op, fn, col } = require('sequelize');
 
 async function setProject(req, res){
     try{
@@ -117,5 +118,39 @@ async function getProjectById(req, res){
     }
 }
 
+async function getProjectsByFilter(req, res){
+    try{
+        let filter = {};
+        
+        if (req.params.filter && req.params.search) {
+            filter[fn('UPPER', col(req.params.filter))] = {
+                [Op.eq]: fn('UPPER', req.params.search)
+            };
+        }
 
-module.exports = { setProject, getProjects, updateProject, getProjectById };
+        if (req.params.status) {
+            filter.status = req.params.status;
+        }
+
+        if (req.params.priority) {
+            filter.priority = req.params.priority;
+        }
+        
+        const projects = await Project.findAll({
+            include: [{
+                model: UserProject,
+                where: {
+                    status: 1,
+                    id_user: req.headers.id_user,
+                }
+            }],
+            where: filter
+        });
+        res.send(projects);
+    }catch(error){
+        res.status(500).json({message: error.message});
+    }
+}
+
+
+module.exports = { setProject, getProjects, updateProject, getProjectById, getProjectsByFilter };

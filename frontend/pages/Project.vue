@@ -43,26 +43,17 @@ const getProjects = async () => {
 
 const getProjectsByFilter = async () => {
     try{
+        let params = {
+            'filter': filter.value,
+            'status': status.value,
+            'priority': priority.value,
+            'search': searchProject.value,
+        };
 
-        let url = runtimeConfig.public.BASE_URL + 'project/';
-
-        if(filter.value.length > 0 && searchProject.value.length > 0){
-            url += filter.value + '/';
-        }
-
-        if(filter.value.length > 0 && searchProject.value.length > 0){
-            url += searchProject.value + '/';
-        }
-
-        if(status.value.length > 0){
-            url += status.value + '/';
-        }
-        
-        if(priority.value.length > 0){
-            url += priority.value + '/';
-        }
+        let url = runtimeConfig.public.BASE_URL + 'my_projects';
 
         const response = await axios.get(url, {
+            params,
             headers: {
                 Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
                 id_user: JSON.parse(localStorage.getItem('userStorage')).id,

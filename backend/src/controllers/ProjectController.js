@@ -120,20 +120,21 @@ async function getProjectById(req, res){
 
 async function getProjectsByFilter(req, res){
     try{
+        
         let filter = {};
         
-        if (req.params.filter && req.params.search) {
-            filter[fn('UPPER', col(req.params.filter))] = {
-                [Op.eq]: fn('UPPER', req.params.search)
-            };
+        if (req.query.filter && req.query.filter.length > 0 && req.query.search && req.query.search.length > 0) {
+            if(req.query.filter == 'name'){
+                filter.name = req.query.search
+            }
+        }
+        
+        if (req.query.status && req.query.status.length > 0) {
+            filter.status = req.query.status;
         }
 
-        if (req.params.status) {
-            filter.status = req.params.status;
-        }
-
-        if (req.params.priority) {
-            filter.priority = req.params.priority;
+        if (req.query.priority && req.query.priority.length > 0) {
+            filter.priority = req.query.priority;
         }
         
         const projects = await Project.findAll({

@@ -5,8 +5,9 @@ import CreateProjectForm from '../components/projectComponents/CreateProjectForm
 import UpdateProjectForm from '../components/projectComponents/UpdateProjectForm';
 import axios from  'axios';
 
-const runtimeConfig = useRuntimeConfig();
 
+const runtimeConfig = useRuntimeConfig();
+const id_category = JSON.parse(localStorage.getItem('userStorage')).id_category;
 let visibilityCreateProjectModal = ref(false);
 let visibilityUpdateProjectModal = ref(false);
 let projects = ref([]);
@@ -15,6 +16,20 @@ let searchProject = ref('');
 let filter = ref('');
 let status = ref('');
 let priority = ref('');
+let searchPlaceholder = ref('Search by ...');
+
+const changeSearchPlaceholder = () => {
+    if(filter.value.length == 0){
+        searchPlaceholder.value = `Search by ...`;
+    }else{
+        searchPlaceholder.value = `Search by ${filter.value}`;
+    }
+}
+
+
+const joinInTheProject = (id_project) => {
+    navigateTo(`/project_group_${id_project}`);
+}
 
 const changeVisibilityCreateProjectModal = () => {
     visibilityCreateProjectModal.value = !visibilityCreateProjectModal.value;
@@ -82,7 +97,12 @@ const getProjectById = async (idProject) => {
 }
 
  onBeforeMount(() => {
-    getProjects();
+    const id_category = JSON.parse(localStorage.getItem('userStorage')).id_category;
+    if(id_category == 1){
+        navigateTo('/home');
+    }else{
+        getProjects();
+    }
  })
 </script>
 
@@ -91,11 +111,11 @@ const getProjectById = async (idProject) => {
     <div class="mt-20 w-10/12 shadow mx-auto rounded-lg">
         <div class="w-full bg-blue-400 flex flex-wrap justify-between p-5 rounded-t-lg">
             <div class="mt-2">
-                <input type="text" class="w-56 md:w-52 lg:w-72 h-10 rounded-sm pl-2" placeholder="Search" v-model="searchProject" @keyup.enter="getProjectsByFilter">
+                <input type="text" class="w-56 md:w-52 lg:w-72 h-10 rounded-sm pl-2" :placeholder="searchPlaceholder" v-model="searchProject" @keyup.enter="getProjectsByFilter">
             </div>
             <div class="mt-2">
-                <select class="w-56 md:w-48 lg:w-52 h-10 rounded-sm" v-model="filter">
-                    <option value="">All</option>
+                <select class="w-56 md:w-48 lg:w-52 h-10 rounded-sm" v-model="filter" @change="changeSearchPlaceholder">
+                    <option value="">Search filters</option>
                     <option value="name">Name</option>
                 </select>
             </div>
@@ -115,7 +135,7 @@ const getProjectById = async (idProject) => {
                     <option value="Low Priority">Low</option>
                 </select>
             </div>
-            <div class="flex items-center mt-2">
+            <div class="flex items-center mt-2" v-if="id_category == 2">
                 <button class="text-white" @click="changeVisibilityCreateProjectModal()"><Icon name="mdi:plus" color="white" size="1.8em"/>New Project</button>
             </div>
         </div>
@@ -145,8 +165,8 @@ const getProjectById = async (idProject) => {
                     {{ project.priority }}
                 </div>
                 <div class="flex justify-around items-center pt-5">
-                    <button class="text-white bg-blue-500 rounded-sm w-24" @click="changeVisibilityUpdateProjectModal(project.id)">Edit</button>
-                    <button class="text-white bg-green-500 rounded-sm w-24">Enter</button>
+                    <button class="text-white bg-blue-500 rounded-sm w-24" @click="changeVisibilityUpdateProjectModal(project.id)" v-if="id_category == 2">Edit</button>
+                    <button class="text-white bg-green-500 rounded-sm w-24" @click="joinInTheProject(project.id)">Enter</button>
                 </div>
             </UCard>
         </div>

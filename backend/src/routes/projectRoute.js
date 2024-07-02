@@ -9,4 +9,5 @@ route.get('/project', accessTokenMiddleware.verifyToken, ProjectController.getPr
 route.patch('/project', accessTokenMiddleware.verifyToken, ProjectController.updateProject);
 route.get('/project/:id', accessTokenMiddleware.verifyToken, ProjectController.getProjectById);
 route.get('/my_projects', accessTokenMiddleware.verifyToken, ProjectController.getProjectsByFilter);
+route.get('/project_group', accessTokenMiddleware.verifyToken, ProjectController.getUsersByProject);
 module.exports =  route;

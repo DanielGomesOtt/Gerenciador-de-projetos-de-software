@@ -1,6 +1,7 @@
 const Project = require('../models/Project');
 const UserProject = require('../models/UserProject');
-const { Op, fn, col } = require('sequelize');
+const User = require('../models/User');
+
 
 async function setProject(req, res){
     try{
@@ -153,5 +154,28 @@ async function getProjectsByFilter(req, res){
     }
 }
 
+async function getUsersByProject (req, res){
+    try{
+        let id_project = req.query.id_project;
+        const users = await User.findAll({
+            include: [
+                {
+                    model: UserProject,
+                    where: {
+                      status: 1,
+                      id_project: id_project,  
+                    }
+                },
+            ],
+            where: {
+                status: 1
+            }
+        });
+        res.send(users);
+    }catch(error){
+        res.status(500).json({ message: error.message });
+    }
+}
 
-module.exports = { setProject, getProjects, updateProject, getProjectById, getProjectsByFilter };
+
+module.exports = { setProject, getProjects, updateProject, getProjectById, getProjectsByFilter, getUsersByProject };

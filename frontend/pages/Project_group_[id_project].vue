@@ -4,6 +4,7 @@ import NavBar from '~/components/layoutComponents/NavBar.vue';
 const route = useRoute();
 const runtimeConfig = useRuntimeConfig();
 
+let members = ref({});
 let isOpen = ref(false);
 
 const openSlideOver = () => {
@@ -12,11 +13,26 @@ const openSlideOver = () => {
 
 const getUsersByProject = async () => {
     try{
-        
+        let query = {
+            'id_project': route.params.id_project
+        };
+        const response = await axios.get(runtimeConfig.public.BASE_URL + 'project_group', {
+            query,
+            headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
+            }
+        });
+        if(response.data){
+            members.value = response.data;
+        }
     }catch(error){
         console.log(error);
     }
 }
+
+onBeforeMount(() => {
+    getUsersByProject();
+});
 
 </script>
 
@@ -28,7 +44,7 @@ const getUsersByProject = async () => {
         </div>
         <div class="flex items-center">
             <button @click="openSlideOver" class="mr-2"><Icon name="mdi:chevron-left-circle" size="2.5em" class="text-blue-400" /></button>
-            <USlideover v-model="isOpen" :overlay="false">
+            <USlideover v-model="isOpen">
                 <UCard
                     class="flex flex-col flex-1"
                     :ui="{ header:{ background: 'bg-blue-400' }, body: { base: 'flex-1' }, ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }"
@@ -49,12 +65,9 @@ const getUsersByProject = async () => {
                         />
                     </div>
                 </template>
+                <div v-for="member in members" :key="member.id">
 
-                <template #body>
-                    <div class="h-[100%]">
-
-                    </div>
-                </template>
+                </div>
                 </UCard>
             </USlideover>
         </div>

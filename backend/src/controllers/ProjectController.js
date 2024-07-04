@@ -1,7 +1,7 @@
 const Project = require('../models/Project');
 const UserProject = require('../models/UserProject');
 const User = require('../models/User');
-
+const { Op } = require('sequelize');
 
 async function setProject(req, res){
     try{
@@ -168,7 +168,10 @@ async function getUsersByProject (req, res){
                 },
             ],
             where: {
-                status: 1
+                id: {
+                    [Op.ne]: req.query.id_user 
+                },
+                status: 1,
             }
         });
         res.send(users);

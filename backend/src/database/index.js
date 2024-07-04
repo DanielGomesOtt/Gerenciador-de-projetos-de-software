@@ -18,4 +18,7 @@ UserProject.init(connection);
 Project.hasMany(UserProject, { foreignKey: 'id_project' });
 UserProject.belongsTo(Project, { foreignKey: 'id_project' });
 
+User.hasMany(UserProject, { foreignKey: 'id_user' });
+UserProject.belongsTo(User, { foreignKey: 'id_user' });
+
 module.exports = connection;

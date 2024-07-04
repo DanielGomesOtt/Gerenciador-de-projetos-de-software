@@ -1,5 +1,7 @@
 <script lang="js" setup>
 import NavBar from '~/components/layoutComponents/NavBar.vue';
+import { Icon } from '#components';
+import axios from 'axios';
 
 const route = useRoute();
 const runtimeConfig = useRuntimeConfig();
@@ -14,7 +16,8 @@ const openSlideOver = () => {
 const getUsersByProject = async () => {
     try{
         let query = {
-            'id_project': route.params.id_project
+            'id_project': route.params.id_project,
+            'id_user': JSON.parse(localStorage.getItem('userStorage')).id
         };
         const response = await axios.get(runtimeConfig.public.BASE_URL + 'project_group', {
             query,
@@ -66,7 +69,25 @@ onBeforeMount(() => {
                     </div>
                 </template>
                 <div v-for="member in members" :key="member.id">
-
+                    <UCard
+                        class="flex flex-col flex-1"
+                        :ui="{ header:{ background: 'bg-blue-400' }, body: { base: 'flex-1' }, ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }"
+                    >
+                        <div class="flex">
+                            <div>
+                                <Icon name="mdi:user" size="1em" v-if="member.avatar_path.length == 0"/>
+                                <img class="w-[1em] h-[1em] object-cover object-center rounded-full" :src="member.avatar_path.length.replace('\\', '/')" v-else/>
+                            </div>
+                            <div>
+                                <span class="font-bold text-xl">
+                                    {{ member.name }}
+                                </span>
+                                <span class="font-semibold text-lg">
+                                    {{ member.email }}
+                                </span>
+                            </div>
+                        </div>
+                    </UCard>
                 </div>
                 </UCard>
             </USlideover>

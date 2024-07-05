@@ -156,7 +156,7 @@ async function getProjectsByFilter(req, res){
 
 async function getUsersByProject (req, res){
     try{
-        let id_project = req.query.id_project;
+        let id_project = req.headers.id_project;
         const users = await User.findAll({
             include: [
                 {
@@ -169,7 +169,7 @@ async function getUsersByProject (req, res){
             ],
             where: {
                 id: {
-                    [Op.ne]: req.query.id_user 
+                    [Op.ne]: req.headers.id_user 
                 },
                 status: 1,
             }

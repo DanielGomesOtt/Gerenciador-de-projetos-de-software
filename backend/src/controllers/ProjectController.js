@@ -16,7 +16,7 @@ async function setProject(req, res){
         const createdProject = await Project.create(project);
         
         if(createdProject){
-            const createdUserProject = await UserProject.create({'id_project': createdProject.id, id_user: req.body.id_user, status: 1});
+            const createdUserProject = await UserProject.create({'id_project': createdProject.id, 'id_user': req.body.id_user, 'administrator':1, 'status': 1});
             if(createdUserProject){
                 res.status(201).json({message:'Project created successfully !'});
             }else{
@@ -180,5 +180,22 @@ async function getUsersByProject (req, res){
     }
 }
 
+async function getMyProjectData(req, res){
+    try{
+        let id_project = req.headers.id_project;
+        let id_user = req.headers.id_user;
 
-module.exports = { setProject, getProjects, updateProject, getProjectById, getProjectsByFilter, getUsersByProject };
+        const userProject = await UserProject.findOne({
+            where: {
+                id_user: id_user,
+                id_project: id_project,
+            }
+        });
+        res.send(userProject);
+    }catch(error){
+        res.status(500).json({ message: error.message });
+    }
+}
+
+
+module.exports = { setProject, getProjects, updateProject, getProjectById, getProjectsByFilter, getUsersByProject, getMyProjectData };

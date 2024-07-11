@@ -1,15 +1,15 @@
 const { Model, DataTypes } = require('sequelize');
 
-class UserProject extends Model {
+class ProjectInvite extends Model {
   static init(sequelize) {
     super.init({
       id_user: DataTypes.INTEGER,
       id_project: DataTypes.INTEGER,
-      administrator: DataTypes.BOOLEAN,
-      status: DataTypes.INTEGER,
+      accept: DataTypes.BOOLEAN,
+      reject: DataTypes.BOOLEAN,
     }, {
       sequelize,
-      tableName: 'user_project'
+      tableName: 'project_invite'
     });
   }
 
@@ -19,4 +19,4 @@ class UserProject extends Model {
   }
 }
 
-module.exports = UserProject;
+module.exports = ProjectInvite;

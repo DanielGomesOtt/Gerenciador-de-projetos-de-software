@@ -1,6 +1,6 @@
 const User = require('../models/User');
 const hashPassword = require('../utils/hashPassword');
-const path = require('path');
+
 
 async function getUserData(req, res){
     try{

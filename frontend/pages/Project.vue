@@ -7,7 +7,6 @@ import axios from  'axios';
 
 
 const runtimeConfig = useRuntimeConfig();
-const id_category = JSON.parse(localStorage.getItem('userStorage')).id_category;
 let visibilityCreateProjectModal = ref(false);
 let visibilityUpdateProjectModal = ref(false);
 let projects = ref([]);
@@ -49,7 +48,6 @@ const getProjects = async () => {
                 id_user: JSON.parse(localStorage.getItem('userStorage')).id,
             },
         });
-
         projects.value = response.data;
     }catch(error){
         console.log(error);
@@ -135,7 +133,7 @@ const getProjectById = async (idProject) => {
                     <option value="Low Priority">Low</option>
                 </select>
             </div>
-            <div class="flex items-center mt-2" v-if="id_category == 2">
+            <div class="flex items-center mt-2">
                 <button class="text-white" @click="changeVisibilityCreateProjectModal()"><Icon name="mdi:plus" color="white" size="1.8em"/>New Project</button>
             </div>
         </div>
@@ -165,7 +163,7 @@ const getProjectById = async (idProject) => {
                     {{ project.priority }}
                 </div>
                 <div class="flex justify-around items-center pt-5">
-                    <button class="text-white bg-blue-500 rounded-sm w-24" @click="changeVisibilityUpdateProjectModal(project.id)" v-if="id_category == 2">Edit</button>
+                    <button class="text-white bg-blue-500 rounded-sm w-24" @click="changeVisibilityUpdateProjectModal(project.id)" v-if="project.UserProjects[0].administrator">Edit</button>
                     <button class="text-white bg-green-500 rounded-sm w-24" @click="joinInTheProject(project.id)">Enter</button>
                 </div>
             </UCard>

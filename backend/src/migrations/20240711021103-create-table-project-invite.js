@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('User_project', {
+    await queryInterface.createTable('Project_invite', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -30,14 +30,15 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
-      administrator: {
+      accept: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
         defaultValue: false
       },
-      status: {
-        type: Sequelize.INTEGER,
-        defaultValue: 1,
+      reject: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
       },
       created_at: {
         type: Sequelize.DATE,

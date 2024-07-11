@@ -2,28 +2,51 @@
 import NavBar from '~/components/layoutComponents/NavBar.vue';
 import { Icon } from '#components';
 import axios from 'axios';
+import addMemberForm from '~/components/projectGroupComponents/addMemberForm.vue';
+
 
 const route = useRoute();
 const runtimeConfig = useRuntimeConfig();
 
 let members = ref({});
 let isOpen = ref(false);
+let myProjectData = ref({});
+let visibilityModalAddMember = ref(false);
+
+const changeVisibilityModalAddMember = () => {
+    isOpen.value = false;
+    visibilityModalAddMember.value = !visibilityModalAddMember.value;
+}
 
 const openSlideOver = () => {
     isOpen.value = !isOpen.value;
 }
 
+const getMyProjectData = async () => {
+    try{
+        const response = await axios.get(runtimeConfig.public.BASE_URL + 'project_group/my_project_data', {
+            headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
+                id_project: route.params.id_project,
+                id_user: JSON.parse(localStorage.getItem('userStorage')).id
+            }
+        });
+
+        if(response.data){
+            myProjectData.value = response.data;
+        }
+    }catch(error){
+        console.log(error);
+    }
+}
+
 const getUsersByProject = async () => {
     try{
-        let query = {
-            'id_project': route.params.id_project,
-            'id_user': JSON.parse(localStorage.getItem('userStorage')).id
-        };
         const response = await axios.get(runtimeConfig.public.BASE_URL + 'project_group', {
             headers: {
                 Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
-                id_project: query.id_project,
-                id_user: query.id_user
+                id_project: route.params.id_project,
+                id_user: JSON.parse(localStorage.getItem('userStorage')).id
             }
         });
         if(response.data){
@@ -36,6 +59,7 @@ const getUsersByProject = async () => {
 
 onBeforeMount(() => {
     getUsersByProject();
+    getMyProjectData();
 });
 
 </script>
@@ -56,7 +80,7 @@ onBeforeMount(() => {
                     
                 <template #header>
                     <div class="bg-blue-400 flex justify-between">
-                        <button class="text-white"><Icon name="mdi:plus" color="white" size="1.8em"/>New Member</button>
+                        <button class="text-white" v-if="myProjectData.administrator" @click="changeVisibilityModalAddMember"><Icon name="mdi:plus" color="white" size="1.8em"/>New Member</button>
                         <UButton
                             color="gray"
                             variant="ghost"
@@ -94,4 +118,9 @@ onBeforeMount(() => {
             </USlideover>
         </div>
     </div>
+    <UModal v-model="visibilityModalAddMember">
+        <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
+            <addMemberForm />
+        </UCard>
+    </UModal>
 </template>

@@ -120,7 +120,7 @@ onBeforeMount(() => {
     </div>
     <UModal v-model="visibilityModalAddMember">
         <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
-            <addMemberForm />
+            <addMemberForm @changeVisibilityModalAddMember="changeVisibilityModalAddMember"/>
         </UCard>
     </UModal>
 </template>

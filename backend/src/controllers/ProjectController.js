@@ -1,6 +1,8 @@
 const Project = require('../models/Project');
 const UserProject = require('../models/UserProject');
 const User = require('../models/User');
+const ProjectInvite = require('../models/ProjectInvite');
+
 const { Op } = require('sequelize');
 
 async function setProject(req, res){
@@ -197,5 +199,46 @@ async function getMyProjectData(req, res){
     }
 }
 
+async function sendInvite(req, res){
+    try{
+        const newMember = await User.findOne({
+            where: {
+                email: req.body.email,
+                status: 1
+            }
+        });
 
-module.exports = { setProject, getProjects, updateProject, getProjectById, getProjectsByFilter, getUsersByProject, getMyProjectData };
+        if(newMember.dataValues){
+            const existingInvite = await ProjectInvite.findOne({
+                where: {
+                    accept: false,
+                    reject: false,
+                    id_project: req.body.id_project,
+                    id_user: newMember.dataValues.id
+                }
+            });
+
+            if(existingInvite.dataValues){
+                res.json({ message: 'This user already has an open invitation.' });
+            }else{
+                let dataInvite = {
+                    'id_user': newMember.dataValues.id,
+                    'id_project': req.body.id_project,
+                    'accept': false,
+                    'reject': false,
+                };
+                const invite = await ProjectInvite.create(dataInvite);
+                if(invite){
+                    res.status(201).message({ message: 'Invite sent successfully.' });
+                }
+            }
+        }else{
+            res.json({ message: 'User not found.' });
+        }
+    }catch(error){
+        res.status(500).json({ message: 'An error occurred while trying to send the invitation.' });
+    }
+}
+
+
+module.exports = { setProject, getProjects, updateProject, getProjectById, getProjectsByFilter, getUsersByProject, getMyProjectData, sendInvite };

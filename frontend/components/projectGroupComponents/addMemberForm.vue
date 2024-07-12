@@ -20,10 +20,9 @@ const sendInvite = async () => {
 
             const response = await axios.post(runtimeConfig.public.BASE_URL + 'project_group/send_invite', data, {
                 headers: {
-                    Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).id}`,
+                    Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
                 }
             });
-
             if(response.status == 201){
                 addMemberErrorMessage.value = '';
                 newMember.email = '';
@@ -36,6 +35,7 @@ const sendInvite = async () => {
             addMemberErrorMessage.value = 'Enter a valid email.';
         }
     }catch(error){
+        addMemberErrorMessage.value = error.response.data.message;
         console.log(error);
     }
 }

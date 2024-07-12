@@ -207,8 +207,8 @@ async function sendInvite(req, res){
                 status: 1
             }
         });
-
-        if(newMember.dataValues){
+        
+        if(newMember){
             const existingInvite = await ProjectInvite.findOne({
                 where: {
                     accept: false,
@@ -217,9 +217,9 @@ async function sendInvite(req, res){
                     id_user: newMember.dataValues.id
                 }
             });
-
-            if(existingInvite.dataValues){
-                res.json({ message: 'This user already has an open invitation.' });
+            
+            if(existingInvite){
+                res.status(409).json({ message: 'This user already has an open invitation.' });
             }else{
                 let dataInvite = {
                     'id_user': newMember.dataValues.id,
@@ -228,12 +228,13 @@ async function sendInvite(req, res){
                     'reject': false,
                 };
                 const invite = await ProjectInvite.create(dataInvite);
+                console.log(invite)
                 if(invite){
-                    res.status(201).message({ message: 'Invite sent successfully.' });
+                    res.status(201).json({ message: 'Invite sent successfully.' });
                 }
             }
         }else{
-            res.json({ message: 'User not found.' });
+            res.status(404).json({ message: 'User not found.' });
         }
     }catch(error){
         res.status(500).json({ message: 'An error occurred while trying to send the invitation.' });

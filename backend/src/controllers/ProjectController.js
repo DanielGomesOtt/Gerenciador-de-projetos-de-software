@@ -228,7 +228,6 @@ async function sendInvite(req, res){
                     'reject': false,
                 };
                 const invite = await ProjectInvite.create(dataInvite);
-                console.log(invite)
                 if(invite){
                     res.status(201).json({ message: 'Invite sent successfully.' });
                 }
@@ -241,5 +240,30 @@ async function sendInvite(req, res){
     }
 }
 
+async function getMyInvites(req, res){
+    try{
+        const invites = await ProjectInvite.findAll({
+            include: [
+                {
+                    model: Project,
+                    where: {
+                      status: 'in progress',  
+                    }
+                },
+            ],
+            where: {
+                id_user: req.headers.id_user,
+                accept: false,
+                reject: false
+            }
+        });
+        if(invites){
+            res.send(invites);
+        }
+    }catch(error){
+        res.status(500).json({ message: 'An error occurred while trying to get the invites.' });
+    }
+}
 
-module.exports = { setProject, getProjects, updateProject, getProjectById, getProjectsByFilter, getUsersByProject, getMyProjectData, sendInvite };
+
+module.exports = { setProject, getProjects, updateProject, getProjectById, getProjectsByFilter, getUsersByProject, getMyProjectData, sendInvite, getMyInvites };

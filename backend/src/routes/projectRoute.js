@@ -12,4 +12,5 @@ route.get('/my_projects', accessTokenMiddleware.verifyToken, ProjectController.g
 route.get('/project_group', accessTokenMiddleware.verifyToken, ProjectController.getUsersByProject);
 route.get('/project_group/my_project_data', accessTokenMiddleware.verifyToken, ProjectController.getMyProjectData);
 route.post('/project_group/send_invite', accessTokenMiddleware.verifyToken, ProjectController.sendInvite);
+route.get('/project_group/invites', accessTokenMiddleware.verifyToken, ProjectController.getMyInvites);
 module.exports =  route;

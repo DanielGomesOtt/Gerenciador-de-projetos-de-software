@@ -46,18 +46,28 @@
 			});
 
 			if(response && response.data){
-				response.data.map(data => {
-					myInvites.value.push({
-						label: data.Project.name,
-						actions: [
-							{ label: 'Accept' },
-							{ label: 'Decline' }
-						]
-					})
-				})
-				console.log(myInvites.value)
+				myInvites.value = response.data;
 			}
         } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const respondInvite = async (id_invite, invite_response) => {
+        try{
+
+            let data = {
+                'id_user': JSON.parse(localStorage.getItem('userStorage')).id,
+                'id_invite': id_invite,
+                'invite_response': invite_response,
+            }
+
+            const response = await axios.patch(runtimeConfig.public.BASE_URL + 'project_group/invites', data, {
+                headers: {
+                    Authorization: JSON.parse(localStorage.getItem('userStorage')).token
+                }
+            })
+        }catch(error){
             console.log(error);
         }
     }
@@ -86,9 +96,18 @@
             <li v-if="id_category == 2 || id_category == 3"><a href="/project" class="font-medium text-lg nav-link">Projects</a></li>
             <li><a href="#" class="font-medium text-lg nav-link">Tasks</a></li>
             <li>
-                <UDropdown :items="myInvites" :popper="{ placement: 'bottom-start' }">
+                <UPopover>
                     <UButton color="white" label="Project Invites" trailing-icon="i-heroicons-chevron-down-20-solid" />
-                </UDropdown>
+                    <template #panel>
+                        <div class="p-2 max-h-20 overflow-y-auto w-64 text-center" v-for="invite in myInvites">
+                            <span class="text-base font-bold p-2">{{ invite.Project.name }}</span>
+                            <div class="flex justify-around mt-2">
+                                <button class="bg-green-200 w-28 rounded-md font-semibold hover:bg-green-500 hover:text-white">Accept</button>
+                                <button class="bg-red-200 w-28 rounded-md font-semibold hover:bg-red-500 hover:text-white">Decline</button>
+                            </div>
+                        </div>
+                    </template>
+                </UPopover>
             </li>
         </ul>
         

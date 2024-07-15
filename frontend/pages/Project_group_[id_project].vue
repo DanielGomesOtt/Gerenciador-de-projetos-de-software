@@ -95,26 +95,28 @@ onBeforeMount(() => {
                         />
                     </div>
                 </template>
-                <div v-for="member in members" :key="member.id" class="h-screen snap-y">
-                    <UCard
-                        class="flex flex-col flex-1"
-                        :ui="{ header:{ background: 'bg-blue-400' }, body: { base: 'flex-1' }, background:'bg-slate-200', shadow: 'shadow-lg', ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }"
-                    >
-                        <div class="flex items-center">
-                            <div>
-                                <Icon name="mdi:user" size="3em" v-if="member.avatar_path == null || member.avatar_path.length == 0"/>
-                                <img class="w-[3em] h-[3em] object-cover object-center rounded-full" :src="runtimeConfig.public.BASE_URL + member.avatar_path.replace('\\', '/')" v-if="member.avatar_path && member.avatar_path.length > 0"/>
+                <div class="h-screen snap-y">
+                    <div v-for="member in members" :key="member.id" class="mb-5">
+                        <UCard
+                            class="flex flex-col flex-1"
+                            :ui="{ header:{ background: 'bg-blue-400' }, body: { base: 'flex-1' }, background:'bg-slate-200', shadow: 'shadow-lg', ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }"
+                        >
+                            <div class="flex items-center">
+                                <div>
+                                    <Icon name="mdi:user" size="3em" v-if="member.avatar_path == null || member.avatar_path.length == 0"/>
+                                    <img class="w-[3em] h-[3em] object-cover object-center rounded-full" :src="runtimeConfig.public.BASE_URL + member.avatar_path.replace('\\', '/')" v-if="member.avatar_path && member.avatar_path.length > 0"/>
+                                </div>
+                                <div class="grid grid-cols-1">
+                                    <span class="font-bold text-base md:text-lg ml-2">
+                                        {{ member.name }}
+                                    </span>
+                                    <span class="font-semibold text-sm md:text-base ml-2">
+                                        {{ member.email }}
+                                    </span>
+                                </div>
                             </div>
-                            <div class="grid grid-cols-1">
-                                <span class="font-bold text-base md:text-lg ml-2">
-                                    {{ member.name }}
-                                </span>
-                                <span class="font-semibold text-sm md:text-base ml-2">
-                                    {{ member.email }}
-                                </span>
-                            </div>
-                        </div>
-                    </UCard>
+                        </UCard>
+                    </div>
                 </div>
                 </UCard>
             </USlideover>

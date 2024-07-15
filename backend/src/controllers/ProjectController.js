@@ -267,13 +267,12 @@ async function getMyInvites(req, res){
 
 async function respondInvite(req, res){
     try{
-        console.log('entrei')
         let id_user = req.body.id_user;
         const user = await User.findOne({
             id: id_user
         })
 
-        if(req.body.invite_response == 'accept'){
+        if(user && req.body.invite_response == 'accept'){
             const invite_response = await ProjectInvite.update({
                 'accept': true
             },
@@ -291,19 +290,18 @@ async function respondInvite(req, res){
                     'status': 1
                 });
 
-                if(addProject){
-                    if(user && user.dataValues.id_category == 1 && req.body.invite_reponse == 'accept'){
-                        const updateUserCategory = await User.update({
-                            'id_category': 3
-                        },
-                        {
-                           where: {
-                            id: id_user
-                           } 
-                        });
-                    }
-                    res.status(200).json({ message: 'Invitation successfully responded to' });
-                }
+                
+                
+                const updateUserCategory = await User.update({
+                    'id_category': 3
+                },
+                {
+                    where: {
+                    id: id_user
+                    } 
+                });
+                
+                res.status(200).json({ message: 'Invitation successfully responded to' });
             }
         }else{
             const invite_response = await ProjectInvite.update({

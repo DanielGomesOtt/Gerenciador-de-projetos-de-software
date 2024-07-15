@@ -69,7 +69,14 @@
             })
 
             if(response.status == 200){
-                navigateTo(`/project_group_${id_project}`);
+                if(invite_response == 'accept'){
+                    if(JSON.parse(localStorage.getItem('userStorage')).id_category == 1){
+                        //adicionar o novo id_category no localStorage do usuario.
+                    }
+                    navigateTo(`/project_group_${id_project}`);
+                }else{
+                    getProjectInvites();
+                }
             }
         }catch(error){
             console.log(error);

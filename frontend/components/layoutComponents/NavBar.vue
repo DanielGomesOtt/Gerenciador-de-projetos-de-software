@@ -71,7 +71,9 @@
             if(response.status == 200){
                 if(invite_response == 'accept'){
                     if(JSON.parse(localStorage.getItem('userStorage')).id_category == 1){
-                        //adicionar o novo id_category no localStorage do usuario.
+                        let userStorage = JSON.parse(localStorage.getItem('userStorage'));
+                        userStorage.id_category = 3;
+                        localStorage.setItem('userStorage', JSON.stringify(userStorage));
                     }
                     navigateTo(`/project_group_${id_project}`);
                 }else{

@@ -265,5 +265,65 @@ async function getMyInvites(req, res){
     }
 }
 
+async function respondInvite(req, res){
+    try{
+        console.log('entrei')
+        let id_user = req.body.id_user;
+        const user = await User.findOne({
+            id: id_user
+        })
 
-module.exports = { setProject, getProjects, updateProject, getProjectById, getProjectsByFilter, getUsersByProject, getMyProjectData, sendInvite, getMyInvites };
+        if(req.body.invite_response == 'accept'){
+            const invite_response = await ProjectInvite.update({
+                'accept': true
+            },
+            {
+                where: {
+                    id: req.body.id_invite
+                }
+            });
+
+            if(invite_response){
+                const addProject = await UserProject.create({
+                    'id_user': id_user,
+                    'id_project': req.body.id_project,
+                    'administrator': 0,
+                    'status': 1
+                });
+
+                if(addProject){
+                    if(user && user.dataValues.id_category == 1 && req.body.invite_reponse == 'accept'){
+                        const updateUserCategory = await User.update({
+                            'id_category': 3
+                        },
+                        {
+                           where: {
+                            id: id_user
+                           } 
+                        });
+                    }
+                    res.status(200).json({ message: 'Invitation successfully responded to' });
+                }
+            }
+        }else{
+            const invite_response = await ProjectInvite.update({
+                'reject': true
+            },
+            {
+                where: {
+                    id: req.body.id_invite
+                }
+            });
+
+            if(invite_response){
+                res.status(200).json({ message: 'Invitation successfully responded to' });
+            }
+        }
+
+    }catch(error){
+        res.status(500).json({ message: 'An error occured while trying to respond the invite.' });
+    }
+}
+
+
+module.exports = { setProject, getProjects, updateProject, getProjectById, getProjectsByFilter, getUsersByProject, getMyProjectData, sendInvite, getMyInvites, respondInvite };

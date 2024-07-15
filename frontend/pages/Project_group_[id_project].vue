@@ -34,6 +34,8 @@ const getMyProjectData = async () => {
 
         if(response.data){
             myProjectData.value = response.data;
+        }else{
+            navigateTo('/');
         }
     }catch(error){
         console.log(error);

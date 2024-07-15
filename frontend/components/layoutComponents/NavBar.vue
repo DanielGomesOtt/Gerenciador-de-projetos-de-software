@@ -53,20 +53,24 @@
         }
     }
 
-    const respondInvite = async (id_invite, invite_response) => {
+    const respondInvite = async (id_invite, invite_response, id_project) => {
         try{
-
             let data = {
                 'id_user': JSON.parse(localStorage.getItem('userStorage')).id,
                 'id_invite': id_invite,
                 'invite_response': invite_response,
+                'id_project': id_project
             }
 
             const response = await axios.patch(runtimeConfig.public.BASE_URL + 'project_group/invites', data, {
                 headers: {
-                    Authorization: JSON.parse(localStorage.getItem('userStorage')).token
+                    Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`
                 }
             })
+
+            if(response.status == 200){
+                navigateTo(`/project_group_${id_project}`);
+            }
         }catch(error){
             console.log(error);
         }
@@ -102,8 +106,8 @@
                         <div class="p-2 max-h-20 overflow-y-auto w-64 text-center" v-for="invite in myInvites">
                             <span class="text-base font-bold p-2">{{ invite.Project.name }}</span>
                             <div class="flex justify-around mt-2">
-                                <button class="bg-green-200 w-28 rounded-md font-semibold hover:bg-green-500 hover:text-white">Accept</button>
-                                <button class="bg-red-200 w-28 rounded-md font-semibold hover:bg-red-500 hover:text-white">Decline</button>
+                                <button class="bg-green-200 w-28 rounded-md font-semibold hover:bg-green-500 hover:text-white" @click="respondInvite(invite.id, 'accept', invite.id_project)">Accept</button>
+                                <button class="bg-red-200 w-28 rounded-md font-semibold hover:bg-red-500 hover:text-white" @click="respondInvite(invite.id, 'reject', invite.id_project)">Decline</button>
                             </div>
                         </div>
                     </template>

@@ -323,5 +323,26 @@ async function respondInvite(req, res){
     }
 }
 
+async function removeMemberFromProject(req, res){
+    console.log(req.body)
+    try{
+        const remove = await UserProject.update({
+            'status': 0
+        },
+        {
+            where: {
+                'id_user': req.body.id_user,
+                'id_project': req.body.id_project
+            }
+        });
 
-module.exports = { setProject, getProjects, updateProject, getProjectById, getProjectsByFilter, getUsersByProject, getMyProjectData, sendInvite, getMyInvites, respondInvite };
+        if(remove){
+            res.status(200).json({ message: 'User successfully removed.' });
+        }
+    }catch(error){
+        res.status(500).json({ message: 'An error occurred while trying to remove the user.' });
+    }
+}
+
+
+module.exports = { setProject, getProjects, updateProject, getProjectById, getProjectsByFilter, getUsersByProject, getMyProjectData, sendInvite, getMyInvites, respondInvite, removeMemberFromProject };

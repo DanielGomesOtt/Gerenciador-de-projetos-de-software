@@ -12,10 +12,21 @@ let members = ref({});
 let isOpen = ref(false);
 let myProjectData = ref({});
 let visibilityModalAddMember = ref(false);
+let isOpenModalRemoveMember = ref(false);
+let idRemoveUser = ref(0);
 
 const changeVisibilityModalAddMember = () => {
     isOpen.value = false;
     visibilityModalAddMember.value = !visibilityModalAddMember.value;
+}
+
+const changeVisibilityModalRemoveMember = (id_user) => {
+    isOpenModalRemoveMember.value = !isOpenModalRemoveMember.value;
+    if(isOpenModalRemoveMember.value == false){
+        idRemoveUser.value = 0;
+    }else{
+        idRemoveUser.value = id_user;
+    }
 }
 
 const openSlideOver = () => {
@@ -54,6 +65,30 @@ const getUsersByProject = async () => {
         if(response.data){
             members.value = response.data;
         }
+    }catch(error){
+        console.log(error);
+    }
+}
+
+const removeMemberFromProject = async (event) => {
+    try{
+        event.preventDefault();
+
+        let data = {
+            'id_user': idRemoveUser.value,
+            'id_project': route.params.id_project
+        }
+
+        const response = await axios.patch(runtimeConfig.public.BASE_URL + 'project_group/remove_member', data, {
+            headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`
+            }
+        });
+
+        if(response.status == 200){
+            getUsersByProject();
+        }
+        changeVisibilityModalRemoveMember(0);
     }catch(error){
         console.log(error);
     }
@@ -101,18 +136,23 @@ onBeforeMount(() => {
                             class="flex flex-col flex-1"
                             :ui="{ header:{ background: 'bg-blue-400' }, body: { base: 'flex-1' }, background:'bg-slate-200', shadow: 'shadow-lg', ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }"
                         >
-                            <div class="flex items-center">
-                                <div>
-                                    <Icon name="mdi:user" size="3em" v-if="member.avatar_path == null || member.avatar_path.length == 0"/>
-                                    <img class="w-[3em] h-[3em] object-cover object-center rounded-full" :src="runtimeConfig.public.BASE_URL + member.avatar_path.replace('\\', '/')" v-if="member.avatar_path && member.avatar_path.length > 0"/>
+                            <div class="flex flex-wrap justify-between">
+                                <div class="flex flex-wrap items-center">
+                                    <div>
+                                        <Icon name="mdi:user" size="3em" v-if="member.avatar_path == null || member.avatar_path.length == 0"/>
+                                        <img class="w-[3em] h-[3em] object-cover object-center rounded-full" :src="runtimeConfig.public.BASE_URL + member.avatar_path.replace('\\', '/')" v-if="member.avatar_path && member.avatar_path.length > 0"/>
+                                    </div>
+                                    <div class="grid grid-cols-1">
+                                        <span class="font-bold text-base md:text-lg ml-2">
+                                            {{ member.name }}
+                                        </span>
+                                        <span class="font-semibold text-sm md:text-base ml-2">
+                                            {{ member.email }}
+                                        </span>
+                                    </div>
                                 </div>
-                                <div class="grid grid-cols-1">
-                                    <span class="font-bold text-base md:text-lg ml-2">
-                                        {{ member.name }}
-                                    </span>
-                                    <span class="font-semibold text-sm md:text-base ml-2">
-                                        {{ member.email }}
-                                    </span>
+                                <div class="flex justify-around items-center">
+                                    <button type="button" class="hover:bg-red-600 bg-red-400 text-white text-sm p-1 rounded-lg" @click="changeVisibilityModalRemoveMember(member.id)">Remove</button>
                                 </div>
                             </div>
                         </UCard>
@@ -125,6 +165,19 @@ onBeforeMount(() => {
     <UModal v-model="visibilityModalAddMember">
         <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
             <addMemberForm @changeVisibilityModalAddMember="changeVisibilityModalAddMember"/>
+        </UCard>
+    </UModal>
+    <UModal v-model="isOpenModalRemoveMember">
+        <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
+
+            <p class="text-center text-2xl font-semibold">Are you sure you want to proceed with this action?</p>
+
+            <template #footer>
+                <div class="flex justify-around items-center">
+                    <button type="button" class="bg-green-600 text-white rounded-md w-28 h-10" @click="removeMemberFromProject($event)">Confirm</button>
+                    <button type="button" class="bg-red-600 text-white rounded-md ml-10 w-28 h-10" @click="changeVisibilityModalRemoveMember(0)">Cancel</button>
+                </div>
+            </template>
         </UCard>
     </UModal>
 </template>

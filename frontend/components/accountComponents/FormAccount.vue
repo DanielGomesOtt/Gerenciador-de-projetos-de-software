@@ -184,7 +184,7 @@ onMounted(() => {
 
             <template #footer>
                 <div class="flex justify-around items-center">
-                    <button class="bg-green-600 text-white rounded-md w-28 h-10" @click="disableAccount($event)">Confirm</button>
+                    <button type="button" class="bg-green-600 text-white rounded-md w-28 h-10" @click="disableAccount($event)">Confirm</button>
                     <button type="button" class="bg-red-600 text-white rounded-md ml-10 w-28 h-10" @click="isOpenModalDisableAccount = false">Cancel</button>
                 </div>
             </template>

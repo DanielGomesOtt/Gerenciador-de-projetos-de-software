@@ -14,4 +14,5 @@ route.get('/project_group/my_project_data', accessTokenMiddleware.verifyToken, P
 route.post('/project_group/send_invite', accessTokenMiddleware.verifyToken, ProjectController.sendInvite);
 route.get('/project_group/invites', accessTokenMiddleware.verifyToken, ProjectController.getMyInvites);
 route.patch('/project_group/invites', accessTokenMiddleware.verifyToken, ProjectController.respondInvite);
+route.patch('/project_group/remove_member', accessTokenMiddleware.verifyToken, ProjectController.removeMemberFromProject);
 module.exports =  route;

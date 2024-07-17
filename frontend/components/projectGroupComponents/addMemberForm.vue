@@ -2,7 +2,7 @@
 import axios from 'axios';
 import {isValidEmail} from '~/utils/verifyValidEmail'
 
-let newMember = { 'email': '' };
+let newMember = { 'email': '', 'administrator_invite': '' };
 let addMemberErrorMessage = ref('');
 
 const route = useRoute();
@@ -16,7 +16,8 @@ const sendInvite = async (event) => {
         if(isValidEmail(String(newMember.email).toLowerCase())){
             let data = {
                 'email': newMember.email,
-                'id_project': route.params.id_project
+                'id_project': route.params.id_project,
+                'administrator_invite': newMember.administrator_invite
             };
 
             const response = await axios.post(runtimeConfig.public.BASE_URL + 'project_group/send_invite', data, {
@@ -54,6 +55,13 @@ const sendInvite = async (event) => {
             <div>
                 <label for="new-member-email" class="font-semibold">E-mail</label>
                 <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="new-member-email" name="new-member-email" placeholder="new_member@email.com" required v-model="newMember.email">
+            </div>
+            <div>
+                <label for="new-member-administrator" class="font-semibold">Permission</label>
+                <select type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="new-member-administrator" name="new-member-administrator" required v-model="newMember.administrator_invite">
+                    <option value="true">Administrator</option>
+                    <option value="false">Group Member</option>
+                </select>
             </div>
             <div class="h-10 mt-10">
                 <button type="submit" class="h-full rounded w-[100%] text-white bg-emerald-600" >Send invite</button>

@@ -7,6 +7,7 @@ class ProjectInvite extends Model {
       id_project: DataTypes.INTEGER,
       accept: DataTypes.BOOLEAN,
       reject: DataTypes.BOOLEAN,
+      administrator_invite: DataTypes.BOOLEAN
     }, {
       sequelize,
       tableName: 'project_invite'

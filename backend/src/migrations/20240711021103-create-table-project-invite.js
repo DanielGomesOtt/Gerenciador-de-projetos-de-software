@@ -40,6 +40,11 @@ module.exports = {
         allowNull: false,
         defaultValue: false
       },
+      administrator_invite: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
+      },
       created_at: {
         type: Sequelize.DATE,
         allowNull: false

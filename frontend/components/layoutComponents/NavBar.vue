@@ -53,13 +53,14 @@
         }
     }
 
-    const respondInvite = async (id_invite, invite_response, id_project) => {
+    const respondInvite = async (id_invite, invite_response, id_project, administrator_invite) => {
         try{
             let data = {
                 'id_user': JSON.parse(localStorage.getItem('userStorage')).id,
                 'id_invite': id_invite,
                 'invite_response': invite_response,
-                'id_project': id_project
+                'id_project': id_project,
+                'administrator_invite': administrator_invite
             }
 
             const response = await axios.patch(runtimeConfig.public.BASE_URL + 'project_group/invites', data, {
@@ -115,8 +116,8 @@
                         <div class="p-2 max-h-20 overflow-y-auto w-64 text-center" v-for="invite in myInvites">
                             <span class="text-base font-bold p-2">{{ invite.Project.name }}</span>
                             <div class="flex justify-around mt-2">
-                                <button class="bg-green-200 w-28 rounded-md font-semibold hover:bg-green-500 hover:text-white" @click="respondInvite(invite.id, 'accept', invite.id_project)">Accept</button>
-                                <button class="bg-red-200 w-28 rounded-md font-semibold hover:bg-red-500 hover:text-white" @click="respondInvite(invite.id, 'reject', invite.id_project)">Decline</button>
+                                <button class="bg-green-200 w-28 rounded-md font-semibold hover:bg-green-500 hover:text-white" @click="respondInvite(invite.id, 'accept', invite.id_project, invite.administrator_invite)">Accept</button>
+                                <button class="bg-red-200 w-28 rounded-md font-semibold hover:bg-red-500 hover:text-white" @click="respondInvite(invite.id, 'reject', invite.id_project, invite.administrator_invite)">Decline</button>
                             </div>
                         </div>
                     </template>

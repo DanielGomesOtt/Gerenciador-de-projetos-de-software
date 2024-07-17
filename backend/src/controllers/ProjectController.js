@@ -226,6 +226,7 @@ async function sendInvite(req, res){
                     'id_project': req.body.id_project,
                     'accept': false,
                     'reject': false,
+                    'administrator_invite': req.body.administrator_invite
                 };
                 const invite = await ProjectInvite.create(dataInvite);
                 if(invite){
@@ -286,20 +287,22 @@ async function respondInvite(req, res){
                 const addProject = await UserProject.create({
                     'id_user': id_user,
                     'id_project': req.body.id_project,
-                    'administrator': 0,
+                    'administrator': req.body.administrator_invite,
                     'status': 1
                 });
 
                 
                 
-                const updateUserCategory = await User.update({
-                    'id_category': 3
-                },
-                {
-                    where: {
-                    id: id_user
-                    } 
-                });
+                if(user.DataValues.id_category == 1){
+                    const updateUserCategory = await User.update({
+                        'id_category': 3
+                    },
+                    {
+                        where: {
+                        id: id_user
+                        } 
+                    });
+                }
                 
                 res.status(200).json({ message: 'Invitation successfully responded to' });
             }
@@ -324,7 +327,6 @@ async function respondInvite(req, res){
 }
 
 async function removeMemberFromProject(req, res){
-    console.log(req.body)
     try{
         const remove = await UserProject.update({
             'status': 0

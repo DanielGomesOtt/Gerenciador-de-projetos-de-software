@@ -152,7 +152,7 @@ onBeforeMount(() => {
                                     </div>
                                 </div>
                                 <div class="flex justify-around items-center">
-                                    <button type="button" class="hover:bg-red-600 bg-red-400 text-white text-sm p-1 rounded-lg" @click="changeVisibilityModalRemoveMember(member.id)">Remove</button>
+                                    <button type="button" class="hover:bg-red-600 bg-red-400 text-white text-sm p-1 rounded-lg" @click="changeVisibilityModalRemoveMember(member.id)" v-if="myProjectData.administrator">Remove</button>
                                 </div>
                             </div>
                         </UCard>

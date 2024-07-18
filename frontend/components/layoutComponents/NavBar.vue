@@ -105,19 +105,41 @@
         <div id="nav-brand">
             <button class="bg-blue-800 text-white rounded-md px-4 py-2 text-lg"><a href="/home">Task Life</a></button>
         </div>
+        <div id="mobile-project-invites">
+            <UPopover>
+                <UChip :text="myInvites.length" size="2xl">
+                    <UButton icon="i-heroicons-inbox" color="blue" />
+                </UChip>
+                <template #panel>
+                    <div class="max-h-48 overflow-y-auto">
+                        <div class="p-2 w-64 text-center" v-for="invite in myInvites">
+                            <span class="text-base font-bold p-2">{{ invite.Project.name }}</span>
+                            <div class="flex justify-around mt-2">
+                                <button class="bg-green-200 w-28 rounded-md font-semibold hover:bg-green-500 hover:text-white" @click="respondInvite(invite.id, 'accept', invite.id_project, invite.administrator_invite)">Accept</button>
+                                <button class="bg-red-200 w-28 rounded-md font-semibold hover:bg-red-500 hover:text-white" @click="respondInvite(invite.id, 'reject', invite.id_project, invite.administrator_invite)">Decline</button>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </UPopover>
+        </div>
         <ul class="flex justify-around items-center w-[45%]" id="nav-items" v-if="!isOpenMobile">
             <li><a href="/home" class="font-medium text-lg nav-link">Home</a></li>
             <li v-if="id_category == 2 || id_category == 3"><a href="/project" class="font-medium text-lg nav-link">Projects</a></li>
             <li><a href="#" class="font-medium text-lg nav-link">Tasks</a></li>
             <li>
                 <UPopover>
-                    <UButton color="white" label="Project Invites" trailing-icon="i-heroicons-chevron-down-20-solid" />
+                    <UChip :text="myInvites.length" size="2xl">
+                        <UButton label="Project Invites" color="gray" />
+                    </UChip>
                     <template #panel>
-                        <div class="p-2 max-h-20 overflow-y-auto w-64 text-center" v-for="invite in myInvites">
-                            <span class="text-base font-bold p-2">{{ invite.Project.name }}</span>
-                            <div class="flex justify-around mt-2">
-                                <button class="bg-green-200 w-28 rounded-md font-semibold hover:bg-green-500 hover:text-white" @click="respondInvite(invite.id, 'accept', invite.id_project, invite.administrator_invite)">Accept</button>
-                                <button class="bg-red-200 w-28 rounded-md font-semibold hover:bg-red-500 hover:text-white" @click="respondInvite(invite.id, 'reject', invite.id_project, invite.administrator_invite)">Decline</button>
+                        <div class="max-h-48 overflow-y-auto">
+                            <div class="p-2 w-64 text-center" v-for="invite in myInvites">
+                                <span class="text-base font-bold p-2">{{ invite.Project.name }}</span>
+                                <div class="flex justify-around mt-2">
+                                    <button class="bg-green-200 w-28 rounded-md font-semibold hover:bg-green-500 hover:text-white" @click="respondInvite(invite.id, 'accept', invite.id_project, invite.administrator_invite)">Accept</button>
+                                    <button class="bg-red-200 w-28 rounded-md font-semibold hover:bg-red-500 hover:text-white" @click="respondInvite(invite.id, 'reject', invite.id_project, invite.administrator_invite)">Decline</button>
+                                </div>
                             </div>
                         </div>
                     </template>
@@ -198,6 +220,10 @@
         #nav-buttons-container {
             display: none;
         }
+
+        #mobile-project-invites {
+            display: flex;
+        }
     }
 
     @media (min-width: 600px) {
@@ -219,6 +245,10 @@
 
         #nav-buttons-container {
             display: flex;
+        }
+
+        #mobile-project-invites {
+            display: none;
         }
     }
 

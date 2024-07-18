@@ -16,6 +16,13 @@ let filter = ref('');
 let status = ref('');
 let priority = ref('');
 let searchPlaceholder = ref('Search by ...');
+let visibilityModalExitProject = ref(false);
+let exit_id_project = ref(0);
+
+const changeVisibilityModalExitProject = (exit, id_project) => {
+    exit_id_project.value = id_project;
+    visibilityModalExitProject.value = exit;
+}
 
 const changeSearchPlaceholder = () => {
     if(filter.value.length == 0){
@@ -24,7 +31,6 @@ const changeSearchPlaceholder = () => {
         searchPlaceholder.value = `Search by ${filter.value}`;
     }
 }
-
 
 const joinInTheProject = (id_project) => {
     navigateTo(`/project_group_${id_project}`);
@@ -94,14 +100,40 @@ const getProjectById = async (idProject) => {
     }
 }
 
- onBeforeMount(() => {
+const exitProject = async () => {
+    try{
+        let data = {
+            'id_user': JSON.parse(localStorage.getItem('userStorage')).id,
+            'id_project': exit_id_project.value
+        }
+
+        const response = await axios.patch(runtimeConfig.public.BASE_URL + 'project/exit_project', data, {
+            headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`
+            }
+        });
+
+        changeVisibilityModalExitProject(false, 0);
+        searchProject.value = '';
+        filter.value = '';
+        status.value = '';
+        priority.value = '';
+        searchPlaceholder.value = 'Search by ...';
+        getProjects()
+        
+    }catch(error){
+        console.log(error);
+    }
+}
+
+onBeforeMount(() => {
     const id_category = JSON.parse(localStorage.getItem('userStorage')).id_category;
     if(id_category == 1){
         navigateTo('/home');
     }else{
         getProjects();
     }
- })
+})
 </script>
 
 <template>
@@ -162,9 +194,10 @@ const getProjectById = async (idProject) => {
                 <div class="text-center border-b-2 pt-2" :class="{'border-b-blue-500': project.priority === 'Medium Priority', 'border-b-red-500': project.priority === 'High Priority', 'border-b-green-500': project.priority === 'Low Priority'}">
                     {{ project.priority }}
                 </div>
-                <div class="flex justify-around items-center pt-5">
-                    <button class="text-white bg-blue-500 rounded-sm w-24" @click="changeVisibilityUpdateProjectModal(project.id)" v-if="project.UserProjects[0].administrator">Edit</button>
-                    <button class="text-white bg-green-500 rounded-sm w-24" @click="joinInTheProject(project.id)">Enter</button>
+                <div class="pt-5">
+                    <button type="button" class="text-white bg-green-500 rounded-md mb-3 w-[100%]" @click="joinInTheProject(project.id)"><Icon name="mdi:location-enter" size="1.2em" color="white"/>&nbsp;Join</button>
+                    <button type="button" class="text-white bg-blue-500 rounded-md mb-3 w-[100%]" @click="changeVisibilityUpdateProjectModal(project.id)" v-if="project.UserProjects[0].administrator"><Icon name="mdi:square-edit-outline" size="1.2em" color="white"/>&nbsp;Edit</button>
+                    <button type="button" class="text-white bg-red-500 rounded-md w-[100%]" @click="changeVisibilityModalExitProject(true, project.id)"><Icon name="mdi:arrow-expand-right" size="1.2em" color="white"/>&nbsp;Exit</button>
                 </div>
             </UCard>
         </div>
@@ -177,6 +210,20 @@ const getProjectById = async (idProject) => {
         <UModal v-model="visibilityUpdateProjectModal">
             <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
                 <UpdateProjectForm :responseProject="responseProject" @changeVisibilityUpdateProjectModal="changeVisibilityUpdateProjectModal" @getProjects="getProjects"/>
+            </UCard>
+        </UModal>
+
+        <UModal v-model="visibilityModalExitProject">
+            <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
+
+                <p class="text-center text-2xl font-semibold">Are you sure you want to proceed with this action?</p>
+
+                <template #footer>
+                    <div class="flex justify-around items-center">
+                        <button type="button" class="bg-green-600 text-white rounded-md w-28 h-10" @click="exitProject">Confirm</button>
+                        <button type="button" class="bg-red-600 text-white rounded-md ml-10 w-28 h-10" @click="changeVisibilityModalExitProject(false, 0)">Cancel</button>
+                    </div>
+                </template>
             </UCard>
         </UModal>
     </div>

@@ -42,7 +42,10 @@ async function getProjects(req, res){
                     status: 1,
                     id_user: req.headers.id_user,
                 }
-            }]
+            }],
+            where: {
+                status: 'in progress'
+            }
         });
 
         res.send(projects);
@@ -82,14 +85,6 @@ async function updateProject(req, res){
                 }
             });
 
-            await UserProject.update({
-                'status': 0
-            }, {
-                where: {
-                    'id_user': req.body.id_user,
-                    'id_project': req.body.project_id
-                }
-            });
         }else{
             update = await Project.update({
                 'name': req.body.name,
@@ -126,20 +121,24 @@ async function getProjectsByFilter(req, res){
         
         let filter = {};
         
-        if (req.query.filter && req.query.filter.length > 0 && req.query.search && req.query.search.length > 0) {
+        if (req.query.filter && req.query.filter !== undefined && req.query.filter.length > 0 && req.query.search && req.query.search !== undefined && req.query.search.length > 0) {
             if(req.query.filter == 'name'){
                 filter.name = req.query.search
             }
         }
         
-        if (req.query.status && req.query.status.length > 0) {
+        if (req.query.status && req.query.status !== undefined && req.query.status.length > 0) {
             filter.status = req.query.status;
         }
 
-        if (req.query.priority && req.query.priority.length > 0) {
+        if (req.query.priority && req.query.priority !== undefined && req.query.priority.length > 0) {
             filter.priority = req.query.priority;
         }
-        
+
+        if(Object.keys(filter).length === 0){
+            filter.status = 'in progress';
+        }
+
         const projects = await Project.findAll({
             include: [{
                 model: UserProject,
@@ -270,7 +269,9 @@ async function respondInvite(req, res){
     try{
         let id_user = req.body.id_user;
         const user = await User.findOne({
-            id: id_user
+            where: {
+                id: id_user
+            }
         })
 
         if(user && req.body.invite_response == 'accept'){
@@ -293,13 +294,13 @@ async function respondInvite(req, res){
 
                 
                 
-                if(user.DataValues.id_category == 1){
+                if(user.dataValues.id_category == 1){
                     const updateUserCategory = await User.update({
-                        'id_category': 3
+                        'id_category': 2
                     },
                     {
                         where: {
-                        id: id_user
+                            id: id_user
                         } 
                     });
                 }
@@ -346,5 +347,22 @@ async function removeMemberFromProject(req, res){
     }
 }
 
+async function exitProject(req, res){
+    try{
+        const exit_project = await UserProject.update({ 'status': 0 },
+            {
+                where: {
+                    'id_user': req.body.id_user,
+                    'id_project': req.body.id_project
+                }
+            }
+        )
 
-module.exports = { setProject, getProjects, updateProject, getProjectById, getProjectsByFilter, getUsersByProject, getMyProjectData, sendInvite, getMyInvites, respondInvite, removeMemberFromProject };
+        res.status(200).json({ message: 'Left the group successfully.' });
+    }catch(error){
+        res.status(500).json({ message: 'Happened an error when trying to leave the project.' });
+    }
+}
+
+
+module.exports = { setProject, getProjects, updateProject, getProjectById, getProjectsByFilter, getUsersByProject, getMyProjectData, sendInvite, getMyInvites, respondInvite, removeMemberFromProject, exitProject };

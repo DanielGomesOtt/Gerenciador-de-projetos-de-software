@@ -56,9 +56,10 @@ const sendInvite = async (event) => {
                 <label for="new-member-email" class="font-semibold">E-mail</label>
                 <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="new-member-email" name="new-member-email" placeholder="new_member@email.com" required v-model="newMember.email">
             </div>
-            <div>
+            <div class="mt-2">
                 <label for="new-member-administrator" class="font-semibold">Permission</label>
-                <select type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="new-member-administrator" name="new-member-administrator" required v-model="newMember.administrator_invite">
+                <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="new-member-administrator" name="new-member-administrator" required v-model="newMember.administrator_invite">
+                    <option value="" selected disabled>Select the permission</option>
                     <option value="true">Administrator</option>
                     <option value="false">Group Member</option>
                 </select>

@@ -10,6 +10,7 @@ class Project extends Model {
       real_end_date: DataTypes.INTEGER,
       status: DataTypes.STRING,
       priority: DataTypes.STRING,
+      project_model: DataTypes.STRING,
     },
     {
       sequelize,

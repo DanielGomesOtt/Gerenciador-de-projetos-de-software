@@ -14,6 +14,7 @@ async function setProject(req, res){
             'expected_end_date': req.body.expected_end_date,
             'status': req.body.status,
             'priority': req.body.priority,
+            'project_model': req.body.project_model,
         }
         const createdProject = await Project.create(project);
         

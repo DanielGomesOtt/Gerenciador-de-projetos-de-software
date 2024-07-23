@@ -9,28 +9,41 @@ let project = {
     'description': '',
     'expected_end_date': '',
     'priority': 'Low Priority',
+    'project_model': 'default',
 }
+
+let errorMessage = ref('');
 
 const createProject = async () => {
     try{
-        let today = new Date();
-        let data = {
-            'id_user': JSON.parse(localStorage.getItem('userStorage')).id,
-            'name': project.name,
-            'description': project.description,
-            'expected_end_date': project.expected_end_date + ' 23:59:59',
-            'priority': project.priority,
-            'status': 'in progress',
-            'initial_date': `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`,
-        };
-        const response = await axios.post(runtimeConfig.public.BASE_URL + 'project', data, {
-            headers: {
-                    Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
-            },
-        });
+        if(project.name.length == 0){
+            errorMessage.value = 'You need to provide the name of the project.';
+        }else if(project.description.length == 0){
+            errorMessage.value = 'You need a description for the project.';
+        }else if(project.expected_end_date.length == 0){
+            errorMessage.value = 'Provide the expected date to complete the project.';
+        }else{
+            errorMessage.value = '';
+            let today = new Date();
+            let data = {
+                'id_user': JSON.parse(localStorage.getItem('userStorage')).id,
+                'name': project.name,
+                'description': project.description,
+                'expected_end_date': project.expected_end_date + ' 23:59:59',
+                'priority': project.priority,
+                'status': 'in progress',
+                'initial_date': `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`,
+                'project_model': project.project_model
+            };
+            const response = await axios.post(runtimeConfig.public.BASE_URL + 'project', data, {
+                headers: {
+                        Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
+                },
+            });
 
-        emit('changeVisibilityCreateProjectModal');
-        emit('getProjects')
+            emit('changeVisibilityCreateProjectModal');
+            emit('getProjects')
+        }
     }catch(error){
         console.log(error);
     }
@@ -44,6 +57,7 @@ const createProject = async () => {
     </div>
 
     <div class="w-full mt-10">
+        <div class="text-center text-red-600">{{ errorMessage }}</div>
         <form class="w-[100%]">
             <div>
                 <label for="name-project" class="font-semibold">Name</label>
@@ -68,6 +82,12 @@ const createProject = async () => {
                         <option value="High Priority">High Priority</option>
                     </select>
                 </div>
+            </div>
+            <div class="mt-2">
+                <label for="project-model" class="font-semibold">Project Model</label>
+                <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="project-model" name="project-model" required v-model="project.project_model">
+                    <option value="default">Default</option>
+                </select>
             </div>
         </form>
     </div>        

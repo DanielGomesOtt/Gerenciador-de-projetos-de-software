@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('Project_invite', {
+    await queryInterface.createTable('Task', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -14,36 +14,39 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'user', // Nome da tabela referenciada
-          key: 'id'  // Nome da coluna referenciada
+          model: 'user',
+          key: 'id'
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
       id_project: {
         type: Sequelize.INTEGER,
-        allowNull: false,
         references: {
-          model: 'project', // Nome da tabela referenciada
-          key: 'id'  // Nome da coluna referenciada
+          model: 'project',
+          key: 'id'
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
-      accept: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: false
+      title: {
+        type: Sequelize.STRING,
       },
-      reject: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: false
+      description: {
+        type: Sequelize.STRING,
       },
-      administrator_invite: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: false
+      project_stage: {
+        type: Sequelize.STRING,
+      },
+      expected_end_date: {
+        type: Sequelize.DATE
+      },
+      real_end_date: {
+        type: Sequelize.DATE
+      },
+      status: {
+        type: Sequelize.STRING,
+        defaultValue: 'in progress'
       },
       created_at: {
         type: Sequelize.DATE,

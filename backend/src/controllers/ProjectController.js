@@ -188,6 +188,14 @@ async function getMyProjectData(req, res){
         let id_user = req.headers.id_user;
 
         const userProject = await UserProject.findOne({
+            include: [
+                {
+                    model: Project,
+                    where: {
+                      id: id_project,  
+                    }
+                },
+            ],
             where: {
                 id_user: id_user,
                 id_project: id_project,

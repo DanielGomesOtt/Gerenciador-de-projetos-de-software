@@ -2,7 +2,8 @@
 import NavBar from '~/components/layoutComponents/NavBar.vue';
 import { Icon } from '#components';
 import axios from 'axios';
-import addMemberForm from '~/components/projectGroupComponents/addMemberForm.vue';
+import AddMemberForm from '~/components/projectGroupComponents/AddMemberForm.vue';
+import DefaultModelProject from '~/components/projectGroupComponents/DefaultModelProject.vue';
 
 
 const route = useRoute();
@@ -104,8 +105,8 @@ onBeforeMount(() => {
 <template>
     <NavBar />
     <div class="flex justify-between">
-        <div>
-
+        <div v-if="myProjectData.Project.project_model == 'default'">
+            <DefaultModelProject />
         </div>
         <div class="flex items-center">
             <button @click="openSlideOver" class="mr-2"><Icon name="mdi:chevron-left-circle" size="2.5em" class="text-blue-400" /></button>
@@ -164,14 +165,12 @@ onBeforeMount(() => {
     </div>
     <UModal v-model="visibilityModalAddMember">
         <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
-            <addMemberForm @changeVisibilityModalAddMember="changeVisibilityModalAddMember"/>
+            <AddMemberForm @changeVisibilityModalAddMember="changeVisibilityModalAddMember"/>
         </UCard>
     </UModal>
     <UModal v-model="isOpenModalRemoveMember">
         <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
-
             <p class="text-center text-2xl font-semibold">Are you sure you want to proceed with this action?</p>
-
             <template #footer>
                 <div class="flex justify-around items-center">
                     <button type="button" class="bg-green-600 text-white rounded-md w-28 h-10" @click="removeMemberFromProject($event)">Confirm</button>

@@ -1,6 +1,6 @@
 <script lang="js" setup>
 import axios from 'axios';
-import newPasswordForm from './newPasswordForm.vue';
+import NewPasswordForm from './NewPasswordForm.vue';
 
     const runtimeConfig = useRuntimeConfig();
     
@@ -37,5 +37,5 @@ import newPasswordForm from './newPasswordForm.vue';
             <button type="submit" class="bg-gradient-to-r from-blue-800 to-indigo-800 rounded-lg border-2 w-4/5 md:w-2/6 h-12 text-white font-semibold mb-5 mx-auto">Send</button>
         </form>
     </div>
-    <newPasswordForm v-else/>
+    <NewPasswordForm v-else/>
 </template>

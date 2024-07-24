@@ -1,6 +1,6 @@
 <script lang="js" setup>
 import axios from 'axios';
-import CodeResetForm from '../components/passwordRecoveryComponents/codeResetForm.vue'
+import CodeResetForm from '../components/passwordRecoveryComponents/CodeResetForm.vue'
 import { isValidEmail } from '../utils/verifyValidEmail';
 
 

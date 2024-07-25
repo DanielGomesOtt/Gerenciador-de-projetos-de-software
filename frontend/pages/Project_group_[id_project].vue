@@ -105,11 +105,11 @@ onBeforeMount(() => {
 <template>
     <NavBar />
     <div class="flex justify-between">
-        <div v-if="myProjectData.Project.project_model == 'default'">
+        <div v-if="myProjectData && myProjectData.Project && myProjectData.Project.project_model && myProjectData.Project.project_model == 'default'">
             <DefaultModelProject />
         </div>
         <div class="flex items-center">
-            <button @click="openSlideOver" class="mr-2 absolute right-0"><Icon name="mdi:chevron-left-circle" size="2.5em" class="text-blue-400" /></button>
+            <button @click="openSlideOver" class="mr-2 absolute right-0 top-20"><Icon name="mdi:chevron-left-circle" size="2.5em" class="text-blue-400" /></button>
             <USlideover v-model="isOpen">
                 <UCard
                     class="flex flex-col flex-1"

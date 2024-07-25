@@ -109,7 +109,7 @@ onBeforeMount(() => {
             <DefaultModelProject />
         </div>
         <div class="flex items-center">
-            <button @click="openSlideOver" class="mr-2"><Icon name="mdi:chevron-left-circle" size="2.5em" class="text-blue-400" /></button>
+            <button @click="openSlideOver" class="mr-2 absolute right-0"><Icon name="mdi:chevron-left-circle" size="2.5em" class="text-blue-400" /></button>
             <USlideover v-model="isOpen">
                 <UCard
                     class="flex flex-col flex-1"

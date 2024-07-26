@@ -44,6 +44,9 @@ module.exports = {
       real_end_date: {
         type: Sequelize.DATE
       },
+      type_project: {
+        type: Sequelize.STRING,
+      },
       status: {
         type: Sequelize.STRING,
         defaultValue: 'in progress'

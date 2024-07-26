@@ -1,5 +1,40 @@
 <script lang="js" setup>
+import axios from 'axios';
 
+const route = useRoute();
+const runtimeConfig = useRuntimeConfig();
+
+let errorMessage = ref('');
+let task = {
+    'title': '',
+    'description': '',
+    'end_date': '',
+    'type_project': 'development of new features',
+    'status': 'in progress',
+    'id_user': JSON.parse(localStorage.getItem('userStorage')).id,
+    'id_project': route.params.id_project
+};
+
+const setTask = async () => {
+    try{
+        if(task.title.length == 0){
+            errorMessage.value = 'Provide a title.';
+        }else if(task.description.length == 0){
+            errorMessage.value = 'Provide a description.';
+        }else if(task.end_date.length == 0){
+            errorMessage.value = 'Provide a expected end date.';
+        }else{
+            errorMessage.value = '';
+            const response = await axios.post(runtimeConfig.public.BASE_URL + 'task', task, {
+                headers: {
+                    Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`
+                }
+            });
+        }
+    }catch(error){
+        console.log(error);
+    }
+}
 </script>
 
 <template>
@@ -12,37 +47,87 @@
         <form class="w-[100%]">
             <div>
                 <label for="title-task" class="font-semibold">Title</label>
-                <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="title-task" name="title-task" placeholder="Task..." required>
+                <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="title-task" name="title-task" placeholder="Task..." required v-model="task.title">
             </div>
 
             <div class="mt-2">
                 <label for="description-task" class="font-semibold">Description</label>
-                <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="description-task" name="description-task" placeholder="What needs to be done?" required>
+                <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="description-task" name="description-task" placeholder="What needs to be done?" required v-model="task.description">
             </div>
 
             <div class="mt-2 grid grid-cols-1 md:grid-cols-2">
                 <div class="md:mr-2">
-                    <label for="end-date-project" class="font-semibold">End Date</label>
-                    <input type="date" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="end-date-project" name="end-date-project" required>
+                    <label for="end-date-task" class="font-semibold">End Date</label>
+                    <input type="date" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="end-date-task" name="end-date-task" required v-model="task.end_date">
                 </div>
-                <div class="md:ml-2">
-                    <label for="priority-project" class="font-semibold">Priority</label>
-                    <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="priority-project" name="priority-project" required>
-                        <option value="Low Priority">Low Priority</option>
-                        <option value="Medium Priority">Medium Priority</option>
-                        <option value="High Priority">High Priority</option>
+                <div class="md:mr-2">
+                    <label for="status-task" class="font-semibold">Status</label>
+                    <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="status-task" name="status-task" required v-model="task.status">
+                        <option value="in progress">In progress</option>
+                        <option value="cancelled">Cancelled</option>
+                        <option value="overdue">Overdue</option>
+                        <option value="urgent">Urgent</option>
                     </select>
                 </div>
             </div>
             <div class="mt-2">
-                <label for="project-model" class="font-semibold">Project Model</label>
-                <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="project-model" name="project-model" required>
-                    <option value="default">Default</option>
+                <label for="type-task" class="font-semibold">Type</label>
+                <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="type-task" name="type-task" required v-model="task.type_project">
+                    <option value="development of new features">Development of new features</option>
+                    <option value="bug fixing">Bug fixing</option>
+                    <option value="unit testing">Unit testing</option>
+                    <option value="integration testing">Integration testing</option>
+                    <option value="acceptance testing">Acceptance testing</option>
+                    <option value="documentation">Documentation</option>
+                    <option value="code review">Code review</option>
+                    <option value="performance optimization">Performance optimization</option>
+                    <option value="code refactoring">Code refactoring</option>
+                    <option value="security implementation">Security implementation</option>
+                    <option value="continuous integration">Continuous integration</option>
+                    <option value="continuous delivery">Continuous delivery</option>
+                    <option value="data migration">Data migration</option>
+                    <option value="environment setup">Environment setup</option>
+                    <option value="infrastructure maintenance">Infrastructure maintenance</option>
+                    <option value="user interface (ui) design">User interface (UI) design</option>
+                    <option value="user experience (ux) design">User experience (UX) design</option>
+                    <option value="team training">Team training</option>
+                    <option value="requirements analysis">Requirements analysis</option>
+                    <option value="technical support">Technical support</option>
+                    <option value="project management">Project management</option>
+                    <option value="impact analysis">Impact analysis</option>
+                    <option value="api development">API development</option>
+                    <option value="task automation">Task automation</option>
+                    <option value="backend feature implementation">Backend feature implementation</option>
+                    <option value="frontend feature development">Frontend feature development</option>
+                    <option value="prototype creation">Prototype creation</option>
+                    <option value="usability testing">Usability testing</option>
+                    <option value="version control management">Version control management</option>
+                    <option value="ci/cd setup">CI/CD setup</option>
+                    <option value="performance monitoring">Performance monitoring</option>
+                    <option value="configuration management">Configuration management</option>
+                    <option value="integration with external services">Integration with external services</option>
+                    <option value="script development">Script development</option>
+                    <option value="database design">Database design</option>
+                    <option value="technical consulting">Technical consulting</option>
+                    <option value="log analysis">Log analysis</option>
+                    <option value="vulnerability management">Vulnerability management</option>
+                    <option value="architecture review">Architecture review</option>
+                    <option value="tool customization">Tool customization</option>
+                    <option value="automated testing implementation">Automated testing implementation</option>
+                    <option value="mobile solutions development">Mobile solutions development</option>
+                    <option value="dependency management">Dependency management</option>
+                    <option value="application performance analysis">Application performance analysis</option>
+                    <option value="accessibility features implementation">Accessibility features implementation</option>
+                    <option value="dashboard and report development">Dashboard and report development</option>
+                    <option value="production support">Production support</option>
+                    <option value="capacity planning">Capacity planning</option>
+                    <option value="change management">Change management</option>
+                    <option value="security policy review and update">Security policy review and update</option>
                 </select>
             </div>
         </form>
     </div>        
     <div class="h-10 mt-10">
-        <button type="button" class="h-full rounded w-[100%] text-white bg-emerald-600" >Create Project</button>
+        <button type="button" class="h-full rounded w-[100%] text-white bg-emerald-600" @click="setTask">Create Task</button>
     </div>
 </template>

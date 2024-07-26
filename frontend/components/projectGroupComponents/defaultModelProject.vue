@@ -23,7 +23,7 @@ let visibilityCreateTaskModal = ref(false);
             />
         </div>
         <div class="mt-2 w-full flex justify-center">
-            <table class="table-auto w-[80%] border-2 border-gray-200">
+            <table class="table-auto w-[80%] border-2 border-gray-400">
                 <thead>
                     <tr>
                         <th class="text-center">Status</th>

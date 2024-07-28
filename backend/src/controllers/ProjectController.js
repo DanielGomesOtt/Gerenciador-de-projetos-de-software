@@ -374,4 +374,6 @@ async function exitProject(req, res){
 }
 
 
+
+
 module.exports = { setProject, getProjects, updateProject, getProjectById, getProjectsByFilter, getUsersByProject, getMyProjectData, sendInvite, getMyInvites, respondInvite, removeMemberFromProject, exitProject };

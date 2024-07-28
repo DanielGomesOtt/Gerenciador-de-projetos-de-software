@@ -20,6 +20,7 @@ class Project extends Model {
 
   static associate(models) {
     this.hasMany(models.UserProject, { foreignKey: 'id_project', as: 'userProjects' });
+    this.hasMany(models.UserProject, { foreignKey: 'id_project', as: 'task' });
   }
 }
 

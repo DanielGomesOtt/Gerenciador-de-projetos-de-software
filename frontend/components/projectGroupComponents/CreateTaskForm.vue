@@ -3,17 +3,38 @@ import axios from 'axios';
 
 const route = useRoute();
 const runtimeConfig = useRuntimeConfig();
+const emit = defineEmits(['changeVisibilityCreateTaskModal']);
 
 let errorMessage = ref('');
+let members = ref([]);
+let id_user = JSON.parse(localStorage.getItem('userStorage')).id;
+let name_user = JSON.parse(localStorage.getItem('userStorage')).name;
 let task = {
     'title': '',
     'description': '',
-    'end_date': '',
-    'type_project': 'development of new features',
+    'expected_end_date': '',
+    'type_task': 'development of new features',
     'status': 'in progress',
-    'id_user': JSON.parse(localStorage.getItem('userStorage')).id,
+    'id_user': '',
     'id_project': route.params.id_project
 };
+
+const getUsersByProject = async () => {
+    try{
+        const response = await axios.get(runtimeConfig.public.BASE_URL + 'project_group', {
+            headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
+                id_project: route.params.id_project,
+                id_user: JSON.parse(localStorage.getItem('userStorage')).id
+            }
+        });
+        if(response.data){
+            members.value = response.data;
+        }
+    }catch(error){
+        console.log(error);
+    }
+}
 
 const setTask = async () => {
     try{
@@ -21,8 +42,10 @@ const setTask = async () => {
             errorMessage.value = 'Provide a title.';
         }else if(task.description.length == 0){
             errorMessage.value = 'Provide a description.';
-        }else if(task.end_date.length == 0){
+        }else if(task.expected_end_date.length == 0){
             errorMessage.value = 'Provide a expected end date.';
+        }else if(task.id_user.length == 0){
+            errorMessage.value = 'Assign a responsible to the task.'
         }else{
             errorMessage.value = '';
             const response = await axios.post(runtimeConfig.public.BASE_URL + 'task', task, {
@@ -30,11 +53,20 @@ const setTask = async () => {
                     Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`
                 }
             });
+
+            if(response.status == 201){
+                console.log(response);
+                emit('changeVisibilityCreateTaskModal');
+            }
         }
     }catch(error){
         console.log(error);
     }
 }
+
+onBeforeMount(() => {
+    getUsersByProject()
+})
 </script>
 
 <template>
@@ -58,7 +90,7 @@ const setTask = async () => {
             <div class="mt-2 grid grid-cols-1 md:grid-cols-2">
                 <div class="md:mr-2">
                     <label for="end-date-task" class="font-semibold">End Date</label>
-                    <input type="date" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="end-date-task" name="end-date-task" required v-model="task.end_date">
+                    <input type="date" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="end-date-task" name="end-date-task" required v-model="task.expected_end_date">
                 </div>
                 <div class="md:mr-2">
                     <label for="status-task" class="font-semibold">Status</label>
@@ -72,7 +104,7 @@ const setTask = async () => {
             </div>
             <div class="mt-2">
                 <label for="type-task" class="font-semibold">Type</label>
-                <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="type-task" name="type-task" required v-model="task.type_project">
+                <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="type-task" name="type-task" required v-model="task.type_task">
                     <option value="development of new features">Development of new features</option>
                     <option value="bug fixing">Bug fixing</option>
                     <option value="unit testing">Unit testing</option>
@@ -123,6 +155,14 @@ const setTask = async () => {
                     <option value="capacity planning">Capacity planning</option>
                     <option value="change management">Change management</option>
                     <option value="security policy review and update">Security policy review and update</option>
+                </select>
+            </div>
+            <div class="mt-2">
+                <label for="responsible-task" class="font-semibold">Responsible</label>
+                <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="responsible-task" name="responsible-task" required v-model="task.id_user">
+                    <option value="">Select a responsible</option>
+                    <option :value="id_user">{{ name_user.toUpperCase() }}</option>
+                    <option :value="member.id" v-for="member in members" :key="member.id">{{ member.name.toUpperCase() }}</option>
                 </select>
             </div>
         </form>

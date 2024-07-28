@@ -6,6 +6,10 @@ const runtimeConfig = useRuntimeConfig();
 
 let visibilityCreateTaskModal = ref(false);
 
+const changeVisibilityCreateTaskModal = () => {
+    visibilityCreateTaskModal.value = !visibilityCreateTaskModal.value;
+}
+
 </script>
 
 <template>
@@ -41,7 +45,7 @@ let visibilityCreateTaskModal = ref(false);
 
     <UModal v-model="visibilityCreateTaskModal">
         <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
-            <CreateTaskForm />
+            <CreateTaskForm @changeVisibilityCreateTaskModal="changeVisibilityCreateTaskModal" />
         </UCard>
     </UModal>
 </template>

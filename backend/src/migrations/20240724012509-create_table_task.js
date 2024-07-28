@@ -22,6 +22,7 @@ module.exports = {
       },
       id_project: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
           model: 'project',
           key: 'id'
@@ -44,7 +45,7 @@ module.exports = {
       real_end_date: {
         type: Sequelize.DATE
       },
-      type_project: {
+      type_task: {
         type: Sequelize.STRING,
       },
       status: {

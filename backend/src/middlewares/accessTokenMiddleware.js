@@ -5,6 +5,7 @@ exports.sign = payload => jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: 
 
 exports.verifyToken = async (req, res, next) => {
     try{
+        console.log(req.headers)
         let headers = req.headers.authorization.split(' ');
         let token = headers[1];
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET, {expiresIn: process.env.ACCESS_TOKEN_EXPIRATION});

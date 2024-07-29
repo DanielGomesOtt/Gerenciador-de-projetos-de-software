@@ -3,7 +3,7 @@ const UserProject = require('../models/UserProject');
 const User = require('../models/User');
 const ProjectInvite = require('../models/ProjectInvite');
 
-const { Op } = require('sequelize');
+const { Op, Sequelize } = require('sequelize');
 
 async function setProject(req, res){
     try{
@@ -45,7 +45,10 @@ async function getProjects(req, res){
                 }
             }],
             where: {
-                status: 'in progress'
+                [Op.or]: [
+                    { status: 'in progress' },
+                    { status: 'overdue' }
+                ]
             }
         });
 
@@ -373,7 +376,52 @@ async function exitProject(req, res){
     }
 }
 
+async function checkProjectsLimit(req, res){
+    try{
+        let today = new Date();
+
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+
+        today = `${year}-${month}-${day}`;
+
+        let check_limit = await Project.update({
+            status: 'overdue'
+        }, {
+            where: {
+                [Sequelize.Op.and]: [
+                    Sequelize.where(Sequelize.fn('DATE', Sequelize.col('expected_end_date')), '<', today),
+                    {
+                        status: {
+                            [Sequelize.Op.notIn]: ['cancelled', 'completed', 'overdue']
+                        }
+                    }
+                ]
+            }
+        });
+
+        check_limit = await Project.update({
+            status: 'in progress'
+        }, {
+            where: {
+                [Sequelize.Op.and]: [
+                    Sequelize.where(Sequelize.fn('DATE', Sequelize.col('expected_end_date')), '>=', today),
+                    {
+                        status: {
+                            [Sequelize.Op.notIn]: ['cancelled', 'completed', 'in progress']
+                        }
+                    }
+                ]
+            }
+        });
+        if(check_limit){
+            res.status(200).json({ message: 'Project updated successfully', updatedRows: check_limit[0] })
+        }
+    }catch(error){
+        res.status(500).json({ message: error });
+    }
+}
 
 
-
-module.exports = { setProject, getProjects, updateProject, getProjectById, getProjectsByFilter, getUsersByProject, getMyProjectData, sendInvite, getMyInvites, respondInvite, removeMemberFromProject, exitProject };
+module.exports = { setProject, getProjects, updateProject, getProjectById, getProjectsByFilter, getUsersByProject, getMyProjectData, sendInvite, getMyInvites, respondInvite, removeMemberFromProject, exitProject, checkProjectsLimit };

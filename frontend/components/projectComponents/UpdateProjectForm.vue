@@ -20,7 +20,7 @@ watch(
 );
 
 const runtimeConfig = useRuntimeConfig();
-const emit = defineEmits(['changeVisibilityUpdateProjectModal', 'getProjects']);
+const emit = defineEmits(['changeVisibilityUpdateProjectModal', 'getProjects', 'checkProjectsLimit']);
 
 
 
@@ -30,7 +30,7 @@ const updateProject = async () => {
             'id_user': JSON.parse(localStorage.getItem('userStorage')).id,
             'name': localData.name,
             'description': localData.description,
-            'expected_end_date': localData.expected_end_date + ' 23:59:59',
+            'expected_end_date': localData.expected_end_date,
             'priority': localData.priority,
             'status': localData.status,
             'project_id': localData.id,
@@ -42,7 +42,8 @@ const updateProject = async () => {
         });
 
         emit('changeVisibilityUpdateProjectModal');
-        emit('getProjects')
+        emit('checkProjectsLimit');
+        emit('getProjects');
     }catch(error){
         console.log(error);
     }
@@ -88,6 +89,7 @@ const updateProject = async () => {
                     <option value="in progress">In progress</option>
                     <option value="completed">Completed</option>
                     <option value="cancelled">Cancelled</option>
+                    <option value="overdue">Overdue</option>
                 </select>
             </div>
         </form>

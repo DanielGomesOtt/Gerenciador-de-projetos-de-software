@@ -8,6 +8,7 @@ const props = defineProps({
 });
 
 const runtimeConfig = useRuntimeConfig();
+const route = useRoute();
 
 let visibilityCreateTaskModal = ref(false);
 let tasks = ref([]);
@@ -34,7 +35,23 @@ const getTasks = async () => {
     }
 }
 
+const checkTasksLimit = async () => {
+    try{
+        let data = {
+            'id_project': route.params.id_project
+        };
+        await axios.patch(runtimeConfig.public.BASE_URL + 'task/check_limit', data, {
+            headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`
+            }
+        });
+    }catch(error){
+        console.log(error);
+    }
+}
+
 onBeforeMount(() => {
+    checkTasksLimit();
     getTasks();
 })
 </script>
@@ -102,7 +119,7 @@ onBeforeMount(() => {
 
     <UModal v-model="visibilityCreateTaskModal">
         <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
-            <CreateTaskForm @changeVisibilityCreateTaskModal="changeVisibilityCreateTaskModal" @getTasks="getTasks"/>
+            <CreateTaskForm @changeVisibilityCreateTaskModal="changeVisibilityCreateTaskModal" @getTasks="getTasks" @checkTasksLimit="checkTasksLimit"/>
         </UCard>
     </UModal>
 </template>

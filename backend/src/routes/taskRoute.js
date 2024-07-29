@@ -5,5 +5,6 @@ const accessTokenMiddleware = require('../middlewares/accessTokenMiddleware');
 
 route.post('/task', accessTokenMiddleware.verifyToken, TasktController.setTask);
 route.get('/task', accessTokenMiddleware.verifyToken, TasktController.getTasks);
+route.patch('/task/check_limit', accessTokenMiddleware.verifyToken, TasktController.checkTasksLimit);
 
 module.exports = route;

@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const runtimeConfig = useRuntimeConfig();
-const emit = defineEmits(['changeVisibilityCreateProjectModal', 'getProjects']);
+const emit = defineEmits(['changeVisibilityCreateProjectModal', 'getProjects', 'checkProjectsLimit']);
 
 let project = {
     'name': '',
@@ -29,7 +29,7 @@ const createProject = async () => {
                 'id_user': JSON.parse(localStorage.getItem('userStorage')).id,
                 'name': project.name,
                 'description': project.description,
-                'expected_end_date': project.expected_end_date + ' 23:59:59',
+                'expected_end_date': project.expected_end_date,
                 'priority': project.priority,
                 'status': 'in progress',
                 'initial_date': `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`,
@@ -42,6 +42,7 @@ const createProject = async () => {
             });
 
             emit('changeVisibilityCreateProjectModal');
+            emit('checkProjectsLimit');
             emit('getProjects')
         }
     }catch(error){

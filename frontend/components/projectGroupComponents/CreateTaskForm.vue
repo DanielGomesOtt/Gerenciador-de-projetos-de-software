@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const route = useRoute();
 const runtimeConfig = useRuntimeConfig();
-const emit = defineEmits(['changeVisibilityCreateTaskModal', 'getTasks']);
+const emit = defineEmits(['changeVisibilityCreateTaskModal', 'getTasks', 'checkTasksLimit']);
 
 let errorMessage = ref('');
 let members = ref([]);
@@ -56,6 +56,7 @@ const setTask = async () => {
 
             if(response.status == 201){
                 emit('changeVisibilityCreateTaskModal');
+                emit('checkTasksLimit');
                 emit('getTasks');
             }
         }

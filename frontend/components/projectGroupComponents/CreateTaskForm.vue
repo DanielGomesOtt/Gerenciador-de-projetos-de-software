@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const route = useRoute();
 const runtimeConfig = useRuntimeConfig();
-const emit = defineEmits(['changeVisibilityCreateTaskModal']);
+const emit = defineEmits(['changeVisibilityCreateTaskModal', 'getTasks']);
 
 let errorMessage = ref('');
 let members = ref([]);
@@ -55,8 +55,8 @@ const setTask = async () => {
             });
 
             if(response.status == 201){
-                console.log(response);
                 emit('changeVisibilityCreateTaskModal');
+                emit('getTasks');
             }
         }
     }catch(error){
@@ -99,6 +99,7 @@ onBeforeMount(() => {
                         <option value="cancelled">Cancelled</option>
                         <option value="overdue">Overdue</option>
                         <option value="urgent">Urgent</option>
+                        <option value="completed">Completed</option>
                     </select>
                 </div>
             </div>

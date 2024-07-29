@@ -2,14 +2,41 @@
 import axios from 'axios';
 import CreateTaskForm from './CreateTaskForm.vue';
 
+
+const props = defineProps({
+    myProjectData: Object
+});
+
 const runtimeConfig = useRuntimeConfig();
 
 let visibilityCreateTaskModal = ref(false);
+let tasks = ref([]);
 
 const changeVisibilityCreateTaskModal = () => {
     visibilityCreateTaskModal.value = !visibilityCreateTaskModal.value;
 }
 
+const getTasks = async () => {
+    try{
+        const response = await axios.get(runtimeConfig.public.BASE_URL + 'task', {
+            headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
+                id_user: props.myProjectData.id_user,
+                id_project: props.myProjectData.id_project,
+                administrator: props.myProjectData.administrator
+            }
+        });
+        if(response && response.data){
+            tasks.value = response.data;
+        }
+    }catch(error){
+        console.log(error);
+    }
+}
+
+onBeforeMount(() => {
+    getTasks();
+})
 </script>
 
 <template>
@@ -26,18 +53,48 @@ const changeVisibilityCreateTaskModal = () => {
                 :onClick="() => {visibilityCreateTaskModal = true}"
             />
         </div>
-        <div class="mt-2 w-full flex justify-center">
-            <table class="table-auto w-[80%] border-2 border-gray-400">
+        <div class="mt-5 overflow-auto">
+            <table class="w-[1000px] border-2 border-gray-400 border-collapse text-sm mx-auto">
                 <thead>
                     <tr>
-                        <th class="text-center">Status</th>
-                        <th class="text-center">Title</th>
-                        <th class="text-center">Type</th>
-                        <th></th>
+                        <th class="py-1 px-2 text-left border-2 border-gray-400">Status</th>
+                        <th class="py-1 px-2 text-left border-2 border-gray-400">Title</th>
+                        <th class="py-1 px-2 text-left border-2 border-gray-400">Type</th>
+                        <th class="py-1 px-2 border-2 border-gray-400"></th>
                     </tr>
                 </thead>
                 <tbody>
-
+                    <tr v-for="task in tasks" :key="task.id" class="border-2 border-gray-400">
+                        <td class="py-1 px-2 border-2 border-gray-400 text-center font-semibold capitalize bg-blue-500 text-white" v-if="task.status == 'in progress'">{{ task.status }}</td>
+                        <td class="py-1 px-2 border-2 border-gray-400 text-center font-semibold capitalize bg-red-500 text-white" v-if="task.status == 'cancelled'">{{ task.status }}</td>
+                        <td class="py-1 px-2 border-2 border-gray-400 text-center font-semibold capitalize bg-green-500 text-white" v-if="task.status == 'completed'">{{ task.status }}</td>
+                        <td class="py-1 px-2 border-2 border-gray-400 text-center font-semibold capitalize bg-purple-500 text-white" v-if="task.status == 'urgent'">{{ task.status }}</td>
+                        <td class="py-1 px-2 border-2 border-gray-400 text-center font-semibold capitalize bg-orange-500 text-white" v-if="task.status == 'overdue'">{{ task.status }}</td>
+                        <td class="py-1 px-2 font-semibold border-2 border-gray-400 capitalize">{{ task.title }}</td>
+                        <td class="py-1 px-2 font-semibold border-2 border-gray-400 capitalize">{{ task.type_task }}</td>
+                        <td class="py-1 px-2 w-16 bg-blue-500 border-2 border-gray-400" v-if="task.status !== 'completed' && task.status !== 'cancelled'">
+                            <UButton
+                                icon="i-heroicons-pencil-square-16-solid"
+                                size="xs"
+                                color="blue"
+                                variant="solid"
+                                label="Edit"
+                                :trailing="false"
+                                class="hover:bg-blue-500"
+                            />
+                        </td>
+                        <td class="py-1 px-2 w-16 bg-green-500 border-2 border-gray-400" v-if="task.status == 'completed' || task.status == 'cancelled'">
+                            <UButton
+                                icon="i-heroicons-eye-solid"
+                                size="xs"
+                                color="green"
+                                variant="solid"
+                                label="Visualize"
+                                :trailing="false"
+                                class="hover:bg-green-500"
+                            />
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -45,7 +102,7 @@ const changeVisibilityCreateTaskModal = () => {
 
     <UModal v-model="visibilityCreateTaskModal">
         <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
-            <CreateTaskForm @changeVisibilityCreateTaskModal="changeVisibilityCreateTaskModal" />
+            <CreateTaskForm @changeVisibilityCreateTaskModal="changeVisibilityCreateTaskModal" @getTasks="getTasks"/>
         </UCard>
     </UModal>
 </template>

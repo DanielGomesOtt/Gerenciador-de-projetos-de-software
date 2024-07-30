@@ -1,6 +1,7 @@
 <script lang="js" setup>
 import axios from 'axios';
 import CreateTaskForm from './CreateTaskForm.vue';
+import UpdateTaskForm from './UpdateTaskForm.vue';
 
 
 const props = defineProps({
@@ -11,10 +12,29 @@ const runtimeConfig = useRuntimeConfig();
 const route = useRoute();
 
 let visibilityCreateTaskModal = ref(false);
+let visibilityUpdateTaskModal = ref(false);
 let tasks = ref([]);
+let taskData = ref({});
+let updateData = ref(false);
 
 const changeVisibilityCreateTaskModal = () => {
     visibilityCreateTaskModal.value = !visibilityCreateTaskModal.value;
+}
+
+const changeVisibilityUpdateTaskModal = (data) => {
+    if(visibilityUpdateTaskModal.value == false){
+        data.expected_end_date = data.expected_end_date.split('T');
+        data.expected_end_date = data.expected_end_date[0];
+        taskData.value = data;
+        if(taskData.value.status == 'completed' || taskData.value.status == 'cancelled'){
+            updateData.value = true;
+        }else{
+            updateData.value = false;
+        }
+    }else{
+        taskData.value = {};
+    }
+    visibilityUpdateTaskModal.value = !visibilityUpdateTaskModal.value;
 }
 
 const getTasks = async () => {
@@ -98,6 +118,7 @@ onBeforeMount(() => {
                                 label="Edit"
                                 :trailing="false"
                                 class="hover:bg-blue-500"
+                                :onClick="() => {changeVisibilityUpdateTaskModal(task)}"
                             />
                         </td>
                         <td class="py-1 px-2 w-16 bg-green-500 border-2 border-gray-400" v-if="task.status == 'completed' || task.status == 'cancelled'">
@@ -109,6 +130,7 @@ onBeforeMount(() => {
                                 label="Visualize"
                                 :trailing="false"
                                 class="hover:bg-green-500"
+                                :onClick="() => {changeVisibilityUpdateTaskModal(task)}"
                             />
                         </td>
                     </tr>
@@ -120,6 +142,12 @@ onBeforeMount(() => {
     <UModal v-model="visibilityCreateTaskModal">
         <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
             <CreateTaskForm @changeVisibilityCreateTaskModal="changeVisibilityCreateTaskModal" @getTasks="getTasks" @checkTasksLimit="checkTasksLimit"/>
+        </UCard>
+    </UModal>
+
+    <UModal v-model="visibilityUpdateTaskModal">
+        <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
+            <UpdateTaskForm  @changeVisibilityUpdateTaskModal="changeVisibilityUpdateTaskModal" @getTasks="getTasks" @checkTasksLimit="checkTasksLimit" :taskData="taskData" :updateData="updateData"/>
         </UCard>
     </UModal>
 </template>

@@ -1,0 +1,201 @@
+<script lang="js" setup>
+import axios from 'axios';
+import { watch, reactive } from 'vue';
+
+const props = defineProps({
+    taskData: {
+        type: Object,
+        default: () => ({})
+    },
+    updateData: {
+        type: Boolean,
+        default: false
+    }
+});
+
+const localData = reactive({...props.taskData});
+const updateCheck = reactive({ value: props.updateData });
+
+watch(
+  () => [props.taskData, props.updateData],
+  ([newTaskData, newUpdateData]) => {
+    Object.assign(localData, newTaskData);
+    updateCheck.value = newUpdateData;
+  },
+  { deep: true }
+);
+
+const runtimeConfig = useRuntimeConfig();
+const route = useRoute();
+const emit = defineEmits(['changeVisibilityUpdateTaskModal', 'getTasks', 'checkTasksLimit']);
+
+let errorMessage = ref('');
+let members = ref([]);
+let id_user = JSON.parse(localStorage.getItem('userStorage')).id;
+let name_user = JSON.parse(localStorage.getItem('userStorage')).name;
+let task = {
+    'title': localData.title,
+    'description': localData.description,
+    'expected_end_date': localData.expected_end_date,
+    'type_task': localData.type_task,
+    'status': localData.status,
+    'id_user': localData.id_user,
+    'id_project': route.params.id_project
+};
+
+const getUsersByProject = async () => {
+    try{
+        const response = await axios.get(runtimeConfig.public.BASE_URL + 'project_group', {
+            headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
+                id_project: route.params.id_project,
+                id_user: JSON.parse(localStorage.getItem('userStorage')).id
+            }
+        });
+        if(response.data){
+            members.value = response.data;
+        }
+    }catch(error){
+        console.log(error);
+    }
+}
+
+const updateTask = async () => {
+    try{
+        if(task.title.length == 0){
+            errorMessage.value = 'Provide a title.';
+        }else if(task.description.length == 0){
+            errorMessage.value = 'Provide a description.';
+        }else if(task.expected_end_date.length == 0){
+            errorMessage.value = 'Provide a expected end date.';
+        }else if(task.id_user.length == 0){
+            errorMessage.value = 'Assign a responsible to the task.'
+        }else{
+            errorMessage.value = '';
+            const response = await axios.patch(runtimeConfig.public.BASE_URL + 'task', task, {
+                headers: {
+                    Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`
+                }
+            });
+
+            if(response.status == 201){
+                emit('changeVisibilityUpdateTaskModal');
+                emit('checkTasksLimit');
+                emit('getTasks');
+            }
+        }
+    }catch(error){
+        console.log(error);
+    }
+}
+
+onBeforeMount(() => {
+    getUsersByProject()
+})
+
+
+</script>
+
+<template>
+    <div class="h-8">
+        <p class="text-black font-bold text-center text-2xl">Update a Task</p>
+    </div>
+
+    <div class="w-full mt-10">
+        <div class="text-center text-red-600">{{ errorMessage }}</div>
+        <form class="w-[100%]">
+            <div>
+                <label for="title-task-update" class="font-semibold">Title</label>
+                <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="title-task-update" name="title-task-update" placeholder="Task..." required v-model="task.title" :disabled="updateCheck">
+            </div>
+
+            <div class="mt-2">
+                <label for="description-task-update" class="font-semibold">Description</label>
+                <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="description-task-update" name="description-task-update" placeholder="What needs to be done?" required v-model="task.description" :disabled="updateCheck">
+            </div>
+
+            <div class="mt-2 grid grid-cols-1 md:grid-cols-2">
+                <div class="md:mr-2">
+                    <label for="end-date-task-update" class="font-semibold">End Date</label>
+                    <input type="date" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="end-date-task-update" name="end-date-task-update" required v-model="task.expected_end_date" :disabled="updateCheck">
+                </div>
+                <div class="md:mr-2">
+                    <label for="status-task-update" class="font-semibold">Status</label>
+                    <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="status-task-update" name="status-task-update" required v-model="task.status" :disabled="updateCheck">
+                        <option value="in progress">In progress</option>
+                        <option value="cancelled">Cancelled</option>
+                        <option value="overdue">Overdue</option>
+                        <option value="urgent">Urgent</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mt-2">
+                <label for="type-task-update" class="font-semibold">Type</label>
+                <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="type-task-update" name="type-task-update" required v-model="task.type_task" :disabled="updateCheck">
+                    <option value="development of new features">Development of new features</option>
+                    <option value="bug fixing">Bug fixing</option>
+                    <option value="unit testing">Unit testing</option>
+                    <option value="integration testing">Integration testing</option>
+                    <option value="acceptance testing">Acceptance testing</option>
+                    <option value="documentation">Documentation</option>
+                    <option value="code review">Code review</option>
+                    <option value="performance optimization">Performance optimization</option>
+                    <option value="code refactoring">Code refactoring</option>
+                    <option value="security implementation">Security implementation</option>
+                    <option value="continuous integration">Continuous integration</option>
+                    <option value="continuous delivery">Continuous delivery</option>
+                    <option value="data migration">Data migration</option>
+                    <option value="environment setup">Environment setup</option>
+                    <option value="infrastructure maintenance">Infrastructure maintenance</option>
+                    <option value="user interface (ui) design">User interface (UI) design</option>
+                    <option value="user experience (ux) design">User experience (UX) design</option>
+                    <option value="team training">Team training</option>
+                    <option value="requirements analysis">Requirements analysis</option>
+                    <option value="technical support">Technical support</option>
+                    <option value="project management">Project management</option>
+                    <option value="impact analysis">Impact analysis</option>
+                    <option value="api development">API development</option>
+                    <option value="task automation">Task automation</option>
+                    <option value="backend feature implementation">Backend feature implementation</option>
+                    <option value="frontend feature development">Frontend feature development</option>
+                    <option value="prototype creation">Prototype creation</option>
+                    <option value="usability testing">Usability testing</option>
+                    <option value="version control management">Version control management</option>
+                    <option value="ci/cd setup">CI/CD setup</option>
+                    <option value="performance monitoring">Performance monitoring</option>
+                    <option value="configuration management">Configuration management</option>
+                    <option value="integration with external services">Integration with external services</option>
+                    <option value="script development">Script development</option>
+                    <option value="database design">Database design</option>
+                    <option value="technical consulting">Technical consulting</option>
+                    <option value="log analysis">Log analysis</option>
+                    <option value="vulnerability management">Vulnerability management</option>
+                    <option value="architecture review">Architecture review</option>
+                    <option value="tool customization">Tool customization</option>
+                    <option value="automated testing implementation">Automated testing implementation</option>
+                    <option value="mobile solutions development">Mobile solutions development</option>
+                    <option value="dependency management">Dependency management</option>
+                    <option value="application performance analysis">Application performance analysis</option>
+                    <option value="accessibility features implementation">Accessibility features implementation</option>
+                    <option value="dashboard and report development">Dashboard and report development</option>
+                    <option value="production support">Production support</option>
+                    <option value="capacity planning">Capacity planning</option>
+                    <option value="change management">Change management</option>
+                    <option value="security policy review and update">Security policy review and update</option>
+                </select>
+            </div>
+            <div class="mt-2">
+                <label for="responsible-task-update" class="font-semibold">Responsible</label>
+                <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="responsible-task-update" name="responsible-task-update" required v-model="task.id_user" :disabled="updateCheck">
+                    <option value="">Select a responsible</option>
+                    <option :value="id_user">{{ name_user.toUpperCase() }}</option>
+                    <option :value="member.id" v-for="member in members" :key="member.id">{{ member.name.toUpperCase() }}</option>
+                </select>
+            </div>
+        </form>
+    </div>        
+    <div class="h-10 mt-10">
+        <button type="button" class="h-full rounded w-[100%] text-white bg-emerald-600" @click="updateTask" :disabled="updateCheck">Update Task</button>
+    </div>
+</template>

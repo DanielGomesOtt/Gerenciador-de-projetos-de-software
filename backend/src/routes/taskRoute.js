@@ -1,10 +1,12 @@
 const express = require('express');
 const route = express.Router();
-const TasktController = require('../controllers/TaskController');
+const TaskController = require('../controllers/TaskController');
 const accessTokenMiddleware = require('../middlewares/accessTokenMiddleware');
 
-route.post('/task', accessTokenMiddleware.verifyToken, TasktController.setTask);
-route.get('/task', accessTokenMiddleware.verifyToken, TasktController.getTasks);
-route.patch('/task/check_limit', accessTokenMiddleware.verifyToken, TasktController.checkTasksLimit);
+route.post('/task', accessTokenMiddleware.verifyToken, TaskController.setTask);
+route.get('/task', accessTokenMiddleware.verifyToken, TaskController.getTasks);
+route.patch('/task/check_limit', accessTokenMiddleware.verifyToken, TaskController.checkTasksLimit);
+route.patch('/task', accessTokenMiddleware.verifyToken, TaskController.updateTask);
+route.get('/task/search', accessTokenMiddleware.verifyToken, TaskController.searchTasks);
 
 module.exports = route;

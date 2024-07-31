@@ -34,6 +34,7 @@ let members = ref([]);
 let id_user = JSON.parse(localStorage.getItem('userStorage')).id;
 let name_user = JSON.parse(localStorage.getItem('userStorage')).name;
 let task = {
+    'id_task': localData.id,
     'title': localData.title,
     'description': localData.description,
     'expected_end_date': localData.expected_end_date,
@@ -78,7 +79,7 @@ const updateTask = async () => {
                 }
             });
 
-            if(response.status == 201){
+            if(response.status == 200){
                 emit('changeVisibilityUpdateTaskModal');
                 emit('checkTasksLimit');
                 emit('getTasks');
@@ -106,22 +107,22 @@ onBeforeMount(() => {
         <form class="w-[100%]">
             <div>
                 <label for="title-task-update" class="font-semibold">Title</label>
-                <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="title-task-update" name="title-task-update" placeholder="Task..." required v-model="task.title" :disabled="updateCheck">
+                <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="title-task-update" name="title-task-update" placeholder="Task..." required v-model="task.title" :disabled="updateCheck.value">
             </div>
 
             <div class="mt-2">
                 <label for="description-task-update" class="font-semibold">Description</label>
-                <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="description-task-update" name="description-task-update" placeholder="What needs to be done?" required v-model="task.description" :disabled="updateCheck">
+                <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="description-task-update" name="description-task-update" placeholder="What needs to be done?" required v-model="task.description" :disabled="updateCheck.value">
             </div>
 
             <div class="mt-2 grid grid-cols-1 md:grid-cols-2">
                 <div class="md:mr-2">
                     <label for="end-date-task-update" class="font-semibold">End Date</label>
-                    <input type="date" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="end-date-task-update" name="end-date-task-update" required v-model="task.expected_end_date" :disabled="updateCheck">
+                    <input type="date" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="end-date-task-update" name="end-date-task-update" required v-model="task.expected_end_date" :disabled="updateCheck.value">
                 </div>
                 <div class="md:mr-2">
                     <label for="status-task-update" class="font-semibold">Status</label>
-                    <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="status-task-update" name="status-task-update" required v-model="task.status" :disabled="updateCheck">
+                    <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="status-task-update" name="status-task-update" required v-model="task.status" :disabled="updateCheck.value">
                         <option value="in progress">In progress</option>
                         <option value="cancelled">Cancelled</option>
                         <option value="overdue">Overdue</option>
@@ -132,7 +133,7 @@ onBeforeMount(() => {
             </div>
             <div class="mt-2">
                 <label for="type-task-update" class="font-semibold">Type</label>
-                <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="type-task-update" name="type-task-update" required v-model="task.type_task" :disabled="updateCheck">
+                <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="type-task-update" name="type-task-update" required v-model="task.type_task" :disabled="updateCheck.value">
                     <option value="development of new features">Development of new features</option>
                     <option value="bug fixing">Bug fixing</option>
                     <option value="unit testing">Unit testing</option>
@@ -187,7 +188,7 @@ onBeforeMount(() => {
             </div>
             <div class="mt-2">
                 <label for="responsible-task-update" class="font-semibold">Responsible</label>
-                <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="responsible-task-update" name="responsible-task-update" required v-model="task.id_user" :disabled="updateCheck">
+                <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="responsible-task-update" name="responsible-task-update" required v-model="task.id_user" :disabled="updateCheck.value">
                     <option value="">Select a responsible</option>
                     <option :value="id_user">{{ name_user.toUpperCase() }}</option>
                     <option :value="member.id" v-for="member in members" :key="member.id">{{ member.name.toUpperCase() }}</option>
@@ -196,6 +197,6 @@ onBeforeMount(() => {
         </form>
     </div>        
     <div class="h-10 mt-10">
-        <button type="button" class="h-full rounded w-[100%] text-white bg-emerald-600" @click="updateTask" :disabled="updateCheck">Update Task</button>
+        <button type="button" class="h-full rounded w-[100%] text-white bg-emerald-600" @click="updateTask" :disabled="updateCheck.value">Update Task</button>
     </div>
 </template>

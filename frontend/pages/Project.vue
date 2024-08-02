@@ -137,6 +137,12 @@ const checkProjectsLimit = async () => {
                 }
             }
         );
+        
+        if(filter.value.length == 0 && status.value.length == 0 && priority.value.length == 0 && searchProject.value.length == 0 || filter.value.length > 0 && searchProject.value.length == 0){
+            getProjects();
+        }else{
+            getProjectsByFilter();
+        }
     }catch(error){
         console.log(error);
     }
@@ -172,6 +178,7 @@ onBeforeMount(() => {
                     <option value="in progress">In progress</option>
                     <option value="completed">Completed</option>
                     <option value="cancelled">Cancelled</option>
+                    <option value="overdue">Overdue</option>
                 </select>
             </div>
             <div class="mt-2">

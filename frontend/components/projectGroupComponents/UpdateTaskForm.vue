@@ -55,6 +55,27 @@ const getUsersByProject = async () => {
         });
         if(response.data){
             members.value = response.data;
+            const filteredMember = members.value.filter(member => member.id == idUser);
+            if(filteredMember.length == 0){
+                getUserTask();
+            }
+        }
+    }catch(error){
+        console.log(error);
+    }
+}
+
+const getUserTask = async () => {
+    try{
+        const response = await axios.get(runtimeConfig.public.BASE_URL + 'user_task', {
+            headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
+                id_user_task: localData.id_user
+            }
+        });
+        if(response && response.data){
+            let select = document.getElementById('responsible-task-update');
+            select.options[select.options.length] = new Option(response.data.name.toUpperCase(), response.data.id);
         }
     }catch(error){
         console.log(error);
@@ -112,7 +133,8 @@ onBeforeMount(() => {
 
             <div class="mt-2">
                 <label for="description-task-update" class="font-semibold">Description</label>
-                <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="description-task-update" name="description-task-update" placeholder="What needs to be done?" required v-model="task.description" :disabled="updateCheck.value">
+                <textarea name="description-task-update" id="description-task-update" class="w-full rounded p-2 bg-slate-200 shadow" placeholder="What needs to be done?" required v-model="task.description" :disabled="updateCheck.value"></textarea>
+                <!-- <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="description-task-update" name="description-task-update" placeholder="What needs to be done?" required v-model="task.description" :disabled="updateCheck.value"> -->
             </div>
 
             <div class="mt-2 grid grid-cols-1 md:grid-cols-2">

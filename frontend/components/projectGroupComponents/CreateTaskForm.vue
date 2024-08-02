@@ -85,7 +85,8 @@ onBeforeMount(() => {
 
             <div class="mt-2">
                 <label for="description-task" class="font-semibold">Description</label>
-                <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="description-task" name="description-task" placeholder="What needs to be done?" required v-model="task.description">
+                <textarea class="w-full rounded mt-2 p-2 bg-slate-200 shadow" name="description-task" id="description-task" placeholder="What needs to be done?" required v-model="task.description"></textarea>
+                <!-- <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="description-task" name="description-task" placeholder="What needs to be done?" required v-model="task.description"> -->
             </div>
 
             <div class="mt-2 grid grid-cols-1 md:grid-cols-2">

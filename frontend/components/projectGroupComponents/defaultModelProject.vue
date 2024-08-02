@@ -21,6 +21,8 @@ let filter = ref('');
 let type_task = ref('');
 let status_task = ref('');
 let searchTask = ref('');
+let myProjectData = ref([]);
+let idUser = JSON.parse(localStorage.getItem('userStorage')).id;
 
 const changeVisibilityCreateTaskModal = () => {
     visibilityCreateTaskModal.value = !visibilityCreateTaskModal.value;
@@ -40,6 +42,24 @@ const changeVisibilityUpdateTaskModal = (data) => {
         taskData.value = {};
     }
     visibilityUpdateTaskModal.value = !visibilityUpdateTaskModal.value;
+}
+
+const getMyProjectData = async () => {
+    try{
+        const response = await axios.get(runtimeConfig.public.BASE_URL + 'project_group/my_project_data', {
+            headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
+                id_project: route.params.id_project,
+                id_user: JSON.parse(localStorage.getItem('userStorage')).id
+            }
+        });
+
+        if(response.data){
+            myProjectData.value = response.data;
+        }
+    }catch(error){
+        console.log(error);
+    }
 }
 
 const changeSearchPlaceholder = () => {
@@ -125,6 +145,7 @@ const checkTasksLimit = async () => {
 
 onBeforeMount(() => {
     checkTasksLimit();
+    getMyProjectData();
     getTasks();
 })
 </script>
@@ -240,7 +261,7 @@ onBeforeMount(() => {
                         <td class="py-1 px-2 border-2 border-gray-400 text-center font-semibold capitalize bg-orange-500 text-white" v-if="task.status == 'overdue'">{{ task.status }}</td>
                         <td class="py-1 px-2 font-semibold border-2 border-gray-400 capitalize">{{ task.title }}</td>
                         <td class="py-1 px-2 font-semibold border-2 border-gray-400 capitalize">{{ task.type_task }}</td>
-                        <td class="py-1 px-2 w-16 bg-blue-500 border-2 border-gray-400" v-if="task.status !== 'completed' && task.status !== 'cancelled'">
+                        <td class="py-1 px-2 w-16 bg-blue-500 border-2 border-gray-400" v-if="task.status !== 'completed' && task.status !== 'cancelled' && myProjectData.administrator == true || task.status !== 'completed' && task.status !== 'cancelled' && task.id_user == idUser">
                             <UButton
                                 icon="i-heroicons-pencil-square-16-solid"
                                 size="xs"
@@ -252,7 +273,7 @@ onBeforeMount(() => {
                                 :onClick="() => {changeVisibilityUpdateTaskModal(task)}"
                             />
                         </td>
-                        <td class="py-1 px-2 w-16 bg-green-500 border-2 border-gray-400" v-if="task.status == 'completed' || task.status == 'cancelled'">
+                        <td class="py-1 px-2 w-16 bg-green-500 border-2 border-gray-400" v-if="task.status == 'completed' || task.status == 'cancelled' || myProjectData.administrator == false && task.id_user == idUser && task.status == 'cancelled' || myProjectData.administrator == false && task.id_user == idUser && task.status == 'completed'">
                             <UButton
                                 icon="i-heroicons-eye-solid"
                                 size="xs"

@@ -39,5 +39,19 @@ async function getUserAvatar(req, res){
     }
 }
 
+async function getUserById(req, res){
+    try{
+        const id_user = req.headers.id_user_task;
+        const user = await User.findOne({where: {id: id_user}});
+        if(user){
+            res.send(user);
+        }else{
+            res.status(404).json({ message: 'User not found.' });
+        }
+    }catch(error){
+        res.status(500).json({ message: error });
+    }
+}
 
-module.exports = {setUser, getUserAvatar};
+
+module.exports = {setUser, getUserAvatar, getUserById};

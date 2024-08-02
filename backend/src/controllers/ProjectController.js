@@ -127,7 +127,9 @@ async function getProjectsByFilter(req, res){
         
         if (req.query.filter && req.query.filter !== undefined && req.query.filter.length > 0 && req.query.search && req.query.search !== undefined && req.query.search.length > 0) {
             if(req.query.filter == 'name'){
-                filter.name = req.query.search
+                filter.name = {
+                    [Op.like]: `%${req.query.search}%`
+                }
             }
         }
         
@@ -140,7 +142,9 @@ async function getProjectsByFilter(req, res){
         }
 
         if(Object.keys(filter).length === 0){
-            filter.status = 'in progress';
+            filter.status = {
+                [Op.or]: ['in progress', 'overdue']
+            };
         }
 
         const projects = await Project.findAll({

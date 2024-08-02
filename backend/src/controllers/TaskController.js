@@ -25,11 +25,6 @@ async function getTasks(req, res) {
             }
         };
 
-        if (!administrator) {
-            condition.id_user = id_user;
-        }
-
-
         const tasks = await Task.findAll({ where: condition, order: [['id', 'DESC']], limit: 10 });
 
         if (tasks && tasks.length > 0) {
@@ -132,10 +127,10 @@ async function updateTask(req, res){
 async function searchTasks(req, res){
     try{
         let filter = {};
-        
+
         if (req.query.filter && req.query.filter !== undefined && req.query.filter.length > 0 && req.query.search && req.query.search !== undefined && req.query.search.length > 0) {
             if(req.query.filter == 'title'){
-                filter.title = req.query.search.toLowerCase();
+                filter.title = {[Op.like]: `%${req.query.search.toLowerCase()}%`};
             }
         }
         
@@ -151,9 +146,6 @@ async function searchTasks(req, res){
             filter.status = { [Op.or]: ['in progress', 'overdue', 'urgent'] };
         }
 
-        if(req.headers.administrator == false){
-            filter.id_user = req.headers.id_user;
-        }
 
         const tasks = await Task.findAll({
             where: filter,

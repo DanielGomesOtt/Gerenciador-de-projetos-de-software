@@ -55,7 +55,7 @@ const getUsersByProject = async () => {
         });
         if(response.data){
             members.value = response.data;
-            const filteredMember = members.value.filter(member => member.id == idUser);
+            const filteredMember = members.value.filter(member => member.id == task.id_user);
             if(filteredMember.length == 0){
                 getUserTask();
             }
@@ -76,6 +76,7 @@ const getUserTask = async () => {
         if(response && response.data){
             let select = document.getElementById('responsible-task-update');
             select.options[select.options.length] = new Option(response.data.name.toUpperCase(), response.data.id);
+            select.value = response.data.id;
         }
     }catch(error){
         console.log(error);

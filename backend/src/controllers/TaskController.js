@@ -16,7 +16,7 @@ async function setTask(req, res){
 
 async function getTasks(req, res) {
     try {
-        const { id_project, id_user, administrator } = req.headers;
+        const { id_project } = req.headers;
 
         const condition = {
             id_project,
@@ -30,7 +30,7 @@ async function getTasks(req, res) {
         if (tasks && tasks.length > 0) {
             res.send(tasks);
         } else {
-            res.status(404).json({ message: 'No tasks found' });
+            res.send([]);
         }
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -127,7 +127,7 @@ async function updateTask(req, res){
 async function searchTasks(req, res){
     try{
         let filter = {};
-
+    
         if (req.query.filter && req.query.filter !== undefined && req.query.filter.length > 0 && req.query.search && req.query.search !== undefined && req.query.search.length > 0) {
             if(req.query.filter == 'title'){
                 filter.title = {[Op.like]: `%${req.query.search.toLowerCase()}%`};
@@ -145,6 +145,8 @@ async function searchTasks(req, res){
         if(Object.keys(filter).length === 0){
             filter.status = { [Op.or]: ['in progress', 'overdue', 'urgent'] };
         }
+
+        filter.id_project = req.headers.id_project;
 
 
         const tasks = await Task.findAll({

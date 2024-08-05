@@ -104,7 +104,8 @@ const searchTasks = async () => {
             headers: {
                 Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
                 id_user: JSON.parse(localStorage.getItem('userStorage')).id,
-                administrator: props.myProjectData.administrator
+                administrator: props.myProjectData.administrator,
+                id_project: route.params.id_project
             }
         });
 
@@ -259,8 +260,8 @@ onBeforeMount(() => {
                         <td class="py-1 px-2 border-2 border-gray-400 text-center font-semibold capitalize bg-green-500 text-white" v-if="task.status == 'completed'">{{ task.status }}</td>
                         <td class="py-1 px-2 border-2 border-gray-400 text-center font-semibold capitalize bg-purple-500 text-white" v-if="task.status == 'urgent'">{{ task.status }}</td>
                         <td class="py-1 px-2 border-2 border-gray-400 text-center font-semibold capitalize bg-orange-500 text-white" v-if="task.status == 'overdue'">{{ task.status }}</td>
-                        <td class="py-1 px-2 font-semibold border-2 border-gray-400 capitalize">{{ task.title }}</td>
-                        <td class="py-1 px-2 font-semibold border-2 border-gray-400 capitalize">{{ task.type_task }}</td>
+                        <td class="py-1 px-2 font-semibold border-2 border-gray-400">{{ task.title }}</td>
+                        <td class="py-1 px-2 font-semibold border-2 border-gray-400">{{ task.type_task.toUpperCase() }}</td>
                         <td class="py-1 px-2 w-16 bg-blue-500 border-2 border-gray-400" v-if="task.status !== 'completed' && task.status !== 'cancelled' && myProjectData.administrator == true || task.status !== 'completed' && task.status !== 'cancelled' && task.id_user == idUser">
                             <UButton
                                 icon="i-heroicons-pencil-square-16-solid"
@@ -293,12 +294,18 @@ onBeforeMount(() => {
 
     <UModal v-model="visibilityCreateTaskModal">
         <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
+            <div class="flex justify-end w-full">
+                <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="my-1" @click="visibilityCreateTaskModal = false" />
+            </div>
             <CreateTaskForm @changeVisibilityCreateTaskModal="changeVisibilityCreateTaskModal" @getTasks="getTasks" @checkTasksLimit="checkTasksLimit"/>
         </UCard>
     </UModal>
 
     <UModal v-model="visibilityUpdateTaskModal">
         <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
+            <div class="flex justify-end w-full">
+                <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="my-1" @click="visibilityUpdateTaskModal = false" />
+            </div>
             <UpdateTaskForm  @changeVisibilityUpdateTaskModal="changeVisibilityUpdateTaskModal" @getTasks="getTasks" @checkTasksLimit="checkTasksLimit" :taskData="taskData" :updateData="updateData"/>
         </UCard>
     </UModal>

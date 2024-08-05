@@ -149,13 +149,8 @@ const checkProjectsLimit = async () => {
 }
 
 onBeforeMount(() => {
-    const id_category = JSON.parse(localStorage.getItem('userStorage')).id_category;
-    if(id_category == 1){
-        navigateTo('/home');
-    }else{
-        checkProjectsLimit()
-        getProjects();
-    }
+    checkProjectsLimit()
+    getProjects();
 })
 </script>
 
@@ -227,12 +222,18 @@ onBeforeMount(() => {
         </div>
         <UModal v-model="visibilityCreateProjectModal">
             <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
+                <div class="flex justify-end w-full">
+                    <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="my-1" @click="visibilityCreateProjectModal = false" />
+                </div>
                 <CreateProjectForm  @changeVisibilityCreateProjectModal="changeVisibilityCreateProjectModal" @getProjects="getProjects" @checkProjectsLimit="checkProjectsLimit"/>
             </UCard>
         </UModal>
 
         <UModal v-model="visibilityUpdateProjectModal">
             <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
+                <div class="flex justify-end w-full">
+                    <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="my-1" @click="visibilityUpdateProjectModal = false" />
+                </div>
                 <UpdateProjectForm :responseProject="responseProject" @changeVisibilityUpdateProjectModal="changeVisibilityUpdateProjectModal" @getProjects="getProjects" @checkProjectsLimit="checkProjectsLimit"/>
             </UCard>
         </UModal>

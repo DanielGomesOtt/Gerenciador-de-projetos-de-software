@@ -15,6 +15,7 @@ let myProjectData = ref({});
 let visibilityModalAddMember = ref(false);
 let isOpenModalRemoveMember = ref(false);
 let idRemoveUser = ref(0);
+let id_category = JSON.parse(localStorage.getItem('userStorage')).id_category;
 
 const changeVisibilityModalAddMember = () => {
     isOpen.value = false;
@@ -108,7 +109,7 @@ onBeforeMount(() => {
         <div v-if="myProjectData && myProjectData.Project && myProjectData.Project.project_model && myProjectData.Project.project_model == 'default'">
             <DefaultModelProject :myProjectData="myProjectData"/>
         </div>
-        <div class="flex items-center">
+        <div class="flex items-center" v-if="id_category > 1">
             <button @click="openSlideOver" class="mr-2 absolute right-0 top-20"><Icon name="mdi:chevron-left-circle" size="2.5em" class="text-blue-400" /></button>
             <USlideover v-model="isOpen">
                 <UCard

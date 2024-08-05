@@ -125,8 +125,7 @@
         </div>
         <ul class="flex justify-around items-center w-[45%]" id="nav-items" v-if="!isOpenMobile">
             <li><a href="/home" class="font-medium text-lg nav-link">Home</a></li>
-            <li v-if="id_category == 2 || id_category == 3"><a href="/project" class="font-medium text-lg nav-link">Projects</a></li>
-            <li><a href="#" class="font-medium text-lg nav-link">Tasks</a></li>
+            <li><a href="/project" class="font-medium text-lg nav-link">Projects</a></li>
             <li>
                 <UPopover>
                     <UChip :text="myInvites.length" size="2xl">
@@ -160,23 +159,17 @@
             <Icon name="mdi:format-list-bulleted" color="white" size="2em"/>
         </button>
 
-        <ul class="w-screen absolute pb-2 bg-blue-400 shadow-xl" v-if="isOpenMobile" id="menu-mobile" style="top: 4em;">
+        <ul class="w-screen absolute pb-2 bg-blue-400 shadow-xl z-50" v-if="isOpenMobile" id="menu-mobile" style="top: 4em;">
             <li>
                 <div class="flex justify-start items-center">
                     <Icon name="mdi:home" size="1.5em" color="white" class="ml-5" />
                     <a href="/home" class="text-lg nav-link text-blue-800 ml-10" style="color: #fff">Home</a>
                 </div>
             </li>
-            <li v-if="id_category == 2 || id_category == 3">
+            <li>
                 <div class="flex justify-start items-center">
                     <Icon name="mdi:clipboard-list" size="1.5em" color="white" class="ml-5"/>
                     <a href="/project" class="text-lg nav-link text-blue-800 ml-10" style="color: #fff">Projects</a>
-                </div>
-            </li>
-            <li>
-                <div class="flex justify-start items-center">
-                    <Icon name="mdi:check-underline" size="1.5em" color="white" class="ml-5"/>
-                    <a href="#" class="text-lg nav-link text-blue-800 ml-10" style="color: #fff">Tasks</a>
                 </div>
             </li>
             <li>

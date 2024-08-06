@@ -207,6 +207,7 @@ onBeforeMount(() => {
                     <option value="capacity planning">Capacity planning</option>
                     <option value="change management">Change management</option>
                     <option value="security policy review and update">Security policy review and update</option>
+                    <option value="created by gemini" disabled>Created by Gemini</option>
                 </select>
             </div>
             <div class="mt-2">

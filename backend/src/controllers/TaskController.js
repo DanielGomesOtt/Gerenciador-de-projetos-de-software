@@ -1,5 +1,7 @@
 const Task = require('../models/Task');
 const { Sequelize, Op } = require('sequelize');
+const { jsonModel } = require('../config/gemini');
+
 
 async function setTask(req, res){
     try{
@@ -159,4 +161,36 @@ async function searchTasks(req, res){
     }
 }
 
-module.exports = { setTask, getTasks, checkTasksLimit, updateTask, searchTasks };
+async function setTaskByGemini(req, res){
+    try{
+        let prompt = req.body.prompt;
+        let json = `{
+                        "type": "object",
+                        "properties": {
+                            "id_user": ${req.body.id_user},
+                            "id_project": ${req.body.id_project},
+                            "title": { "type": "string" },
+                            "expected_end_date": {
+                                "type": "object",
+                                "properties": {
+                                    "start_date": ${req.body.initial_date},
+                                    "end_date": ${req.body.end_date}
+                                },
+                                "required": ["start_date", "end_date"]
+                            },
+                            "status": "in progress",
+                            "project_stage": { "type": "empty string" },
+                            "type_task": "created by gemini",
+                            "description": { "type": "string" }
+                        }
+                    }
+                    `
+        prompt = prompt + `: ${json}`;
+        let result = await jsonModel.generateContent(prompt);
+        res.send(result.response.text());
+    }catch(error){
+        res.status(500).json({ message: error });
+    }
+}
+
+module.exports = { setTask, getTasks, checkTasksLimit, updateTask, searchTasks, setTaskByGemini };

@@ -144,6 +144,32 @@ const checkTasksLimit = async () => {
     }
 }
 
+const setTaskByGemini = async () => {
+    try{
+        let data = {
+            'id_user': JSON.parse(localStorage.getItem('userStorage')).id,
+            'id_project': route.params.id_project,
+            'project_stage': '',
+            'prompt': `Crie 10 tasks com a data de fim esperado começando daqui a 1 mês relacionado a fazer uma landing page para uma escola de inglês`,
+            'start_date': '2024-08-05',
+            'end_date': '2024-12-20',
+            'tasks_quantity': 10
+        };
+
+        const response = await axios.post(runtimeConfig.public.BASE_URL +  'task/gemini', data, {
+            headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`
+            }
+        })
+
+        if(response && response.data){
+            console.log(response.data)
+        }
+    }catch(error){
+        console.log(error);
+    }
+}
+
 onBeforeMount(() => {
     checkTasksLimit();
     getMyProjectData();

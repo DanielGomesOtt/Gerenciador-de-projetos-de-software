@@ -2,6 +2,7 @@
 import axios from 'axios';
 import CreateTaskForm from './CreateTaskForm.vue';
 import UpdateTaskForm from './UpdateTaskForm.vue';
+import CreateTaskByAiForm from './CreateTaskByAiForm.vue';
 
 
 const props = defineProps({
@@ -13,6 +14,7 @@ const route = useRoute();
 
 let visibilityCreateTaskModal = ref(false);
 let visibilityUpdateTaskModal = ref(false);
+let visibilityAiTaskModal = ref(false);
 let tasks = ref([]);
 let taskData = ref({});
 let updateData = ref(false);
@@ -42,6 +44,10 @@ const changeVisibilityUpdateTaskModal = (data) => {
         taskData.value = {};
     }
     visibilityUpdateTaskModal.value = !visibilityUpdateTaskModal.value;
+}
+
+const changeVisibilityCreateTaskAiModal = () => {
+    visibilityAiTaskModal.value = !visibilityAiTaskModal.value;
 }
 
 const getMyProjectData = async () => {
@@ -144,32 +150,6 @@ const checkTasksLimit = async () => {
     }
 }
 
-const setTaskByGemini = async () => {
-    try{
-        let data = {
-            'id_user': JSON.parse(localStorage.getItem('userStorage')).id,
-            'id_project': route.params.id_project,
-            'project_stage': '',
-            'prompt': `Crie 10 tasks com a data de fim esperado começando daqui a 1 mês relacionado a fazer uma landing page para uma escola de inglês`,
-            'start_date': '2024-08-05',
-            'end_date': '2024-12-20',
-            'tasks_quantity': 10
-        };
-
-        const response = await axios.post(runtimeConfig.public.BASE_URL +  'task/gemini', data, {
-            headers: {
-                Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`
-            }
-        })
-
-        if(response && response.data){
-            console.log(response.data)
-        }
-    }catch(error){
-        console.log(error);
-    }
-}
-
 onBeforeMount(() => {
     checkTasksLimit();
     getMyProjectData();
@@ -181,15 +161,25 @@ onBeforeMount(() => {
     <div class="w-screen mt-16">
         <div class="flex w-full justify-around items-center mb-5">
             <h1 class="font-bold text-5xl">Tasks</h1>
-            <UButton
-                icon="i-heroicons-plus-solid"
-                size="sm"
-                color="blue"
-                variant="solid"
-                label="New task"
-                :trailing="false"
-                :onClick="() => {visibilityCreateTaskModal = true}"
-            />
+            <UPopover>
+                <UButton
+                    icon="i-heroicons-plus-solid"
+                    size="sm"
+                    color="blue"
+                    variant="solid"
+                    label="New task"
+                    :trailing="false"
+                />
+
+                <template #panel>
+                    <div class="flex justify-center items-center border-b-2 p-3 hover:text-blue-600">
+                        <button type="button" @click="() => {visibilityCreateTaskModal = true}">Manual creation</button>
+                    </div>
+                    <div class="flex justify-center items-center p-3 hover:text-blue-600">
+                        <button type="button" @click="() => {visibilityAiTaskModal = true}">Creation by AI</button>
+                    </div>
+                </template>
+            </UPopover>
         </div>
         <div class="flex justify-center">
             <div class="bg-blue-400 flex flex-wrap justify-between p-5 w-[1000px] rounded-t-lg">
@@ -333,6 +323,15 @@ onBeforeMount(() => {
                 <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="my-1" @click="visibilityUpdateTaskModal = false" />
             </div>
             <UpdateTaskForm  @changeVisibilityUpdateTaskModal="changeVisibilityUpdateTaskModal" @getTasks="getTasks" @checkTasksLimit="checkTasksLimit" :taskData="taskData" :updateData="updateData"/>
+        </UCard>
+    </UModal>
+
+    <UModal v-model="visibilityAiTaskModal">
+        <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
+            <div class="flex justify-end w-full">
+                <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="my-1" @click="visibilityAiTaskModal = false" />
+            </div>
+            <CreateTaskByAiForm @getTasks="getTasks" @changeVisibilityCreateTaskAiModal="changeVisibilityCreateTaskAiModal"/>
         </UCard>
     </UModal>
 </template>

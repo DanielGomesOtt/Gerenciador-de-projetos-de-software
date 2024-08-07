@@ -163,7 +163,7 @@ async function searchTasks(req, res){
 
 async function setTaskByGemini(req, res){
     try{
-        let prompt = req.body.prompt;
+        let prompt = `Crie ${req.body.quantity_task} tasks para um projeto de desenvolvimento relacionado ao tópico: ${req.body.topic}`;
         let json = `{
                         "type": "object",
                         "properties": {
@@ -187,7 +187,22 @@ async function setTaskByGemini(req, res){
                     `
         prompt = prompt + `: ${json}`;
         let result = await jsonModel.generateContent(prompt);
-        res.send(result.response.text());
+        let response = new Array(result.response.text());
+        response = JSON.parse(response);
+        response.forEach(async (task) => {
+            let taskData = {
+                'id_user': req.body.id_user,
+                'id_project': req.body.id_project,
+                'title': task.title,
+                'description': task.description,
+                'expected_end_date': task.expected_end_date.end_date,
+                'type_task': task.type_task,
+                'status': task.status
+            }
+
+            await Task.create(taskData);
+        });
+        res.status(201).json({ message: 'Tasks created successfully.' });
     }catch(error){
         res.status(500).json({ message: error });
     }

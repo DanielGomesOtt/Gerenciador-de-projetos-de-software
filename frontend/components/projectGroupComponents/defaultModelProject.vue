@@ -25,6 +25,15 @@ let status_task = ref('');
 let searchTask = ref('');
 let myProjectData = ref([]);
 let idUser = JSON.parse(localStorage.getItem('userStorage')).id;
+let paginationLength = ref(0);
+let currentPagination = ref(0);
+let itemsPerPage = ref(5); 
+let paginatedTasks = computed(() => {
+    const start = (currentPagination.value - 1) * itemsPerPage.value;
+    const end = start + itemsPerPage.value;
+    return tasks.value.slice(start, end);
+});
+
 
 const changeVisibilityCreateTaskModal = () => {
     visibilityCreateTaskModal.value = !visibilityCreateTaskModal.value;
@@ -88,6 +97,8 @@ const getTasks = async () => {
         });
         if(response && response.data){
             tasks.value = response.data;
+            paginationLength.value = Math.ceil(tasks.value.length / itemsPerPage.value);
+            currentPagination.value = 1;
         }
     }catch(error){
         console.log(error);
@@ -116,6 +127,8 @@ const searchTasks = async () => {
         });
 
         tasks.value = response.data;
+        paginationLength.value = Math.ceil(tasks.value.length / itemsPerPage.value);
+        currentPagination.value = 1;
     }catch(error){
         console.log(error);
     }
@@ -150,6 +163,10 @@ const checkTasksLimit = async () => {
     }
 }
 
+
+const updatePagination = (page) => {
+    currentPagination.value = page;
+}
 onBeforeMount(() => {
     checkTasksLimit();
     getMyProjectData();
@@ -270,7 +287,7 @@ onBeforeMount(() => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="task in tasks" :key="task.id" class="border-2 border-gray-400">
+                    <tr v-for="task in paginatedTasks" :key="task.id" class="border-2 border-gray-400">
                         <td class="py-1 px-2 border-2 border-gray-400 text-center font-semibold capitalize bg-blue-500 text-white" v-if="task.status == 'in progress'">{{ task.status }}</td>
                         <td class="py-1 px-2 border-2 border-gray-400 text-center font-semibold capitalize bg-red-500 text-white" v-if="task.status == 'cancelled'">{{ task.status }}</td>
                         <td class="py-1 px-2 border-2 border-gray-400 text-center font-semibold capitalize bg-green-500 text-white" v-if="task.status == 'completed'">{{ task.status }}</td>
@@ -305,6 +322,17 @@ onBeforeMount(() => {
                     </tr>
                 </tbody>
             </table>
+        </div>
+        <div class="flex justify-center mt-2">
+            <UPagination
+                
+                v-model="currentPagination" 
+                :page-count="5" 
+                :total="tasks.length"
+                :onChange="updatePagination"
+                show-last 
+                show-first
+            />
         </div>
     </div>
 

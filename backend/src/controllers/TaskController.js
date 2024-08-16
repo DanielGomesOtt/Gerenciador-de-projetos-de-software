@@ -27,7 +27,7 @@ async function getTasks(req, res) {
             }
         };
 
-        const tasks = await Task.findAll({ where: condition, order: [['id', 'DESC']], limit: 10 });
+        const tasks = await Task.findAll({ where: condition, order: [['id', 'DESC']] });
 
         if (tasks && tasks.length > 0) {
             res.send(tasks);
@@ -193,11 +193,11 @@ async function setTaskByGemini(req, res){
             let taskData = {
                 'id_user': req.body.id_user,
                 'id_project': req.body.id_project,
-                'title': task.title,
-                'description': task.description,
-                'expected_end_date': task.expected_end_date.end_date,
-                'type_task': task.type_task,
-                'status': task.status
+                'title': (task && task.title && task !== undefined && task.title !== undefined ? task.title : ''),
+                'description': (task && task.description && task !== undefined && task.description !== undefined ? task.description : ''),
+                'expected_end_date': (task && task.expected_end_date && task.expected_end_date.end_date && task !== undefined && task.expected_end_date !== undefined &&task.expected_end_date.end_date !== undefined ? task.expected_end_date.end_date : ''),
+                'type_task': (task && task.type_task && task !== undefined && task.type_task !== undefined ? task.type_task : ''),
+                'status': (task && task.status && task !== undefined && task.status !== undefined && task.status == 'in progress' ? task.status : 'in progress')
             }
 
             await Task.create(taskData);

@@ -8,6 +8,8 @@ const runtimeConfig = useRuntimeConfig();
 let today = new Date();
 today = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
 
+let loadingModal = ref(false);
+
 let dataTask = {
     'id_user': JSON.parse(localStorage.getItem('userStorage')).id,
     'id_project': route.params.id_project,
@@ -21,14 +23,19 @@ let errorMessage = ref('');
 
 const setTaskByGemini = async () => {
     try{
+        loadingModal.value = true;
         if(dataTask.topic.length == 0){
             errorMessage.value = 'Provide a topic to base the tasks on.';
+            loadingModal.value = false;
         }else if(dataTask.initial_date.length == 0){
             errorMessage.value = 'Provide the start date for the task period.';
+            loadingModal.value = false;
         }else if(dataTask.end_date.length == 0){
             errorMessage.value = 'Provide the end date for the task period.'
+            loadingModal.value = false;
         }else if(dataTask.quantity_task <= 0){
             errorMessage.value = 'The number of tasks must be greater than 0.';
+            loadingModal.value = false;
         }else{
             errorMessage.value = '';
             const response = await axios.post(runtimeConfig.public.BASE_URL +  'task/gemini', dataTask, {
@@ -36,7 +43,7 @@ const setTaskByGemini = async () => {
                     Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`
                 }
             })
-
+            loadingModal.value = false;
             if(response && response.status == 201){
                 emit('getTasks');
                 emit('changeVisibilityCreateTaskAiModal');
@@ -82,4 +89,12 @@ const setTaskByGemini = async () => {
     <div class="h-10 mt-10">
         <button type="button" class="h-full rounded w-[100%] text-white bg-emerald-600" @click="setTaskByGemini">Create task with AI</button>
     </div>
+    <UModal v-model="loadingModal">
+        <div class="flex justify-center items-center p-24">
+            <div class="w-full">
+                <h3 class="text-3xl mb-2">Loading ...</h3>
+                <UProgress animation="carousel"/>
+            </div>
+        </div>
+    </UModal>
 </template>

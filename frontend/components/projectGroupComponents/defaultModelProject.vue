@@ -33,7 +33,7 @@ let paginatedTasks = computed(() => {
     const end = start + itemsPerPage.value;
     return tasks.value.slice(start, end);
 });
-let taskCard = ref(true);
+let taskCard = 'true';
 
 
 const changeVisibilityCreateTaskModal = () => {
@@ -170,7 +170,7 @@ const updatePagination = (page) => {
 }
 
 const changeTaskLayout = () => {
-    if(taskCard.value == true){
+    if(taskCard == 'true'){
         itemsPerPage.value = 3;
     }else{
         itemsPerPage.value = 5;
@@ -293,7 +293,7 @@ onBeforeMount(() => {
             </div>
         </div>
         <div class="overflow-auto w-full md:w-[1000px] mx-auto border-2 rounded-b-lg">
-            <div v-if="taskCard == true" class="grid grid-cols-1 md:grid-cols-3 p-5">
+            <div v-if="taskCard == 'true'" class="grid grid-cols-1 md:grid-cols-3 p-5">
                 <div v-for="task in paginatedTasks" :key="task.id">
                     <UCard class="shadow mx-5 border-2 my-3">
                         <template #header>

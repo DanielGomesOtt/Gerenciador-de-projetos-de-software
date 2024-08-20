@@ -17,6 +17,7 @@ let isOpenModalRemoveMember = ref(false);
 let idRemoveUser = ref(0);
 let id_category = JSON.parse(localStorage.getItem('userStorage')).id_category;
 
+
 const changeVisibilityModalAddMember = () => {
     isOpen.value = false;
     visibilityModalAddMember.value = !visibilityModalAddMember.value;

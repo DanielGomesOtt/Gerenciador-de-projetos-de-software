@@ -1,5 +1,6 @@
 require('./database');
-require('dotenv').config()
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const homeRoute = require('../src/routes/homeRoute');
@@ -13,7 +14,7 @@ const app = express();
 
 app.use('/uploads', express.static('uploads'));
 app.use(cors());
-app.use(express.json())
+app.use(express.json());
 app.use(homeRoute);
 app.use(loginRoute);
 app.use(tokenRoute);

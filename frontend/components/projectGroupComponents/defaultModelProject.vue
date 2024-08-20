@@ -27,12 +27,13 @@ let myProjectData = ref([]);
 let idUser = JSON.parse(localStorage.getItem('userStorage')).id;
 let paginationLength = ref(0);
 let currentPagination = ref(0);
-let itemsPerPage = ref(5); 
+let itemsPerPage = ref(3); 
 let paginatedTasks = computed(() => {
     const start = (currentPagination.value - 1) * itemsPerPage.value;
     const end = start + itemsPerPage.value;
     return tasks.value.slice(start, end);
 });
+let taskCard = ref(true);
 
 
 const changeVisibilityCreateTaskModal = () => {
@@ -155,7 +156,7 @@ const checkTasksLimit = async () => {
         if(params.filter.length == 0 && params.status.length == 0 && params.type_task.length == 0 && params.search.length == 0 || params.filter.length > 0 && params.status.length == 0 && params.type_task.length == 0 && params.search.length == 0 ){
             getTasks();
         }else{
-            searchTasks()
+            searchTasks();
         }
 
     }catch(error){
@@ -167,6 +168,15 @@ const checkTasksLimit = async () => {
 const updatePagination = (page) => {
     currentPagination.value = page;
 }
+
+const changeTaskLayout = () => {
+    if(taskCard.value == true){
+        itemsPerPage.value = 3;
+    }else{
+        itemsPerPage.value = 5;
+    }
+}
+
 onBeforeMount(() => {
     checkTasksLimit();
     getMyProjectData();
@@ -274,10 +284,64 @@ onBeforeMount(() => {
                         <option value="completed">Completed</option>
                     </select>
                 </div>
+                <div class="mt-2">
+                    <select name="task-layout" id="task-layout" class="w-56 md:w-32 h-7 rounded-sm" v-model="taskCard" @change="changeTaskLayout">
+                        <option value="true">Card Layout</option>
+                        <option value="false">Table Layout</option>
+                    </select>
+                </div>
             </div>
         </div>
-        <div class="overflow-auto">
-            <table class="w-[1000px] border-t-0 border-2 border-gray-400 border-collapse text-sm mx-auto">
+        <div class="overflow-auto w-full md:w-[1000px] mx-auto border-2 rounded-b-lg">
+            <div v-if="taskCard == true" class="grid grid-cols-1 md:grid-cols-3 p-5">
+                <div v-for="task in paginatedTasks" :key="task.id">
+                    <UCard class="shadow mx-5 border-2 my-3">
+                        <template #header>
+                            <div class="py-1 px-2 h-full w-full text-center font-semibold capitalize bg-blue-500 text-white rounded-lg" v-if="task.status == 'in progress'">{{ task.status }}</div>
+                            <div class="py-1 px-2 h-full w-full text-center font-semibold capitalize bg-red-500 text-white rounded-lg" v-if="task.status == 'cancelled'">{{ task.status }}</div>
+                            <div class="py-1 px-2 h-full w-full text-center font-semibold capitalize bg-green-500 text-white rounded-lg" v-if="task.status == 'completed'">{{ task.status }}</div>
+                            <div class="py-1 px-2 h-full w-full text-center font-semibold capitalize bg-purple-500 text-white rounded-lg" v-if="task.status == 'urgent'">{{ task.status }}</div>
+                            <div class="py-1 px-2 h-full w-full text-center font-semibold capitalize bg-orange-500 text-white rounded-lg" v-if="task.status == 'overdue'">{{ task.status }}</div>
+                        </template>
+
+                        <div class="text-center font-bold border border-b-2 shadow">
+                            {{ task.title }}
+                        </div>
+
+                        <div class="text-center font-semibold text-base mt-2">
+                            {{ task.type_task.toUpperCase() }}
+                        </div>
+
+                        <template #footer>
+                            <div class="py-1 px-2 w-full bg-blue-500 border-2 border-gray-400 rounded-lg" v-if="task.status !== 'completed' && task.status !== 'cancelled' && myProjectData.administrator == true || task.status !== 'completed' && task.status !== 'cancelled' && task.id_user == idUser">
+                                <UButton
+                                    icon="i-heroicons-pencil-square-16-solid"
+                                    size="xs"
+                                    color="blue"
+                                    variant="solid"
+                                    label="Edit"
+                                    :trailing="false"
+                                    class="hover:bg-blue-500"
+                                    :onClick="() => {changeVisibilityUpdateTaskModal(task)}"
+                                />
+                            </div>
+                            <div class="py-1 px-2 w-full bg-green-500 border-2 border-gray-400 rounded-lg" v-if="task.status == 'completed' || task.status == 'cancelled' || myProjectData.administrator == false && task.id_user == idUser && task.status == 'cancelled' || myProjectData.administrator == false && task.id_user == idUser && task.status == 'completed'">
+                                <UButton
+                                    icon="i-heroicons-eye-solid"
+                                    size="xs"
+                                    color="green"
+                                    variant="solid"
+                                    label="Visualize"
+                                    :trailing="false"
+                                    class="hover:bg-green-500"
+                                    :onClick="() => {changeVisibilityUpdateTaskModal(task)}"
+                                />
+                            </div>
+                        </template>
+                    </UCard>
+                </div>
+            </div>
+            <table class="w-[1000px] border-t-0 border-2 border-gray-400 border-collapse text-sm mx-auto" v-else>
                 <thead>
                     <tr>
                         <th class="py-1 px-2 text-left border-2 border-gray-400">Status</th>

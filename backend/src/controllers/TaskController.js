@@ -27,7 +27,7 @@ async function getTasks(req, res) {
             }
         };
 
-        const tasks = await Task.findAll({ where: condition, order: [['id', 'DESC']] });
+        const tasks = await Task.findAll({ where: condition, order: [['expected_end_date']] });
 
         if (tasks && tasks.length > 0) {
             res.send(tasks);
@@ -153,7 +153,7 @@ async function searchTasks(req, res){
 
         const tasks = await Task.findAll({
             where: filter,
-            order: [['id', 'DESC']]
+            order: [['expected_end_date']]
         });
         res.send(tasks);
     }catch(error){

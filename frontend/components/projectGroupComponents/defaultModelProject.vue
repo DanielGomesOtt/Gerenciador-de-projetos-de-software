@@ -174,6 +174,10 @@ const changeTaskLayout = () => {
         itemsPerPage.value = 3;
     }else{
         itemsPerPage.value = 5;
+        paginationLength.value = Math.ceil(tasks.value.length / itemsPerPage.value);
+        if(currentPagination.value >  paginationLength.value){
+            currentPagination.value = 1;
+        }
     }
 }
 
@@ -292,10 +296,10 @@ onBeforeMount(() => {
                 </div>
             </div>
         </div>
-        <div class="overflow-auto w-full md:w-[1000px] mx-auto border-2 rounded-b-lg">
+        <div class="w-full md:w-[1000px] mx-auto border-2 rounded-b-lg">
             <div v-if="taskCard == 'true'" class="grid grid-cols-1 md:grid-cols-3 p-5">
                 <div v-for="task in paginatedTasks" :key="task.id">
-                    <UCard class="shadow mx-5 border-2 my-3">
+                    <UCard class="shadow mx-5 border-2 my-3 h-full">
                         <template #header>
                             <div class="py-1 px-2 h-full w-full text-center font-semibold capitalize bg-blue-500 text-white rounded-lg" v-if="task.status == 'in progress'">{{ task.status }}</div>
                             <div class="py-1 px-2 h-full w-full text-center font-semibold capitalize bg-red-500 text-white rounded-lg" v-if="task.status == 'cancelled'">{{ task.status }}</div>
@@ -304,11 +308,11 @@ onBeforeMount(() => {
                             <div class="py-1 px-2 h-full w-full text-center font-semibold capitalize bg-orange-500 text-white rounded-lg" v-if="task.status == 'overdue'">{{ task.status }}</div>
                         </template>
 
-                        <div class="text-center font-bold border border-b-2 shadow">
+                        <div class="font-bold border border-b-2 shadow h-[100px] p-2 overflow-y-auto rounded-lg text-center">
                             {{ task.title }}
                         </div>
 
-                        <div class="text-center font-semibold text-base mt-2">
+                        <div class="text-center font-semibold text-base mt-2 h-10 flex items-center justify-center">
                             {{ task.type_task.toUpperCase() }}
                         </div>
 
@@ -391,7 +395,7 @@ onBeforeMount(() => {
             <UPagination
                 
                 v-model="currentPagination" 
-                :page-count="5" 
+                :page-count="itemsPerPage" 
                 :total="tasks.length"
                 :onChange="updatePagination"
                 show-last 

@@ -16,7 +16,16 @@ let visibilityModalAddMember = ref(false);
 let isOpenModalRemoveMember = ref(false);
 let idRemoveUser = ref(0);
 let id_category = JSON.parse(localStorage.getItem('userStorage')).id_category;
+let chat = ref('off');
 
+
+const changeChatVisibility = () => {
+    if(chat.value == 'off'){
+        chat.value = 'on';
+    }else{
+        chat.value = 'off';
+    }
+}
 
 const changeVisibilityModalAddMember = () => {
     isOpen.value = false;
@@ -119,7 +128,13 @@ onBeforeMount(() => {
                 >
                     
                 <template #header>
-                    <div class="bg-blue-400 flex justify-between">
+                    <div class="bg-blue-400 flex justify-between" v-if="chat == 'on'">
+                        <div class="flex">
+
+                        </div>
+                        <UButton color="white" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" @click="changeChatVisibility" />
+                    </div>
+                    <div class="bg-blue-400 flex justify-between" v-if="chat == 'off'">
                         <button class="text-white" v-if="myProjectData.administrator" @click="changeVisibilityModalAddMember"><Icon name="mdi:plus" color="white" size="1.8em"/>New Member</button>
                         <UButton
                             color="gray"
@@ -134,7 +149,7 @@ onBeforeMount(() => {
                     </div>
                 </template>
                 <div class="h-screen snap-y">
-                    <div v-for="member in members" :key="member.id" class="mb-5">
+                    <div v-for="member in members" :key="member.id" class="mb-5" v-if="chat == 'off'">
                         <UCard
                             class="flex flex-col flex-1"
                             :ui="{ header:{ background: 'bg-blue-400' }, body: { base: 'flex-1' }, background:'bg-slate-200', shadow: 'shadow-lg', ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }"
@@ -155,6 +170,7 @@ onBeforeMount(() => {
                                     </div>
                                 </div>
                                 <div class="flex justify-around items-center">
+                                    <button type="button" class="hover:bg-blue-600 bg-blue-400 text-white text-sm py-1 px-2 rounded-lg mx-2" @click="changeChatVisibility">Chat</button>
                                     <button type="button" class="hover:bg-red-600 bg-red-400 text-white text-sm p-1 rounded-lg" @click="changeVisibilityModalRemoveMember(member.id)" v-if="myProjectData.administrator">Remove</button>
                                 </div>
                             </div>

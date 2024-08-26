@@ -27,7 +27,7 @@ async function getTasks(req, res) {
             }
         };
 
-        const tasks = await Task.findAll({ where: condition, order: [['expected_end_date']] });
+        const tasks = await Task.findAll({ where: condition, order: [['expected_end_date', 'ASC']] });
 
         if (tasks && tasks.length > 0) {
             res.send(tasks);

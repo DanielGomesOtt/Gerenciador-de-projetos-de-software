@@ -1,6 +1,5 @@
-require('./database');
 require('dotenv').config();
-
+require('./database');
 const express = require('express');
 const cors = require('cors');
 const homeRoute = require('../src/routes/homeRoute');
@@ -10,11 +9,22 @@ const passwordRecoveryRoute = require('../src/routes/passwordRecoveryRoute');
 const accountRoute = require('../src/routes/accountRoute');
 const projectRoute = require('../src/routes/projectRoute');
 const taskRoute = require('../src/routes/taskRoute');
-const app = express();
+const { createServer } = require('node:http');
+const { Server } = require('socket.io');
+const socketHandlers = require('./socketHandlers');
 
-app.use('/uploads', express.static('uploads'));
+const app = express();
+const server = createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: process.env.CLIENT_BASE_URL
+    }
+});
+
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/uploads', express.static('uploads'));
 app.use(homeRoute);
 app.use(loginRoute);
 app.use(tokenRoute);
@@ -22,6 +32,7 @@ app.use(passwordRecoveryRoute);
 app.use(accountRoute);
 app.use(projectRoute);
 app.use(taskRoute);
-app.use(express.urlencoded({ extended: true }));
 
-app.listen(process.env.APP_PORT);
+socketHandlers(io);
+
+server.listen(process.env.APP_PORT);

@@ -3,47 +3,43 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('Project_invite', {
+    await queryInterface.createTable('Message', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false
       },
-      id_user: {
+      id_sender: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'user', // Nome da tabela referenciada
-          key: 'id'  // Nome da coluna referenciada
+          model: 'user',
+          key: 'id'
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
-      id_project: {
+      id_recipient: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'project', // Nome da tabela referenciada
-          key: 'id'  // Nome da coluna referenciada
+          model: 'user',
+          key: 'id'
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
-      accept: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: false
+      message: {
+        type: Sequelize.TEXT,
+        allowNull:false
       },
-      reject: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: false
+      conversation: {
+        type: Sequelize.STRING,
       },
-      administrator_invite: {
-        type: Sequelize.BOOLEAN,
-        allowNull: false,
-        defaultValue: false
+      status: {
+        type: Sequelize.INTEGER,
+        allowNull: false
       },
       created_at: {
         type: Sequelize.DATE,
@@ -57,6 +53,6 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('Project_invite');
+    await queryInterface.dropTable('Message');
   }
 };

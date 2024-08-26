@@ -299,7 +299,7 @@ onBeforeMount(() => {
         <div class="w-full md:w-[1000px] mx-auto border-2 rounded-b-lg">
             <div v-if="taskCard == 'true'" class="grid grid-cols-1 md:grid-cols-3 p-5">
                 <div v-for="task in paginatedTasks" :key="task.id">
-                    <UCard class="shadow mx-5 border-2 my-3 h-full">
+                    <UCard class="shadow mx-5 border-2 mt-3 h-full">
                         <template #header>
                             <div class="py-1 px-2 h-full w-full text-center font-semibold capitalize bg-blue-500 text-white rounded-lg" v-if="task.status == 'in progress'">{{ task.status }}</div>
                             <div class="py-1 px-2 h-full w-full text-center font-semibold capitalize bg-red-500 text-white rounded-lg" v-if="task.status == 'cancelled'">{{ task.status }}</div>
@@ -391,7 +391,7 @@ onBeforeMount(() => {
                 </tbody>
             </table>
         </div>
-        <div class="flex justify-center mt-2">
+        <div class="flex justify-center my-2">
             <UPagination
                 
                 v-model="currentPagination" 

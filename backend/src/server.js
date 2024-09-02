@@ -9,9 +9,10 @@ const passwordRecoveryRoute = require('../src/routes/passwordRecoveryRoute');
 const accountRoute = require('../src/routes/accountRoute');
 const projectRoute = require('../src/routes/projectRoute');
 const taskRoute = require('../src/routes/taskRoute');
+const messageRoute = require('../src/routes/messageRoute');
 const { createServer } = require('node:http');
 const { Server } = require('socket.io');
-const socketHandlers = require('./socketHandlers');
+const socketHandlers = require('./websocket/socketHandlers');
 
 const app = express();
 const server = createServer(app);
@@ -32,6 +33,7 @@ app.use(passwordRecoveryRoute);
 app.use(accountRoute);
 app.use(projectRoute);
 app.use(taskRoute);
+app.use(messageRoute);
 
 socketHandlers(io);
 

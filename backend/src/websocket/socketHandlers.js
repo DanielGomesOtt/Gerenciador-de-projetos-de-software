@@ -1,4 +1,4 @@
-const Message = require('./models/Message');
+const Message = require('../models/Message');
 
 module.exports = (io) => {    
     const userSocketMap = new Map();
@@ -20,7 +20,7 @@ module.exports = (io) => {
             const recipientSocketId = userSocketMap.get(recipientId);
     
             if (recipientSocketId) {
-                io.to(recipientSocketId).emit('receive_message', {
+                socket.to(recipientSocketId).emit('receive_message', {
                     senderId,
                     message,
                 });
@@ -29,22 +29,22 @@ module.exports = (io) => {
                     'id_sender': senderId,
                     'message': message,
                     'id_recipient': recipientId,
-                    'status': 1
+                    'status': 1,
+                    'message_read': false,
                 };
 
                 await Message.create(data);
-                console.log(message);
             } else {
+                
                 let data = {
                     'id_sender': senderId,
                     'message': message,
                     'id_recipient': recipientId,
-                    'status': 1
+                    'status': 1,
+                    'message_read': false,
                 };
 
                 await Message.create(data);
-                console.log(message);
-                console.log('Usuário destinatário não está conectado.');
             }
         });
     });

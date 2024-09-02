@@ -4,7 +4,7 @@ import { Icon } from '#components';
 import axios from 'axios';
 import AddMemberForm from '~/components/projectGroupComponents/AddMemberForm.vue';
 import DefaultModelProject from '~/components/projectGroupComponents/DefaultModelProject.vue';
-import { connectSocket, sendMessage } from '../utils/socket';
+import { connectSocket, sendMessage, receiveMessage, disconnectSocket } from '../utils/socket';
 
 const route = useRoute();
 const runtimeConfig = useRuntimeConfig();
@@ -23,18 +23,47 @@ let memberChatAvatarPath = ref('');
 let memberChatId = ref('');
 let chatMessage = ref('');
 let idUser = JSON.parse(localStorage.getItem('userStorage')).id;
+let conversationMessages = ref([]);
+let quantityUnreadMessages = ref([]);
 
+
+const getNumberOfUnreadMessages = async () => {
+    try{
+        const response = await axios.get(runtimeConfig.public.BASE_URL + 'unread_messages', {
+            headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
+                id_user: JSON.parse(localStorage.getItem('userStorage')).id,
+            }
+        });
+        
+        response.data.forEach((message) => {
+            let unread = {
+                'id_sender': message.id_sender,
+            };
+
+            quantityUnreadMessages.value.push(unread);
+        }); 
+    }catch(error){
+        console.log(error);
+    }
+}
+
+const handleMessage = (message) => {
+    conversationMessages.value.push([message.id_sender, message.message]);
+}
 
 const changeChatVisibility = (id, name, email, avatarPath) => {
-    if(chat.value == 'off'){
-        chat.value = 'on';
-    }else{
-        chat.value = 'off';
-    }
     memberChatId.value = id;
     memberChatName.value = name;
     memberChatEmail.value = email;
     memberChatAvatarPath.value = avatarPath;
+    if(chat.value == 'off'){
+        getMessages();
+        chat.value = 'on';
+    }else{
+        conversationMessages.value = [];
+        chat.value = 'off';
+    }
 }
 
 const changeVisibilityModalAddMember = () => {
@@ -53,6 +82,12 @@ const changeVisibilityModalRemoveMember = (id_user) => {
 
 const openSlideOver = () => {
     isOpen.value = !isOpen.value;
+}
+
+const sendMessageToMember = () => {
+    sendMessage(JSON.parse(localStorage.getItem('userStorage')).id, memberChatId.value, chatMessage.value);
+    conversationMessages.value.push([JSON.parse(localStorage.getItem('userStorage')).id, chatMessage.value]);
+    chatMessage.value = '';
 }
 
 const getMyProjectData = async () => {
@@ -116,11 +151,46 @@ const removeMemberFromProject = async (event) => {
     }
 }
 
+const getMessages = async () => {
+    try{
+        let query = {
+            'id_sender': JSON.parse(localStorage.getItem('userStorage')).id,
+            'id_recipient': memberChatId.value,
+        };
+
+        let response = await axios.get(runtimeConfig.public.BASE_URL + 'message', {
+            headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
+               'id_sender': query.id_sender,
+               'id_recipient': query.id_recipient
+            }
+        });
+        
+        if(response && response.data){
+            conversationMessages.value = [];
+            response.data.forEach(message => {
+                conversationMessages.value.push([message.id_sender, message.message]);
+            });
+        }
+    }catch(error){
+        console.log(error);
+    }
+}
+
 onBeforeMount(() => {
     connectSocket(runtimeConfig.public.BASE_URL);
     getUsersByProject();
     getMyProjectData();
 });
+
+onMounted(() => {
+    receiveMessage(handleMessage);
+    getNumberOfUnreadMessages();
+});
+
+onUnmounted(() => {
+    disconnectSocket();
+})
 
 </script>
 
@@ -131,11 +201,11 @@ onBeforeMount(() => {
             <DefaultModelProject :myProjectData="myProjectData"/>
         </div>
         <div class="flex items-center" v-if="id_category > 1">
-            <button @click="openSlideOver" class="mr-2 absolute right-0 top-20"><Icon name="mdi:chevron-left-circle" size="2.5em" class="text-blue-400" /></button>
+            <button @click="openSlideOver" class="mr-2 fixed right-5 bottom-5"><Icon name="mdi:chat" size="2.8em" class="text-white bg-blue-400 rounded-full p-2" /></button>
             <USlideover v-model="isOpen">
                 <UCard
-                    class="flex flex-col flex-1"
-                    :ui="{ header:{ background: 'bg-blue-400' }, body: { base: 'flex-1' }, ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }"
+                    class="flex flex-col flex-1 overflow-auto"
+                    :ui="{ header:{ background: 'bg-blue-400' }, body: { base: 'flex-1'}, ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }"
                 >
                     
                     <template #header>
@@ -170,7 +240,8 @@ onBeforeMount(() => {
                             />
                         </div>
                     </template>
-                    <div class="h-screen snap-y">
+                    
+                    <div>
                         <div v-for="member in members" :key="member.id" class="mb-5" v-if="chat == 'off'">
                             <UCard
                                 class="flex flex-col flex-1"
@@ -191,34 +262,44 @@ onBeforeMount(() => {
                                             </span>
                                         </div>
                                     </div>
-                                    <div class="flex justify-around items-center">
+                                    <div class="flex justify-around items-center mt-2">
                                         <button type="button" class="hover:bg-blue-600 bg-blue-400 text-white text-sm py-1 px-2 rounded-lg mx-2" @click="changeChatVisibility(member.id, member.name, member.email, member.avatar_path)">Chat</button>
                                         <button type="button" class="hover:bg-red-600 bg-red-400 text-white text-sm p-1 rounded-lg" @click="changeVisibilityModalRemoveMember(member.id)" v-if="myProjectData.administrator">Remove</button>
                                     </div>
                                 </div>
                             </UCard>
                         </div>
+                        <div v-for="message in conversationMessages" :key="message[1]" class="mb-5 overflow-y-auto">
+                            <div class="px-5 bg-green-300 float-end text-left rounded-xl" v-if="message[0] == idUser">
+                                {{ message[1] }}
+                            </div>
+                            <div class="px-5 bg-blue-300 float-start text-left rounded-xl" v-else>
+                                {{ message[1] }}
+                            </div>
+                        </div>
                     </div>
+                    
                     <template #footer>
                         <div
-                            class="w-full flex items-center absolute inset-x-0 bottom-0 p-3 bg-white border-t border-slate-300"
+                            class="w-full flex items-center absolute bottom-0 left-0 p-3 bg-white border-t border-slate-300"
                             v-if="chat == 'on'"
                         >
                             <input
-                            type="text"
-                            class="w-5/6 h-10 p-3 border-2 border-slate-400 rounded-l"
-                            placeholder="Type a message"
-                            v-model="chatMessage"
+                                type="text"
+                                class="flex-grow h-10 p-3 border-2 border-slate-400 rounded-l"
+                                placeholder="Type a message"
+                                v-model="chatMessage"
                             />
                             <button
                                 type="button"
-                                class="w-1/6 h-10 p-3 bg-blue-600 text-white flex items-center justify-center rounded-r"
-                                @click="sendMessage(runtimeConfig.public.BASE_URL, idUser, memberChatId, chatMessage)"
+                                class="h-10 p-3 bg-blue-600 text-white flex items-center justify-center rounded-r"
+                                @click="sendMessageToMember"
                             >
                                 <Icon name="mdi:send-variant" size="1em" />
                             </button>
                         </div>
                     </template>
+
                 </UCard>
             </USlideover>
         </div>

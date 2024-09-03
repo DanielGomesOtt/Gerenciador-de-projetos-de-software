@@ -26,6 +26,26 @@ let idUser = JSON.parse(localStorage.getItem('userStorage')).id;
 let conversationMessages = ref([]);
 let quantityUnreadMessages = ref([]);
 
+const setMessageNotification = (id_user) => {
+    let quantity = 0;
+    quantityUnreadMessages.value.filter((user) => {
+        if(id_user == user.id_sender){
+            quantity++;
+        }
+    });
+    return quantity;
+}
+
+const updateMessageToRead = async (id_user) => {
+    let data = {
+        'id_sender': id_user,
+        'id_recipient': JSON.parse(localStorage.getItem('userStorage')).id
+    };
+
+    const response = await axios.patch(runtimeConfig.public.BASE_URL + 'unread_messages', data);
+
+    quantityUnreadMessages.value = quantityUnreadMessages.value.filter(id_sender => id_sender !== id_user);
+}
 
 const getNumberOfUnreadMessages = async () => {
     try{
@@ -40,9 +60,10 @@ const getNumberOfUnreadMessages = async () => {
             let unread = {
                 'id_sender': message.id_sender,
             };
-
+            quantityUnreadMessages.value = [];
             quantityUnreadMessages.value.push(unread);
         }); 
+        
     }catch(error){
         console.log(error);
     }
@@ -50,6 +71,11 @@ const getNumberOfUnreadMessages = async () => {
 
 const handleMessage = (message) => {
     conversationMessages.value.push([message.id_sender, message.message]);
+    let unread = {
+        'id_sender': message.id_sender
+    };
+    quantityUnreadMessages.value.push(unread);
+    setMessageNotification(message.id_sender);
 }
 
 const changeChatVisibility = (id, name, email, avatarPath) => {
@@ -201,7 +227,9 @@ onUnmounted(() => {
             <DefaultModelProject :myProjectData="myProjectData"/>
         </div>
         <div class="flex items-center" v-if="id_category > 1">
-            <button @click="openSlideOver" class="mr-2 fixed right-5 bottom-5"><Icon name="mdi:chat" size="2.8em" class="text-white bg-blue-400 rounded-full p-2" /></button>
+            <UChip size="2xl" class="mr-2 fixed right-5 bottom-14">
+                <button @click="openSlideOver" class="mr-2 fixed right-5 bottom-5"><Icon name="mdi:chat" size="2.8em" class="text-white bg-blue-400 rounded-full p-2" /></button>
+            </UChip>
             <USlideover v-model="isOpen">
                 <UCard
                     class="flex flex-col flex-1 overflow-auto"
@@ -243,10 +271,39 @@ onUnmounted(() => {
                     
                     <div>
                         <div v-for="member in members" :key="member.id" class="mb-5" v-if="chat == 'off'">
+                            <UChip size="3xl" class="w-full" v-if="setMessageNotification(member.id) > 0">
+                                <UCard
+                                    class="flex flex-col flex-1"
+                                    :ui="{ header:{ background: 'bg-blue-400' }, body: { base: 'flex-1' }, background:'bg-slate-200', shadow: 'shadow-lg', ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }"
+                                >
+                                    <div class="flex flex-wrap justify-between">
+                                        <div class="flex flex-wrap items-center">
+                                            <div>
+                                                <Icon name="mdi:user" size="3em" v-if="member.avatar_path == null || member.avatar_path.length == 0"/>
+                                                <img class="w-[3em] h-[3em] object-cover object-center rounded-full" :src="runtimeConfig.public.BASE_URL + member.avatar_path.replace('\\', '/')" v-if="member.avatar_path && member.avatar_path.length > 0"/>
+                                            </div>
+                                            <div class="grid grid-cols-1">
+                                                <span class="font-bold text-base md:text-lg ml-2">
+                                                    {{ member.name }}
+                                                </span>
+                                                <span class="font-semibold text-sm md:text-base ml-2">
+                                                    {{ member.email }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-around items-center mt-2">
+                                            <button type="button" class="hover:bg-blue-600 bg-blue-400 text-white text-sm py-1 px-2 rounded-lg mx-2" @click="changeChatVisibility(member.id, member.name, member.email, member.avatar_path)">Chat</button>
+                                            <button type="button" class="hover:bg-red-600 bg-red-400 text-white text-sm p-1 rounded-lg" @click="changeVisibilityModalRemoveMember(member.id)" v-if="myProjectData.administrator">Remove</button>
+                                        </div>
+                                    </div>
+                                </UCard>
+                            </UChip>
+                            
                             <UCard
                                 class="flex flex-col flex-1"
                                 :ui="{ header:{ background: 'bg-blue-400' }, body: { base: 'flex-1' }, background:'bg-slate-200', shadow: 'shadow-lg', ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }"
-                            >
+                                v-else
+                                >
                                 <div class="flex flex-wrap justify-between">
                                     <div class="flex flex-wrap items-center">
                                         <div>
@@ -268,6 +325,7 @@ onUnmounted(() => {
                                     </div>
                                 </div>
                             </UCard>
+                                
                         </div>
                         <div v-for="message in conversationMessages" :key="message[1]" class="mb-5 overflow-y-auto">
                             <div class="px-5 bg-green-300 float-end text-left rounded-xl" v-if="message[0] == idUser">
@@ -289,6 +347,8 @@ onUnmounted(() => {
                                 class="flex-grow h-10 p-3 border-2 border-slate-400 rounded-l"
                                 placeholder="Type a message"
                                 v-model="chatMessage"
+                                @keypress.enter="sendMessageToMember"
+                                @focus="updateMessageToRead(idUser)"
                             />
                             <button
                                 type="button"

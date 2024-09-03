@@ -39,7 +39,7 @@ async function getConversationMessages(req, res){
 
 async function getNumberOfUnreadMessages(req, res){
     try{
-        const unread_messages = await Message.count({
+        const unread_messages = await Message.findAll({
             where: {
                 message_read: false,
                 id_recipient: req.headers.id_user,
@@ -48,11 +48,30 @@ async function getNumberOfUnreadMessages(req, res){
         });
 
         if(unread_messages){
-            res.send([unread_messages]);
+            res.send(unread_messages);
         }
     }catch(error){
         res.status(500).json({message: error});
     }
 }
 
-module.exports = { getConversationMessages, getNumberOfUnreadMessages };
+async function updateMessageToRead(req, res){
+    try{
+        let data = {
+            'message_read': true
+        };
+
+        await Message.update(data, {
+            where: {
+                id_sender: req.body.id_sender,
+                id_recipient: req.body.id_recipient
+            }
+        });
+        res.status(200).json({ message: 'Success in updating the messages' });
+    }catch(error){
+        console.log(error)
+        res.status(500).json({ message: error});
+    }
+}
+
+module.exports = { getConversationMessages, getNumberOfUnreadMessages, updateMessageToRead };

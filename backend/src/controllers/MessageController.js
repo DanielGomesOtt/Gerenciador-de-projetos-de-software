@@ -41,7 +41,7 @@ async function getNumberOfUnreadMessages(req, res){
     try{
         const unread_messages = await Message.findAll({
             where: {
-                message_read: false,
+                message_read: 0,
                 id_recipient: req.headers.id_user,
                 status: 1
             }
@@ -57,19 +57,12 @@ async function getNumberOfUnreadMessages(req, res){
 
 async function updateMessageToRead(req, res){
     try{
-        let data = {
-            'message_read': true
-        };
-
-        await Message.update(data, {
-            where: {
-                id_sender: req.body.id_sender,
-                id_recipient: req.body.id_recipient
-            }
+        req.body.status = 1;
+        await Message.update({ message_read: 1 }, {
+            where: req.body
         });
         res.status(200).json({ message: 'Success in updating the messages' });
     }catch(error){
-        console.log(error)
         res.status(500).json({ message: error});
     }
 }

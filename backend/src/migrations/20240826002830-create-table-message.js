@@ -42,9 +42,9 @@ module.exports = {
         allowNull: false
       },
       message_read: {
-        type: Sequelize.BOOLEAN,
+        type: Sequelize.INTEGER,
         allowNull: false,
-        defaultValue: false
+        defaultValue: 0
       },
       created_at: {
         type: Sequelize.DATE,

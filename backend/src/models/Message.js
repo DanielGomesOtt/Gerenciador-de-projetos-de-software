@@ -8,7 +8,7 @@ class Message extends Model {
       message: DataTypes.TEXT,
       conversation: DataTypes.STRING,
       status: DataTypes.INTEGER,
-      message_read: DataTypes.BOOLEAN,
+      message_read: DataTypes.INTEGER,
     },
     {
       sequelize,

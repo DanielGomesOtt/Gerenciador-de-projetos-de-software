@@ -46,6 +46,12 @@ module.exports = {
         allowNull: false,
         defaultValue: 0
       },
+      sender_delete: {
+        type: Sequelize.INTEGER,
+      },
+      recipient_delete: {
+        type: Sequelize.INTEGER,
+      },
       created_at: {
         type: Sequelize.DATE,
         allowNull: false

@@ -14,12 +14,16 @@ export const connectSocket = (socketURL) => {
     return socket;
 };
 
-export const sendMessage = (senderId, recipientId, message) => {
+export const sendMessage = (senderId, recipientId, message, callback) => {
     if (socket) {
         socket.emit('send_message', {
             senderId: senderId,
             recipientId: recipientId,
             message: message
+        }, (response) => {
+            if(callback){
+                callback(response);
+            }
         });
     } else {
         console.error('Socket not connected. Please call connectSocket first.');

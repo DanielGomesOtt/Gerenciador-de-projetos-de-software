@@ -6,6 +6,7 @@ async function getConversationMessages(req, res){
     try{
         let id_sender = req.headers.id_sender;
         let id_recipient = req.headers.id_recipient;
+        let id_user = req.headers.id_user;
         const messages = await Message.findAll({
             where: {
                 [Op.and]: [
@@ -21,10 +22,34 @@ async function getConversationMessages(req, res){
                             { id_recipient: id_sender }
                         ]
                     },
-                    {status: 1}
+                    {
+                        status: 1
+                    },
+                    {
+                        [Op.and]: [
+                            {
+                                [Op.or]: [
+                                    { sender_delete: { [Op.ne]: id_user } },
+                                    { sender_delete: null }
+                                ]
+                            },
+                            {
+                                [Op.or]: [
+                                    { recipient_delete: { [Op.ne]: id_user } },
+                                    { recipient_delete: null }
+                                ]
+                            }
+                        ]
+                    }
                 ]
-            }
+            },
+            order: [
+                ['id', 'ASC']
+            ]
         });
+        
+        
+        
         
         if(messages){
             res.send(messages);
@@ -43,7 +68,15 @@ async function getNumberOfUnreadMessages(req, res){
             where: {
                 message_read: 0,
                 id_recipient: req.headers.id_user,
-                status: 1
+                status: 1,
+                [Op.or]: [
+                    { sender_delete: { [Op.ne]: req.headers.id_user } },
+                    { sender_delete: null }
+                ],
+                [Op.or]: [
+                    { recipient_delete: { [Op.ne]: req.headers.id_user } },
+                    { recipient_delete: null }
+                ]  
             }
         });
 
@@ -67,4 +100,26 @@ async function updateMessageToRead(req, res){
     }
 }
 
-module.exports = { getConversationMessages, getNumberOfUnreadMessages, updateMessageToRead };
+async function deleteMessage(req, res){
+    try{
+
+        if(req.body.type_delete == 'sender'){
+            await Message.update({sender_delete: req.body.id_user}, {
+                where: {
+                    'id': req.body.id_message
+                }
+            });
+        }else{
+            await Message.update({recipient_delete: req.body.id_user}, {
+                where: {
+                    'id': req.body.id_message
+                }
+            });
+        }
+        res.status(200).json()
+    }catch(error){
+        res.status(500).json({ message: error });
+    }
+}
+
+module.exports = { getConversationMessages, getNumberOfUnreadMessages, updateMessageToRead, deleteMessage };

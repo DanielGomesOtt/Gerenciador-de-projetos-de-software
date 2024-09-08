@@ -9,6 +9,8 @@ class Message extends Model {
       conversation: DataTypes.STRING,
       status: DataTypes.INTEGER,
       message_read: DataTypes.INTEGER,
+      sender_delete: DataTypes.INTEGER,
+      recipient_delete: DataTypes.INTEGER,
     },
     {
       sequelize,

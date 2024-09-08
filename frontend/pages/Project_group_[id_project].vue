@@ -25,15 +25,16 @@ let chatMessage = ref('');
 let idUser = JSON.parse(localStorage.getItem('userStorage')).id;
 let conversationMessages = ref([]);
 let quantityUnreadMessages = ref([]);
-let renderAgain = ref(0);
+
 
 const setMessageNotification = (id_user) => {
     let quantity = 0;
-    quantityUnreadMessages.value.filter((user) => {
-        if(id_user == user.id_sender){
+    quantityUnreadMessages.value.forEach((message) => {
+        if(id_user == message.id_sender){
             quantity++;
         }
     });
+
     return quantity;
 }
 
@@ -45,7 +46,7 @@ const updateMessageToRead = async (id_user) => {
 
     const response = await axios.patch(runtimeConfig.public.BASE_URL + 'unread_messages', data);
 
-    quantityUnreadMessages.value = quantityUnreadMessages.value.filter(id_sender => id_sender !== id_user);
+    quantityUnreadMessages.value = quantityUnreadMessages.value.filter((user) => user.id_sender !== id_user);
 }
 
 const getNumberOfUnreadMessages = async () => {
@@ -71,13 +72,14 @@ const getNumberOfUnreadMessages = async () => {
 }
 
 const handleMessage = (message) => {
-    conversationMessages.value.push([message.id_sender, message.message]);
+    if(memberChatId.value == message.senderId){
+        conversationMessages.value.push([message.senderId, message.message, message.id]);
+    }
     let unread = {
-        'id_sender': message.id_sender
+        'id_sender': message.senderId
     };
     quantityUnreadMessages.value.push(unread);
-    setMessageNotification(message.id_sender);
-    renderAgain.value += 1;
+    setMessageNotification(message.senderId);
 }
 const changeChatVisibility = (id, name, email, avatarPath) => {
     memberChatId.value = id;
@@ -112,9 +114,10 @@ const openSlideOver = () => {
 }
 
 const sendMessageToMember = () => {
-    sendMessage(JSON.parse(localStorage.getItem('userStorage')).id, memberChatId.value, chatMessage.value);
-    conversationMessages.value.push([JSON.parse(localStorage.getItem('userStorage')).id, chatMessage.value]);
-    chatMessage.value = '';
+    sendMessage(JSON.parse(localStorage.getItem('userStorage')).id, memberChatId.value, chatMessage.value, (response) => {
+        conversationMessages.value.push([JSON.parse(localStorage.getItem('userStorage')).id, chatMessage.value, response.messageId]);
+        chatMessage.value = '';
+    });
 }
 
 const getMyProjectData = async () => {
@@ -189,14 +192,15 @@ const getMessages = async () => {
             headers: {
                 Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
                'id_sender': query.id_sender,
-               'id_recipient': query.id_recipient
+               'id_recipient': query.id_recipient,
+               'id_user': JSON.parse(localStorage.getItem('userStorage')).id,
             }
         });
         
         if(response && response.data){
             conversationMessages.value = [];
             response.data.forEach(message => {
-                conversationMessages.value.push([message.id_sender, message.message]);
+                conversationMessages.value.push([message.id_sender, message.message, message.id]);
             });
         }
     }catch(error){
@@ -204,8 +208,17 @@ const getMessages = async () => {
     }
 }
 
-const hasMessageNotification = (member) => {
-    quantityUnreadMessages.value.includes({'id_sender': member.id})
+const deleteMessage = async (id_message, type_delete) => {
+    try{
+        const response = await axios.patch(runtimeConfig.public.BASE_URL + 'delete_message', { 'id_message': id_message, 'id_user': JSON.parse(localStorage.getItem('userStorage')).id, 'type_delete': type_delete }, {
+            headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`
+            }
+        });
+        getMessages();
+    }catch(error){
+        console.log(error);
+    }
 }
 
 onBeforeMount(() => {
@@ -276,43 +289,21 @@ onUnmounted(() => {
                     </template>
                     
                     <div>
-                        <div v-for="member in members" :key="() => renderAgain += member.id" class="mb-5" v-if="chat == 'off'">
-                            <UChip size="3xl" class="w-full" v-if="setMessageNotification(member.id) > 0">
-                                <UCard
-                                    class="flex flex-col flex-1"
-                                    :ui="{ header:{ background: 'bg-blue-400' }, body: { base: 'flex-1' }, background:'bg-slate-200', shadow: 'shadow-lg', ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }"
-                                >
-                                    <div>
-                                        <div class="flex flex-wrap items-center">
-                                            <div>
-                                                <Icon name="mdi:user" size="3em" v-if="member.avatar_path == null || member.avatar_path.length == 0"/>
-                                                <img class="w-[3em] h-[3em] object-cover object-center rounded-full" :src="runtimeConfig.public.BASE_URL + member.avatar_path.replace('\\', '/')" v-if="member.avatar_path && member.avatar_path.length > 0"/>
-                                            </div>
-                                            <div class="grid grid-cols-1">
-                                                <span class="font-bold text-base md:text-lg ml-2">
-                                                    {{ member.name }}
-                                                </span>
-                                                <span class="font-semibold text-sm md:text-base ml-2">
-                                                    {{ member.email }}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="flex items-center mt-2">
-                                            <button type="button" class="hover:bg-blue-600 bg-blue-400 text-white text-sm py-1 px-2 rounded-lg mx-2" @click="changeChatVisibility(member.id, member.name, member.email, member.avatar_path)">Chat</button>
-                                            <button type="button" class="hover:bg-red-600 bg-red-400 text-white text-sm p-1 rounded-lg" @click="changeVisibilityModalRemoveMember(member.id)" v-if="myProjectData.administrator">Remove</button>
-                                        </div>
-                                    </div>
-                                </UCard>
-                            </UChip>
+                        <div v-for="member in members" :key="member.id" class="mb-5" v-if="chat == 'off'">
                             
                             <UCard
                                 class="flex flex-col flex-1"
                                 :ui="{ header:{ background: 'bg-blue-400' }, body: { base: 'flex-1' }, background:'bg-slate-200', shadow: 'shadow-lg', ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }"
-                                v-else
-                                >
-                                <div class="flex flex-wrap justify-between">
+                            >
+                                <div>
                                     <div class="flex flex-wrap items-center">
-                                        <div>
+                                        <div v-if="setMessageNotification(member.id) > 0">
+                                            <UChip size="xl" class="w-full">
+                                                <Icon name="mdi:user" size="3em" v-if="member.avatar_path == null || member.avatar_path.length == 0"/>
+                                                <img class="w-[3em] h-[3em] object-cover object-center rounded-full" :src="runtimeConfig.public.BASE_URL + member.avatar_path.replace('\\', '/')" v-if="member.avatar_path && member.avatar_path.length > 0"/>
+                                            </UChip>
+                                        </div>
+                                        <div v-else>
                                             <Icon name="mdi:user" size="3em" v-if="member.avatar_path == null || member.avatar_path.length == 0"/>
                                             <img class="w-[3em] h-[3em] object-cover object-center rounded-full" :src="runtimeConfig.public.BASE_URL + member.avatar_path.replace('\\', '/')" v-if="member.avatar_path && member.avatar_path.length > 0"/>
                                         </div>
@@ -325,20 +316,35 @@ onUnmounted(() => {
                                             </span>
                                         </div>
                                     </div>
-                                    <div class="flex justify-around items-center mt-2">
+                                    <div class="flex items-center mt-2">
                                         <button type="button" class="hover:bg-blue-600 bg-blue-400 text-white text-sm py-1 px-2 rounded-lg mx-2" @click="changeChatVisibility(member.id, member.name, member.email, member.avatar_path)">Chat</button>
                                         <button type="button" class="hover:bg-red-600 bg-red-400 text-white text-sm p-1 rounded-lg" @click="changeVisibilityModalRemoveMember(member.id)" v-if="myProjectData.administrator">Remove</button>
                                     </div>
                                 </div>
                             </UCard>
-                                
                         </div>
                         <div v-for="message in conversationMessages" :key="message[1]" class="mb-5 overflow-y-auto" v-if="chat == 'on'">
-                            <div class="px-5 bg-green-300 float-end text-left rounded-xl" v-if="message[0] == idUser">
+                            <div class="px-5 bg-green-300 float-end text-left rounded-xl flex" v-if="message[0] == idUser">
                                 {{ message[1] }}
+                                <UPopover class="ml-2">
+                                    <UButton trailing-icon="i-heroicons-chevron-down-20-solid" class="bg-green-300 hover:bg-green-300" />
+                                    <template #panel>
+                                        <div class="max-h-48 overflow-y-auto">
+                                            <button class="p-1 bg-red-300 hover:bg-red-500 text-white" @click="deleteMessage(message[2], 'sender')">Delete message</button>
+                                        </div>
+                                    </template>
+                                </UPopover>
                             </div>
-                            <div class="px-5 bg-blue-300 float-start text-left rounded-xl" v-else>
+                            <div class="px-5 bg-blue-300 float-start text-left rounded-xl flex" v-else>
                                 {{ message[1] }}
+                                <UPopover class="ml-2">
+                                    <UButton trailing-icon="i-heroicons-chevron-down-20-solid" class="bg-blue-300 hover:bg-blue-300"/>
+                                    <template #panel>
+                                        <div class="max-h-48 overflow-y-auto">
+                                            <button class="p-1 bg-red-300 hover:bg-red-500 text-white" @click="deleteMessage(message[2], 'recipient')">Delete message</button>
+                                        </div>
+                                    </template>
+                                </UPopover>
                             </div>
                         </div>
                     </div>

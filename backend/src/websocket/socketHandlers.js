@@ -16,14 +16,10 @@ module.exports = (io) => {
             });
         });
 
-        socket.on('send_message',  async function({ senderId, recipientId, message }) {
+        socket.on('send_message',  async function({ senderId, recipientId, message }, callback) {
             const recipientSocketId = userSocketMap.get(recipientId);
     
             if (recipientSocketId) {
-                socket.to(recipientSocketId).emit('receive_message', {
-                    senderId,
-                    message,
-                });
 
                 let data = {
                     'id_sender': senderId,
@@ -33,7 +29,19 @@ module.exports = (io) => {
                     'message_read': false,
                 };
 
-                await Message.create(data);
+                let response = await Message.create(data);
+                socket.to(recipientSocketId).emit('receive_message', {
+                    senderId,
+                    message,
+                    id: response.dataValues.id,
+                });
+                if (callback) {
+                    callback({
+                        success: true,
+                        message: 'Message sent successfully!',
+                        messageId: response.dataValues.id
+                    });
+                }
             } else {
                 
                 let data = {
@@ -44,7 +52,19 @@ module.exports = (io) => {
                     'message_read': false,
                 };
 
-                await Message.create(data);
+                let response = await Message.create(data);
+                socket.to(recipientSocketId).emit('receive_message', {
+                    senderId,
+                    message,
+                    id: response.dataValues.id,
+                });
+                if (callback) {
+                    callback({
+                        success: true,
+                        message: 'Message sent successfully!',
+                        messageId: response.dataValues.id
+                    });
+                }
             }
         });
     });

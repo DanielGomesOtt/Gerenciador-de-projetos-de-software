@@ -15,6 +15,7 @@ async function setProject(req, res){
             'status': req.body.status,
             'priority': req.body.priority,
             'project_model': req.body.project_model,
+            'id_project_creator': req.body.id_project_creator,
         }
         const createdProject = await Project.create(project);
         

@@ -47,6 +47,13 @@ module.exports = {
       project_model: {
         type: Sequelize.STRING,
       },
+      id_project_creator: {
+        type: Sequelize.INTEGER
+      },
+      project_premium: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
       created_at: {
         type: Sequelize.DATE,
         allowNull: false

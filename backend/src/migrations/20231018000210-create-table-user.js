@@ -34,6 +34,16 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: false
       },
+      premium_user: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
+      type_premium: {
+        type: Sequelize.STRING
+      },
+      end_plan_premium: {
+        type: Sequelize.DATE
+      },
       created_at: {
         type: Sequelize.DATE,
         allowNull: false

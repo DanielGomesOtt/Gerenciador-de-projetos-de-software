@@ -126,6 +126,7 @@
         <ul class="flex justify-around items-center w-[45%]" id="nav-items" v-if="!isOpenMobile">
             <li><a href="/home" class="font-medium text-lg nav-link">Home</a></li>
             <li><a href="/project" class="font-medium text-lg nav-link">Projects</a></li>
+            <li><a href="/paid_plans" class="font-medium text-lg nav-lik">Prices</a></li>
             <li>
                 <UPopover>
                     <UChip :text="myInvites.length" size="2xl">
@@ -170,6 +171,12 @@
                 <div class="flex justify-start items-center">
                     <Icon name="mdi:clipboard-list" size="1.5em" color="white" class="ml-5"/>
                     <a href="/project" class="text-lg nav-link text-blue-800 ml-10" style="color: #fff">Projects</a>
+                </div>
+            </li>
+            <li>
+                <div class="flex justify-start items-center">
+                    <Icon name="ic:baseline-price-check" size="1.5em" color="white" class="ml-5"/>
+                    <a href="/paid_plans" class="text-lg nav-link text-blue-800 ml-10" style="color: #fff">Prices</a>
                 </div>
             </li>
             <li>

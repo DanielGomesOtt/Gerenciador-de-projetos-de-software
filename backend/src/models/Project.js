@@ -11,6 +11,8 @@ class Project extends Model {
       status: DataTypes.STRING,
       priority: DataTypes.STRING,
       project_model: DataTypes.STRING,
+      id_project_creator: DataTypes.INTEGER,
+      project_premium: DataTypes.BOOLEAN,
     },
     {
       sequelize,
@@ -21,6 +23,7 @@ class Project extends Model {
   static associate(models) {
     this.hasMany(models.UserProject, { foreignKey: 'id_project', as: 'userProjects' });
     this.hasMany(models.UserProject, { foreignKey: 'id_project', as: 'task' });
+    this.belongsTo(models.User, {foreignKey: 'id_project_creator', as: 'user'});
   }
 }
 

@@ -10,6 +10,9 @@ class User extends Model {
       id_category: DataTypes.INTEGER,
       status: DataTypes.INTEGER,
       avatar_path: DataTypes.STRING,
+      premium_user: DataTypes.BOOLEAN,
+      type_premium: DataTypes.STRING,
+      end_plan_premium: DataTypes.DATE,
     },
     {
       sequelize,

@@ -10,6 +10,7 @@ let project = {
     'expected_end_date': '',
     'priority': 'Low Priority',
     'project_model': 'default',
+    'id_project_creator': JSON.parse(localStorage.getItem('userStorage')).id,
 }
 
 let errorMessage = ref('');
@@ -33,7 +34,8 @@ const createProject = async () => {
                 'priority': project.priority,
                 'status': 'in progress',
                 'initial_date': `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`,
-                'project_model': project.project_model
+                'project_model': project.project_model,
+                'id_project_creator': project.id_project_creator
             };
             const response = await axios.post(runtimeConfig.public.BASE_URL + 'project', data, {
                 headers: {
@@ -84,12 +86,13 @@ const createProject = async () => {
                     </select>
                 </div>
             </div>
-            <div class="mt-2">
+            
+            <!-- <div class="mt-2">
                 <label for="project-model" class="font-semibold">Project Model</label>
                 <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="project-model" name="project-model" required v-model="project.project_model">
-                    <option value="default">Default</option>
+                    <option value="default" selected>Default</option>
                 </select>
-            </div>
+            </div> -->
         </form>
     </div>        
     <div class="h-10 mt-10">

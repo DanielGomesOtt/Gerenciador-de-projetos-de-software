@@ -10,6 +10,7 @@ const accountRoute = require('../src/routes/accountRoute');
 const projectRoute = require('../src/routes/projectRoute');
 const taskRoute = require('../src/routes/taskRoute');
 const messageRoute = require('../src/routes/messageRoute');
+const paymentRoute = require('../src/routes/paymentRoute');
 const { createServer } = require('node:http');
 const { Server } = require('socket.io');
 const socketHandlers = require('./websocket/socketHandlers');
@@ -34,6 +35,7 @@ app.use(accountRoute);
 app.use(projectRoute);
 app.use(taskRoute);
 app.use(messageRoute);
+app.use(paymentRoute);
 
 socketHandlers(io);
 

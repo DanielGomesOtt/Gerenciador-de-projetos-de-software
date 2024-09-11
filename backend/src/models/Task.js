@@ -5,13 +5,13 @@ class Task extends Model {
     super.init({
       id_user: DataTypes.INTEGER,
       id_project: DataTypes.INTEGER,
-      title: DataTypes.STRING,
+      title: DataTypes.TEXT,
       expected_end_date: DataTypes.DATE,
       real_end_date: DataTypes.INTEGER,
       status: DataTypes.STRING,
       project_stage: DataTypes.STRING,
       type_task: DataTypes.STRING,
-      description: DataTypes.STRING,
+      description: DataTypes.TEXT,
     },
     {
       sequelize,

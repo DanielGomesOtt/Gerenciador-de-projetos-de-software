@@ -8,12 +8,13 @@ const UserProject = require('../models/UserProject');
 const ProjectInvite = require('../models/ProjectInvite');
 const Task = require('../models/Task');
 const Message = require('../models/Message');
+const Payment = require('../models/Payment');
 
 // Inicialize a conexão
 const connection = new Sequelize(dbConfig);
 
 // Inicialize todos os modelos
-const models = [User, Category, ResetCode, Project, UserProject, ProjectInvite, Task, Message];
+const models = [User, Category, ResetCode, Project, UserProject, ProjectInvite, Task, Message, Payment];
 models.forEach(model => model.init(connection));
 
 // Relacionamentos
@@ -47,6 +48,10 @@ User.hasMany(Message, { foreignKey: 'id_sender', as:'sentMessages' });
 User.hasMany(Message, { foreignKey: 'id_recipient', as:'receivedMessages' });
 Message.belongsTo(User, { foreignKey: 'id_sender', as:'sender' });
 Message.belongsTo(User, { foreignKey: 'id_recipient', as:'recipient' });
+
+// Relacionamento entre Payment e User
+User.hasMany(Payment, { foreignKey: 'id_user' });
+Payment.belongsTo(User, { foreignKey: 'id_user' });
 
 // Chame a função associate, se ela existir
 models.forEach(model => {

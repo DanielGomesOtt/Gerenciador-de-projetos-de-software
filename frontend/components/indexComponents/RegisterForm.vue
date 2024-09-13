@@ -29,7 +29,11 @@ const submit = async (event) => {
                 'id_category': data.user.id_category,
                 'id_group': data.user.id_group,
                 'name': data.user.name,
-                'token': data.token 
+                'email': data.user.email,
+                'token': data.token,
+                'type_premium': data.user.type_premium,
+                'premium_user': data.user.premium_user,
+                'end_plan_premium': data.user.end_plan_premium, 
             };
             localStorage.setItem('userStorage', JSON.stringify(storage));
             navigateTo('/home');

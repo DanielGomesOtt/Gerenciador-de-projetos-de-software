@@ -18,7 +18,6 @@ const setPaymentMonthlyPlan = async () => {
         });
 
         if(response && response.data){
-            console.log(response);
             window.open(response.data.init_point, '_blank');
         }
 

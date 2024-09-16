@@ -57,7 +57,7 @@ const setTaskByGemini = async () => {
 
 <template>
     <div class="h-8">
-        <p class="text-black font-bold text-center text-2xl">Create a task by AI</p>
+        <p class="text-black font-bold text-center text-2xl">Create a task by Gemini</p>
     </div>
 
     <div class="w-full mt-10">

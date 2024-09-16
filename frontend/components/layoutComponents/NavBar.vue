@@ -98,6 +98,10 @@
             }
         }
     });
+
+    setInterval(() => {
+        getProjectInvites();
+    }, 10000);
 </script>
 
 <template>

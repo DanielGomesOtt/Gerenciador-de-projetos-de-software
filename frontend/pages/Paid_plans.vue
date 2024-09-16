@@ -1,14 +1,18 @@
 <script lang="js" setup>
 import NavBar from '~/components/layoutComponents/NavBar.vue';
 import axios from 'axios';
+import ChangePlan from '~/components/paymentComponents/ChangePlan.vue';
 
 const runtimeConfig = useRuntimeConfig();
+
+let isPremiumUser = ref(JSON.parse(localStorage.getItem('userStorage')).premium_user);
 
 const setPaymentMonthlyPlan = async () => {
     try{
         let data = {
             'name': JSON.parse(localStorage.getItem('userStorage')).name,
             'email': JSON.parse(localStorage.getItem('userStorage')).email,
+            'id_user': JSON.parse(localStorage.getItem('userStorage')).id,
         }
 
         const response = await axios.post(runtimeConfig.public.BASE_URL + 'set_payment_monthly_plan', data, {
@@ -18,7 +22,7 @@ const setPaymentMonthlyPlan = async () => {
         });
 
         if(response && response.data){
-            window.open(response.data.init_point, '_blank');
+            window.location.href = response.data.init_point;
         }
 
     }catch(error){
@@ -31,6 +35,7 @@ const setPaymentYearlyPlan = async () => {
         let data = {
             'name': JSON.parse(localStorage.getItem('userStorage')).name,
             'email': JSON.parse(localStorage.getItem('userStorage')).email,
+            'id_user': JSON.parse(localStorage.getItem('userStorage')).id,
         }
 
         const response = await axios.post(runtimeConfig.public.BASE_URL + 'set_payment_yearly_plan', data, {
@@ -40,7 +45,7 @@ const setPaymentYearlyPlan = async () => {
         });
 
         if(response && response.data){
-            window.open(response.data[0].init_point, '_blank');
+            window.location.href = response.data.init_point;
         }
 
   } catch (error) {
@@ -52,7 +57,7 @@ const setPaymentYearlyPlan = async () => {
 
 <template>
     <NavBar />
-    <div class="flex w-screen justify-center mt-24">
+    <div class="flex w-screen justify-center mt-24" v-if="isPremiumUser !== true">
         <div>
             <h1 class="text-5xl font-bold text-center">Choose your plan</h1>
             <h2 class="text-2xl font-semibold text-center mt-5 text-slate-400">Choose the best plan for managing your projects.</h2>
@@ -92,7 +97,7 @@ const setPaymentYearlyPlan = async () => {
 
                 <div>
                     <UCard
-                        class="shadow-lg rounded-lg border-2 p-5 cursor-pointer"
+                        class="shadow-lg rounded-lg border-2 border-gray-300 p-5 cursor-pointer"
                         :ui="{ header:{ background: 'bg-blue-500 rounded-lg' }, ring: '', divide: 'divide-y divide-black-500 dark:divide-gray-800' }"
                     >
                         <template #header>
@@ -126,4 +131,5 @@ const setPaymentYearlyPlan = async () => {
             </div>  
         </div>
     </div>
+    <ChangePlan  v-if="isPremiumUser == true"/>
 </template>

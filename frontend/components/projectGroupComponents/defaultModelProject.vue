@@ -206,8 +206,8 @@ onBeforeMount(() => {
                     <div class="flex justify-center items-center border-b-2 p-3 hover:text-blue-600">
                         <button type="button" @click="() => {visibilityCreateTaskModal = true}">Manual creation</button>
                     </div>
-                    <div class="flex justify-center items-center p-3 hover:text-blue-600">
-                        <button type="button" @click="() => {visibilityAiTaskModal = true}">Creation by AI</button>
+                    <div class="flex justify-center items-center p-3 hover:text-blue-600" v-if="myProjectData.Project.project_premium == true">
+                        <button type="button" @click="() => {visibilityAiTaskModal = true}">Creation by Gemini</button>
                     </div>
                 </template>
             </UPopover>

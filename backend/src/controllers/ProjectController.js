@@ -7,6 +7,7 @@ const { Op, Sequelize } = require('sequelize');
 
 async function setProject(req, res){
     try{
+        
         let project = {
             'name': req.body.name,
             'description': req.body.description,
@@ -16,6 +17,7 @@ async function setProject(req, res){
             'priority': req.body.priority,
             'project_model': req.body.project_model,
             'id_project_creator': req.body.id_project_creator,
+            'project_premium': req.headers.premium_user,
         }
         const createdProject = await Project.create(project);
         
@@ -194,7 +196,6 @@ async function getMyProjectData(req, res){
     try{
         let id_project = req.headers.id_project;
         let id_user = req.headers.id_user;
-
         const userProject = await UserProject.findOne({
             include: [
                 {
@@ -428,5 +429,27 @@ async function checkProjectsLimit(req, res){
     }
 }
 
+async function getAllProjects(req, res){
+    try{
+        const projects = await Project.findAll({
+            where: {
+                'id_project_creator': req.headers.id_user
+            },
+            include: [{
+                model: UserProject,
+                where: { 
+                    'id_user': req.headers.id_user,
+                    'status': 1,
+                }
+            }]
+        });
 
-module.exports = { setProject, getProjects, updateProject, getProjectById, getProjectsByFilter, getUsersByProject, getMyProjectData, sendInvite, getMyInvites, respondInvite, removeMemberFromProject, exitProject, checkProjectsLimit };
+        if(projects){
+            res.send(projects);
+        }
+    }catch(error){
+        res.status(500).json({ message: error });
+    }
+}
+
+module.exports = { setProject, getProjects, updateProject, getProjectById, getProjectsByFilter, getUsersByProject, getMyProjectData, sendInvite, getMyInvites, respondInvite, removeMemberFromProject, exitProject, checkProjectsLimit, getAllProjects };

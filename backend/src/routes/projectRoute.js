@@ -17,4 +17,5 @@ route.patch('/project_group/invites', accessTokenMiddleware.verifyToken, Project
 route.patch('/project_group/remove_member', accessTokenMiddleware.verifyToken, ProjectController.removeMemberFromProject);
 route.patch('/project/exit_project', accessTokenMiddleware.verifyToken, ProjectController.exitProject);
 route.patch('/project/check_limit', accessTokenMiddleware.verifyToken, ProjectController.checkProjectsLimit);
+route.get('/get_all_projects', accessTokenMiddleware.verifyToken, ProjectController.getAllProjects);
 module.exports =  route;

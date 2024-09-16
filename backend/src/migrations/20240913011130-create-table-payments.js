@@ -21,7 +21,7 @@ module.exports = {
         onDelete: 'CASCADE'
       },
       id_payment_mercado_pago: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         allowNull: false,
       },
       status: {

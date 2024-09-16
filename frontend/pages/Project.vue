@@ -18,6 +18,8 @@ let priority = ref('');
 let searchPlaceholder = ref('Search by ...');
 let visibilityModalExitProject = ref(false);
 let exit_id_project = ref(0);
+let isPremiumUser = JSON.parse(localStorage.getItem('userStorage')).premium_user;
+let allProjects = ref([]);
 
 const changeVisibilityModalExitProject = (exit, id_project) => {
     exit_id_project.value = id_project;
@@ -119,8 +121,8 @@ const exitProject = async () => {
         status.value = '';
         priority.value = '';
         searchPlaceholder.value = 'Search by ...';
-        getProjects()
-        
+        getProjects();
+        getAllProjects();
     }catch(error){
         console.log(error);
     }
@@ -140,9 +142,27 @@ const checkProjectsLimit = async () => {
         
         if(filter.value.length == 0 && status.value.length == 0 && priority.value.length == 0 && searchProject.value.length == 0 || filter.value.length > 0 && searchProject.value.length == 0){
             getProjects();
+            getAllProjects();
         }else{
             getProjectsByFilter();
+            getAllProjects();
         }
+    }catch(error){
+        console.log(error);
+    }
+}
+
+const getAllProjects = async () => {
+    try{
+        const response = await axios.get(runtimeConfig.public.BASE_URL + 'get_all_projects', {
+            headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
+                'id_user': JSON.parse(localStorage.getItem('userStorage')).id,
+            }
+        });
+
+        allProjects.value = response.data;
+
     }catch(error){
         console.log(error);
     }
@@ -151,6 +171,7 @@ const checkProjectsLimit = async () => {
 onBeforeMount(() => {
     checkProjectsLimit()
     getProjects();
+    getAllProjects();
 })
 </script>
 
@@ -184,7 +205,7 @@ onBeforeMount(() => {
                     <option value="Low Priority">Low</option>
                 </select>
             </div>
-            <div class="flex items-center mt-2">
+            <div class="flex items-center mt-2" v-if="isPremiumUser == true || allProjects.length < 3">
                 <button class="text-white" @click="changeVisibilityCreateProjectModal()"><Icon name="mdi:plus" color="white" size="1.8em"/>New Project</button>
             </div>
         </div>

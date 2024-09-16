@@ -4,7 +4,7 @@ class Payment extends Model {
   static init(sequelize){
     super.init({
       id_user: DataTypes.INTEGER,
-      id_payment_mercado_pago: DataTypes.BIGINT,
+      id_payment_mercado_pago: DataTypes.STRING,
       status: DataTypes.STRING,
       value: DataTypes.DECIMAL,
     },

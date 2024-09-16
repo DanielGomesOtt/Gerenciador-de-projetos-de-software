@@ -204,6 +204,7 @@ async function setTaskByGemini(req, res){
         });
         res.status(201).json({ message: 'Tasks created successfully.' });
     }catch(error){
+        console.log(error)
         res.status(500).json({ message: error });
     }
 }

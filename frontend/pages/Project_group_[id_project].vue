@@ -25,6 +25,7 @@ let chatMessage = ref('');
 let idUser = JSON.parse(localStorage.getItem('userStorage')).id;
 let conversationMessages = ref([]);
 let quantityUnreadMessages = ref([]);
+let isProjectPremium = ref(false);
 
 
 const setMessageNotification = (id_user) => {
@@ -151,6 +152,7 @@ const getUsersByProject = async () => {
         });
         if(response.data){
             members.value = response.data;
+            isProjectPremium.value = response.data.project_premium;
         }
     }catch(error){
         console.log(error);
@@ -221,10 +223,30 @@ const deleteMessage = async (id_message, type_delete) => {
     }
 }
 
+const getProjectCreatorData = async () => {
+    try{
+        const response = await axios.get(runtimeConfig.public.BASE_URL + `project/${route.params.id_project}`, {
+            headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`
+            }
+        });
+
+        if(response.data.project_premium == 1){
+            isProjectPremium.value = true;
+        }else{
+            isProjectPremium.value = false;
+        }
+
+    }catch(error){
+        console.log(error);
+    }
+}
+
 onBeforeMount(() => {
     connectSocket(runtimeConfig.public.BASE_URL);
     getUsersByProject();
     getMyProjectData();
+    getProjectCreatorData();
 });
 
 onMounted(() => {
@@ -245,7 +267,7 @@ onUnmounted(() => {
             <DefaultModelProject :myProjectData="myProjectData"/>
         </div>
         <div class="flex items-center" v-if="id_category > 1">
-            <UChip size="2xl" class="mr-2 fixed right-5 bottom-14" v-if="quantityUnreadMessages.length > 0">
+            <UChip size="2xl" class="mr-2 fixed right-5 bottom-14" v-if="quantityUnreadMessages.length > 0 && isProjectPremium == true">
                 <button @click="openSlideOver" class="mr-2 fixed right-5 bottom-5"><Icon name="mdi:chat" size="2.8em" class="text-white bg-blue-400 rounded-full p-2" /></button>
             </UChip>
             <button @click="openSlideOver" class="mr-2 fixed right-5 bottom-5" v-else><Icon name="mdi:chat" size="2.8em" class="text-white bg-blue-400 rounded-full p-2" /></button>
@@ -297,7 +319,7 @@ onUnmounted(() => {
                             >
                                 <div>
                                     <div class="flex flex-wrap items-center">
-                                        <div v-if="setMessageNotification(member.id) > 0">
+                                        <div v-if="setMessageNotification(member.id) > 0 && isProjectPremium == true">
                                             <UChip size="xl" class="w-full">
                                                 <Icon name="mdi:user" size="3em" v-if="member.avatar_path == null || member.avatar_path.length == 0"/>
                                                 <img class="w-[3em] h-[3em] object-cover object-center rounded-full" :src="runtimeConfig.public.BASE_URL + member.avatar_path.replace('\\', '/')" v-if="member.avatar_path && member.avatar_path.length > 0"/>
@@ -317,7 +339,7 @@ onUnmounted(() => {
                                         </div>
                                     </div>
                                     <div class="flex items-center mt-2">
-                                        <button type="button" class="hover:bg-blue-600 bg-blue-400 text-white text-sm py-1 px-2 rounded-lg mx-2" @click="changeChatVisibility(member.id, member.name, member.email, member.avatar_path)">Chat</button>
+                                        <button type="button" class="hover:bg-blue-600 bg-blue-400 text-white text-sm py-1 px-2 rounded-lg mx-2" @click="changeChatVisibility(member.id, member.name, member.email, member.avatar_path)" v-if="isProjectPremium == true">Chat</button>
                                         <button type="button" class="hover:bg-red-600 bg-red-400 text-white text-sm p-1 rounded-lg" @click="changeVisibilityModalRemoveMember(member.id)" v-if="myProjectData.administrator">Remove</button>
                                     </div>
                                 </div>

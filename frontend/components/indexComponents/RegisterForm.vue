@@ -31,9 +31,9 @@ const submit = async (event) => {
                 'name': data.user.name,
                 'email': data.user.email,
                 'token': data.token,
-                'type_premium': data.user.type_premium,
-                'premium_user': data.user.premium_user,
-                'end_plan_premium': data.user.end_plan_premium, 
+                'type_premium': null,
+                'premium_user': 0,
+                'end_plan_premium': null, 
             };
             localStorage.setItem('userStorage', JSON.stringify(storage));
             navigateTo('/home');

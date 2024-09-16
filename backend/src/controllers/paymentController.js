@@ -1,6 +1,8 @@
 require('dotenv').config();
 const mercadoPago = require('mercadopago');
+const Payment = require('../models/Payment');
 const User = require('../models/User');
+const Project = require('../models/Project');
 
 async function setPaymentMonthlyPlan (req, res){
     try{
@@ -34,28 +36,10 @@ async function setPaymentMonthlyPlan (req, res){
             statement_descriptor: 'Task Life Monthly Plan',
         };
 
-        const response = await preference.create({ body })
+        const response = await preference.create({ body });
 
-        let today = new Date();
-        today.setDate(today.getDate() + 30);
-
-        await User.update({
-                'premium_user': true,
-                'type_premium': 'monthly',
-                'end_plan_premium': `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate}`, 
-            },{
-                where: {
-                    'email': req.body.email
-                }
-            }
-        );
-
-        let user = await User.findOne({
-            where:{
-                'email': req.body.email
-            }
-        });
-        res.send([response, user.dataValues]);
+        await Payment.create({ 'id_user': req.body.id_user, 'id_payment_mercado_pago': response.id, 'status': 'monthly', 'value': response.items[0].unit_price });
+        res.send(response);
         
     }catch(error){
         res.status(500).json({ message: error });
@@ -94,14 +78,64 @@ async function setPaymentYearlyPlan (req, res){
             statement_descriptor: 'Task Life Yearly Plan',
         };
 
-        const response = await preference.create({ body })
+        const response = await preference.create({ body });
         
-
-
+        await Payment.create({ 'id_user': req.body.id_user, 'id_payment_mercado_pago': response.id, 'status': 'yearly', 'value': response.items[0].unit_price });
         res.send(response);
     }catch(error){
         res.status(500).json({ message: error });
     }
 }
 
-module.exports = { setPaymentMonthlyPlan, setPaymentYearlyPlan };
+async function confirmPayment(req, res){
+    try{
+
+        let payment = await Payment.findOne({
+            where: {
+                'id_user': req.body.id_user
+            },
+            order: [['id', 'DESC']]
+        });
+        if(payment && payment.dataValues){
+            let endPlan = new Date();
+            if(payment.dataValues.status == 'monthly'){
+                endPlan.setDate(endPlan.getDate() + 30);
+                endPlan = `${endPlan.getFullYear()}-${endPlan.getMonth() + 1}-${endPlan.getDate()}`;
+            }else if(payment.dataValues.status == 'yearly'){
+                endPlan.setDate(endPlan.getDate() + 365);
+                endPlan = `${endPlan.getFullYear()}-${endPlan.getMonth() + 1}-${endPlan.getDate()}`;
+            }
+
+            let plan = {
+                'premium_user': 1,
+                'type_premium': payment.dataValues.status,
+                'end_plan_premium': endPlan,
+            };
+            
+            await User.update(plan, {
+                where: {
+                    'id': req.body.id_user
+                }    
+            });
+
+
+           await Project.update({ 'project_premium': 1 }, {
+                where: {
+                    'id_project_creator': req.body.id_user
+                }
+           });
+
+            const user = await User.findOne({
+                where: {
+                    'id': req.body.id_user
+                }
+            });
+
+            res.status(201).send(user);
+        }
+    }catch(error){
+        res.status(500).json({ message: error });
+    }
+}
+
+module.exports = { setPaymentMonthlyPlan, setPaymentYearlyPlan, confirmPayment };

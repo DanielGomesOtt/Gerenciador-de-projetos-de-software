@@ -40,6 +40,7 @@ const createProject = async () => {
             const response = await axios.post(runtimeConfig.public.BASE_URL + 'project', data, {
                 headers: {
                         Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
+                        'premium_user': JSON.parse(localStorage.getItem('userStorage')).premium_user
                 },
             });
 

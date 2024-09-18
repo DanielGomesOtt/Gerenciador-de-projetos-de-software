@@ -14,6 +14,7 @@ const paymentRoute = require('../src/routes/paymentRoute');
 const { createServer } = require('node:http');
 const { Server } = require('socket.io');
 const socketHandlers = require('./websocket/socketHandlers');
+const verifyPlanPayment = require('./utils/verifyPlanPayment');
 
 const app = express();
 const server = createServer(app);
@@ -38,5 +39,9 @@ app.use(messageRoute);
 app.use(paymentRoute);
 
 socketHandlers(io);
+
+setInterval(() => {
+    verifyPlanPayment.verifyPlanPayment();
+}, 10000);
 
 server.listen(process.env.APP_PORT);

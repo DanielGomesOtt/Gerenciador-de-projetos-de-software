@@ -87,6 +87,47 @@ async function setPaymentYearlyPlan (req, res){
     }
 }
 
+async function setPaymentUpgradeYearlyPlan (req, res){
+    try{
+        const client = new mercadoPago.MercadoPagoConfig({ accessToken:  process.env.MERCADO_PAGO_TOKEN});
+
+        const preference = new mercadoPago.Preference(client);
+
+        const body = {
+            items: [
+                {
+                    id: '2',
+                    title: 'Yearly Plan',
+                    description: 'Yearly plan for task life premium',
+                    picture_url: '',
+                    category_id: 'subscription',
+                    quantity: 1,
+                    currency_id: 'BRL',
+                    unit_price: 120.00,
+                },
+            ],
+            payer: {
+                name: req.body.name,
+                email: req.body.email,
+            },
+            back_urls: {
+                success: `${process.env.BASE_URL}:3000/payment_success`,
+                failure: `${process.env.BASE_URL}:3000/payment_failure`,
+                pending: `${process.env.BASE_URL}:3000/payment_pending`,
+            },
+            auto_return: 'approved',
+            statement_descriptor: 'Task Life Yearly Plan',
+        };
+
+        const response = await preference.create({ body });
+        
+        await Payment.create({ 'id_user': req.body.id_user, 'id_payment_mercado_pago': response.id, 'status': 'yearly', 'value': response.items[0].unit_price });
+        res.send(response);
+    }catch(error){
+        res.status(500).json({ message: error });
+    }
+}
+
 async function confirmPayment(req, res){
     try{
 
@@ -138,4 +179,4 @@ async function confirmPayment(req, res){
     }
 }
 
-module.exports = { setPaymentMonthlyPlan, setPaymentYearlyPlan, confirmPayment };
+module.exports = { setPaymentMonthlyPlan, setPaymentYearlyPlan, confirmPayment, setPaymentUpgradeYearlyPlan };

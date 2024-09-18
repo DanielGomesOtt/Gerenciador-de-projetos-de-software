@@ -8,6 +8,27 @@
     let avatarPath = ref('');
     let id_category = JSON.parse(localStorage.getItem('userStorage')).id_category; 
 	let myInvites = ref([]);
+    let renewAlert = ref(false);
+    let expirationDay = ref(JSON.parse(localStorage.getItem('userStorage')).end_plan_premium.split('T'));
+
+    const setRenewAlert = () => {
+        let endPlanDate = JSON.parse(localStorage.getItem('userStorage')).end_plan_premium.split('T');
+        endPlanDate = endPlanDate[0];
+
+        let today = new Date();
+
+        if(JSON.parse(localStorage.getItem('userStorage')).type_premium == 'monthly'){
+            today.setDate(today.getDate() + 7);
+            if(`${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, "0")}-${today.getDate()}` == endPlanDate){
+                renewAlert.value = true;
+            }
+        }else if(JSON.parse(localStorage.getItem('userStorage')).type_premium == 'yearly'){
+            today.setDate(today.getDate() + 7);
+            if(`${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, "0")}-${today.getDate()}` == endPlanDate){
+                renewAlert.value = true;
+            }
+        }
+    }
 
     const openMenuMobile = () => {
         isOpenMobile.value = !isOpenMobile.value;
@@ -86,10 +107,19 @@
         }
     }
 
+    const renewPlan = () => {
+        navigateTo('Renew_plans');
+    }
+
     onBeforeMount(() => {
 		getProjectInvites();
         getAvatarPath();
     });
+
+    onMounted(() => {
+        setRenewAlert();
+    })
+
 
     window.addEventListener('resize', function() {
         if (window.innerWidth > '600') {
@@ -197,6 +227,10 @@
             </li>
         </ul>  
     </nav>
+    <div class="flex w-full h-12 bg-red-600 text-white text-center items-center justify-center" v-if="renewAlert">
+        <span class="mr-5">Your plan will expire on {{ expirationDay[0] }}. Renew your plan:</span>
+        <button class="bg-red-600 border-2 border-white p-2 rounded-lg" @click="renewPlan">Renew</button>
+    </div>
 </template>
 
 <style scoped>

@@ -9,7 +9,7 @@
     let id_category = JSON.parse(localStorage.getItem('userStorage')).id_category; 
 	let myInvites = ref([]);
     let renewAlert = ref(false);
-    let expirationDay = ref(JSON.parse(localStorage.getItem('userStorage')).end_plan_premium.split('T'));
+    let expirationDay = ref(JSON.parse(localStorage.getItem('userStorage')).end_plan_premium);
 
     const setRenewAlert = () => {
         let endPlanDate = JSON.parse(localStorage.getItem('userStorage')).end_plan_premium.split('T');
@@ -112,12 +112,17 @@
     }
 
     onBeforeMount(() => {
+        if(expirationDay.value !== null && expirationDay.value !== undefined){
+            expirationDay.value = expirationDay.value.split('T');
+        }
 		getProjectInvites();
         getAvatarPath();
     });
 
     onMounted(() => {
-        setRenewAlert();
+        if(JSON.parse(localStorage.getItem('userStorage')).end_plan_premium !== null && JSON.parse(localStorage.getItem('userStorage')).end_plan_premium !== undefined){
+            setRenewAlert();
+        }
     })
 
 

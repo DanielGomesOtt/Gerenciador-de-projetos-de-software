@@ -162,7 +162,7 @@
                 </template>
             </UPopover>
         </div>
-        <ul class="flex justify-around items-center w-[45%]" id="nav-items" v-if="!isOpenMobile">
+        <ul class="flex justify-around items-center w-[70%] lg:w-[80%]" id="nav-items" v-if="!isOpenMobile">
             <li><a href="/home" class="font-medium text-lg nav-link">Home</a></li>
             <li><a href="/project" class="font-medium text-lg nav-link">Projects</a></li>
             <li><a href="/paid_plans" class="font-medium text-lg nav-lik">Prices</a></li>
@@ -183,6 +183,13 @@
                         </div>
                     </template>
                 </UPopover>
+            </li>
+            <li>
+                <div class="flex items-center">
+                    <span class="mx-1 font-semibold">en</span>
+                    <UToggle size="md" :model-value="false" />
+                    <span class="mx-1 font-semibold">pt-br</span>
+                </div>
             </li>
         </ul>
         

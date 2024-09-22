@@ -6,7 +6,8 @@ const props = defineProps({
     responseProject: {
         type: Object,
         default: () => ({})
-    }
+    },
+    visibleLanguage: String
 });
 
 const localData = reactive({...props.responseProject});
@@ -51,50 +52,102 @@ const updateProject = async () => {
 </script>
 
 <template>
-    <div class="h-8">
-        <p class="text-black font-bold text-center text-2xl">Project update</p>
-    </div>
+    <div v-if="props.visibleLanguage == 'en'">
+        <div class="h-8">
+            <p class="text-black font-bold text-center text-2xl">Project update</p>
+        </div>
 
-    <div class="w-full mt-10">
-        <form class="w-[100%]">
-            <input type="text" id="project-id" name="project-id" hidden v-model="localData.id">
-            <div>
-                <label for="update-name-project" class="font-semibold">Name</label>
-                <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="update-name-project" name="update-name-project" placeholder="Project Name" required v-model="localData.name">
-            </div>
-
-            <div class="mt-2">
-                <label for="update-description-project" class="font-semibold">Description</label>
-                <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="update-description-project" name="update-description-project" placeholder="Project Description" required v-model="localData.description">
-            </div>
-
-            <div class="mt-2 grid grid-cols-1 md:grid-cols-2">
-                <div class="md:mr-2">
-                    <label for="update-end-date-project" class="font-semibold">End Date</label>
-                    <input type="date" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="update-end-date-project" name="update-end-date-project" required v-model="localData.expected_end_date">
+        <div class="w-full mt-10">
+            <form class="w-[100%]">
+                <input type="text" id="project-id" name="project-id" hidden v-model="localData.id">
+                <div>
+                    <label for="update-name-project" class="font-semibold">Name</label>
+                    <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="update-name-project" name="update-name-project" placeholder="Project Name" required v-model="localData.name">
                 </div>
-                <div class="md:ml-2">
-                    <label for="update-priority-project" class="font-semibold">Priority</label>
-                    <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="update-priority-project" name="update-priority-project" required v-model="localData.priority">
-                        <option value="Low Priority">Low Priority</option>
-                        <option value="Medium Priority">Medium Priority</option>
-                        <option value="High Priority">High Priority</option>
+
+                <div class="mt-2">
+                    <label for="update-description-project" class="font-semibold">Description</label>
+                    <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="update-description-project" name="update-description-project" placeholder="Project Description" required v-model="localData.description">
+                </div>
+
+                <div class="mt-2 grid grid-cols-1 md:grid-cols-2">
+                    <div class="md:mr-2">
+                        <label for="update-end-date-project" class="font-semibold">End Date</label>
+                        <input type="date" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="update-end-date-project" name="update-end-date-project" required v-model="localData.expected_end_date">
+                    </div>
+                    <div class="md:ml-2">
+                        <label for="update-priority-project" class="font-semibold">Priority</label>
+                        <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="update-priority-project" name="update-priority-project" required v-model="localData.priority">
+                            <option value="Low Priority">Low Priority</option>
+                            <option value="Medium Priority">Medium Priority</option>
+                            <option value="High Priority">High Priority</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mt-2">
+                    <label for="update-project-status" class="font-semibold">Status</label>
+                    <select name="update-project-status" id="update-project-status" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" required v-model="localData.status">
+                        <option value="in progress">In progress</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                        <option value="overdue">Overdue</option>
                     </select>
                 </div>
-            </div>
-
-            <div class="mt-2">
-                <label for="update-project-status" class="font-semibold">Status</label>
-                <select name="update-project-status" id="update-project-status" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" required v-model="localData.status">
-                    <option value="in progress">In progress</option>
-                    <option value="completed">Completed</option>
-                    <option value="cancelled">Cancelled</option>
-                    <option value="overdue">Overdue</option>
-                </select>
-            </div>
-        </form>
-    </div>        
-    <div class="h-10 mt-10">
-        <button type="button" class="h-full rounded w-[100%] text-white bg-emerald-600" @click="updateProject">Update Project</button>
+            </form>
+        </div>        
+        <div class="h-10 mt-10">
+            <button type="button" class="h-full rounded w-[100%] text-white bg-emerald-600" @click="updateProject">Update Project</button>
+        </div>
     </div>
+
+    <div v-if="props.visibleLanguage == 'pt-br'">
+        <div class="h-8">
+            <p class="text-black font-bold text-center text-2xl">Atualização de Projeto</p>
+        </div>
+
+        <div class="w-full mt-10">
+            <form class="w-[100%]">
+                <input type="text" id="project-id" name="project-id" hidden v-model="localData.id">
+                <div>
+                    <label for="update-name-project" class="font-semibold">Nome</label>
+                    <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="update-name-project" name="update-name-project" placeholder="Nome do projeto" required v-model="localData.name">
+                </div>
+
+                <div class="mt-2">
+                    <label for="update-description-project" class="font-semibold">Descrição</label>
+                    <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="update-description-project" name="update-description-project" placeholder="Descrição do projeto" required v-model="localData.description">
+                </div>
+
+                <div class="mt-2 grid grid-cols-1 md:grid-cols-2">
+                    <div class="md:mr-2">
+                        <label for="update-end-date-project" class="font-semibold">Data final</label>
+                        <input type="date" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="update-end-date-project" name="update-end-date-project" required v-model="localData.expected_end_date">
+                    </div>
+                    <div class="md:ml-2">
+                        <label for="update-priority-project" class="font-semibold">Prioridade</label>
+                        <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="update-priority-project" name="update-priority-project" required v-model="localData.priority">
+                            <option value="Low Priority">Prioridade baixa</option>
+                            <option value="Medium Priority">Prioridade média</option>
+                            <option value="High Priority">Prioridade alta</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mt-2">
+                    <label for="update-project-status" class="font-semibold">Status</label>
+                    <select name="update-project-status" id="update-project-status" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" required v-model="localData.status">
+                        <option value="in progress">Em andamento</option>
+                        <option value="completed">Finalizado</option>
+                        <option value="cancelled">Cancelado</option>
+                        <option value="overdue">Atrasado</option>
+                    </select>
+                </div>
+            </form>
+        </div>        
+        <div class="h-10 mt-10">
+            <button type="button" class="h-full rounded w-[100%] text-white bg-emerald-600" @click="updateProject">Atualizar Projeto</button>
+        </div>
+    </div>
+    
 </template>

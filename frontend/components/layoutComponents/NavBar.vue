@@ -1,142 +1,164 @@
 <script lang="js" setup>
-    import { Icon } from '#components';
-    import axios from 'axios';
+import { Icon } from '#components';
+import axios from 'axios';
 
-    const runtimeConfig = useRuntimeConfig();
+const runtimeConfig = useRuntimeConfig();
 
-    let isOpenMobile = ref(false);
-    let avatarPath = ref('');
-    let id_category = JSON.parse(localStorage.getItem('userStorage')).id_category; 
-	let myInvites = ref([]);
-    let renewAlert = ref(false);
-    let expirationDay = ref(JSON.parse(localStorage.getItem('userStorage')).end_plan_premium);
+const emit = defineEmits(['changeLanguageParent']);
 
-    const setRenewAlert = () => {
-        let endPlanDate = JSON.parse(localStorage.getItem('userStorage')).end_plan_premium.split('T');
-        endPlanDate = endPlanDate[0];
+let isOpenMobile = ref(false);
+let avatarPath = ref('');
+let id_category = JSON.parse(localStorage.getItem('userStorage')).id_category; 
+let myInvites = ref([]);
+let renewAlert = ref(false);
+let expirationDay = ref(JSON.parse(localStorage.getItem('userStorage')).end_plan_premium);
+let language = ref(false);
+let visibleLanguage = ref(localStorage.getItem('language'));
 
-        let today = new Date();
 
-        if(JSON.parse(localStorage.getItem('userStorage')).type_premium == 'monthly'){
-            today.setDate(today.getDate() + 7);
-            if(`${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, "0")}-${today.getDate()}` == endPlanDate){
-                renewAlert.value = true;
-            }
-        }else if(JSON.parse(localStorage.getItem('userStorage')).type_premium == 'yearly'){
-            today.setDate(today.getDate() + 7);
-            if(`${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, "0")}-${today.getDate()}` == endPlanDate){
-                renewAlert.value = true;
-            }
+const setRenewAlert = () => {
+    let endPlanDate = JSON.parse(localStorage.getItem('userStorage')).end_plan_premium.split('T');
+    endPlanDate = endPlanDate[0];
+
+    let today = new Date();
+
+    if(JSON.parse(localStorage.getItem('userStorage')).type_premium == 'monthly'){
+        today.setDate(today.getDate() + 7);
+        if(`${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, "0")}-${today.getDate()}` == endPlanDate){
+            renewAlert.value = true;
+        }
+    }else if(JSON.parse(localStorage.getItem('userStorage')).type_premium == 'yearly'){
+        today.setDate(today.getDate() + 7);
+        if(`${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, "0")}-${today.getDate()}` == endPlanDate){
+            renewAlert.value = true;
         }
     }
+}
 
-    const openMenuMobile = () => {
-        isOpenMobile.value = !isOpenMobile.value;
+const openMenuMobile = () => {
+    isOpenMobile.value = !isOpenMobile.value;
+}
+
+const logOut = () => {
+    localStorage.removeItem('userStorage');
+    navigateTo('/');
+}
+
+const getAvatarPath = async () => {
+    try {
+        const response = await axios.get(runtimeConfig.public.BASE_URL + 'account/upload_avatar', {
+            headers: {
+                'id': JSON.parse(localStorage.getItem('userStorage')).id,
+            }
+        });
+
+        if (response.status == 200 && response.data && response.data.length > 0) {
+            avatarPath.value = runtimeConfig.public.BASE_URL + response.data.replace('\\', '/');
+        } else {
+            avatarPath.value = '';
+        }
+    } catch (error) {
+        console.log(error);
     }
+}
 
-    const logOut = () => {
-        localStorage.removeItem('userStorage');
-        navigateTo('/');
+const getProjectInvites = async () => {
+    try {
+        const response = await axios.get(runtimeConfig.public.BASE_URL + 'project_group/invites', {
+            headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
+                'id_user': JSON.parse(localStorage.getItem('userStorage')).id
+            }
+        });
+
+        if(response && response.data){
+            myInvites.value = response.data;
+        }
+    } catch (error) {
+        console.log(error);
     }
+}
 
-    const getAvatarPath = async () => {
-        try {
-            const response = await axios.get(runtimeConfig.public.BASE_URL + 'account/upload_avatar', {
-                headers: {
-                    'id': JSON.parse(localStorage.getItem('userStorage')).id,
+const respondInvite = async (id_invite, invite_response, id_project, administrator_invite) => {
+    try{
+        let data = {
+            'id_user': JSON.parse(localStorage.getItem('userStorage')).id,
+            'id_invite': id_invite,
+            'invite_response': invite_response,
+            'id_project': id_project,
+            'administrator_invite': administrator_invite
+        }
+
+        const response = await axios.patch(runtimeConfig.public.BASE_URL + 'project_group/invites', data, {
+            headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`
+            }
+        })
+
+        if(response.status == 200){
+            if(invite_response == 'accept'){
+                if(JSON.parse(localStorage.getItem('userStorage')).id_category == 1){
+                    let userStorage = JSON.parse(localStorage.getItem('userStorage'));
+                    userStorage.id_category = 3;
+                    localStorage.setItem('userStorage', JSON.stringify(userStorage));
                 }
-            });
-
-            if (response.status == 200 && response.data && response.data.length > 0) {
-                avatarPath.value = runtimeConfig.public.BASE_URL + response.data.replace('\\', '/');
-            } else {
-                avatarPath.value = '';
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    const getProjectInvites = async () => {
-        try {
-			const response = await axios.get(runtimeConfig.public.BASE_URL + 'project_group/invites', {
-				headers: {
-					Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
-					'id_user': JSON.parse(localStorage.getItem('userStorage')).id
-				}
-			});
-
-			if(response && response.data){
-				myInvites.value = response.data;
-			}
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    const respondInvite = async (id_invite, invite_response, id_project, administrator_invite) => {
-        try{
-            let data = {
-                'id_user': JSON.parse(localStorage.getItem('userStorage')).id,
-                'id_invite': id_invite,
-                'invite_response': invite_response,
-                'id_project': id_project,
-                'administrator_invite': administrator_invite
-            }
-
-            const response = await axios.patch(runtimeConfig.public.BASE_URL + 'project_group/invites', data, {
-                headers: {
-                    Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`
-                }
-            })
-
-            if(response.status == 200){
-                if(invite_response == 'accept'){
-                    if(JSON.parse(localStorage.getItem('userStorage')).id_category == 1){
-                        let userStorage = JSON.parse(localStorage.getItem('userStorage'));
-                        userStorage.id_category = 3;
-                        localStorage.setItem('userStorage', JSON.stringify(userStorage));
-                    }
-                    navigateTo(`/project_group_${id_project}`);
-                }else{
-                    getProjectInvites();
-                }
-            }
-        }catch(error){
-            console.log(error);
-        }
-    }
-
-    const renewPlan = () => {
-        navigateTo('Renew_plans');
-    }
-
-    onBeforeMount(() => {
-        if(expirationDay.value !== null && expirationDay.value !== undefined){
-            expirationDay.value = expirationDay.value.split('T');
-        }
-		getProjectInvites();
-        getAvatarPath();
-    });
-
-    onMounted(() => {
-        if(JSON.parse(localStorage.getItem('userStorage')).end_plan_premium !== null && JSON.parse(localStorage.getItem('userStorage')).end_plan_premium !== undefined){
-            setRenewAlert();
-        }
-    })
-
-
-    window.addEventListener('resize', function() {
-        if (window.innerWidth > '600') {
-            if (isOpenMobile.value == true) {
-                isOpenMobile.value = false;
+                navigateTo(`/project_group_${id_project}`);
+            }else{
+                getProjectInvites();
             }
         }
-    });
+    }catch(error){
+        console.log(error);
+    }
+}
 
-    setInterval(() => {
-        getProjectInvites();
-    }, 10000);
+const renewPlan = () => {
+    navigateTo('Renew_plans');
+}
+
+const changeLanguage = () => {
+    if(language.value == false){
+        language.value = true;
+        localStorage.setItem('language', 'pt-br');
+    }else{
+        language.value = false;
+        localStorage.setItem('language', 'en');
+    }
+    emit('changeLanguageParent');
+}
+
+onBeforeMount(() => {
+    if(expirationDay.value !== null && expirationDay.value !== undefined){
+        expirationDay.value = expirationDay.value.split('T');
+    }
+
+    if(localStorage.getItem('language') == 'en'){
+        language.value = false;
+    }else if(localStorage.getItem('language') == 'pt-br'){
+        language.value = true;
+    }
+    getProjectInvites();
+    getAvatarPath();
+});
+
+onMounted(() => {
+    if(JSON.parse(localStorage.getItem('userStorage')).end_plan_premium !== null && JSON.parse(localStorage.getItem('userStorage')).end_plan_premium !== undefined){
+        setRenewAlert();
+    }
+})
+
+
+window.addEventListener('resize', function() {
+    if (window.innerWidth > '600') {
+        if (isOpenMobile.value == true) {
+            isOpenMobile.value = false;
+        }
+    }
+});
+
+setInterval(() => {
+    getProjectInvites();
+}, 10000);
 </script>
 
 <template>
@@ -162,7 +184,7 @@
                 </template>
             </UPopover>
         </div>
-        <ul class="flex justify-around items-center w-[70%] lg:w-[80%]" id="nav-items" v-if="!isOpenMobile">
+        <ul class="flex justify-around items-center w-[70%] lg:w-[80%]" id="nav-items" v-if="!isOpenMobile && language == false">
             <li><a href="/home" class="font-medium text-lg nav-link">Home</a></li>
             <li><a href="/project" class="font-medium text-lg nav-link">Projects</a></li>
             <li><a href="/paid_plans" class="font-medium text-lg nav-lik">Prices</a></li>
@@ -187,7 +209,38 @@
             <li>
                 <div class="flex items-center">
                     <span class="mx-1 font-semibold">en</span>
-                    <UToggle size="md" :model-value="false" />
+                    <UToggle size="md" v-model="language" @click="changeLanguage()"/>
+                    <span class="mx-1 font-semibold">pt-br</span>
+                </div>
+            </li>
+        </ul>
+
+        <ul class="flex justify-around items-center w-[70%] lg:w-[80%]" id="nav-items" v-if="!isOpenMobile && language == true">
+            <li><a href="/home" class="font-medium text-lg nav-link">Home</a></li>
+            <li><a href="/project" class="font-medium text-lg nav-link">Projetos</a></li>
+            <li><a href="/paid_plans" class="font-medium text-lg nav-lik">Preços</a></li>
+            <li>
+                <UPopover>
+                    <UChip :text="myInvites.length" size="2xl">
+                        <UButton label="Convites para projetos" color="gray" />
+                    </UChip>
+                    <template #panel>
+                        <div class="max-h-48 overflow-y-auto">
+                            <div class="p-2 w-64 text-center" v-for="invite in myInvites">
+                                <span class="text-base font-bold p-2">{{ invite.Project.name }}</span>
+                                <div class="flex justify-around mt-2">
+                                    <button class="bg-green-200 w-28 rounded-md font-semibold hover:bg-green-500 hover:text-white" @click="respondInvite(invite.id, 'accept', invite.id_project, invite.administrator_invite)">Aceitar</button>
+                                    <button class="bg-red-200 w-28 rounded-md font-semibold hover:bg-red-500 hover:text-white" @click="respondInvite(invite.id, 'reject', invite.id_project, invite.administrator_invite)">Recusar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </UPopover>
+            </li>
+            <li>
+                <div class="flex items-center">
+                    <span class="mx-1 font-semibold">en</span>
+                    <UToggle size="md" v-model="language" @click="changeLanguage()"/>
                     <span class="mx-1 font-semibold">pt-br</span>
                 </div>
             </li>

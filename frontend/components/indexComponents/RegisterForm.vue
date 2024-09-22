@@ -86,22 +86,22 @@ function validateForm(){
             <div>
                 <form @submit="submit($event)">
                     <div class="flex justify-center">
-                        <input type="text" class="w-4/5 md:w-full lg:w-full h-14 rounded-lg mt-10 p-2 border-2 border-gray-200 shadow bg-gray-200 placeholder:text-zinc-600" placeholder="Your Name" name="name" id="register-name" v-model="form.name">
+                        <input type="text" class="w-4/5 md:w-96 lg:w-96 h-14 rounded-lg mt-10 p-2 border-2 border-gray-200 shadow bg-gray-200 placeholder:text-zinc-600" placeholder="Your Name" name="name" id="register-name" v-model="form.name">
                     </div>
                     <div class="flex justify-center">
-                        <input type="email" class="w-4/5 md:w-full lg:w-full h-14 rounded-lg mt-5 p-2 border-2 border-gray-200 shadow bg-gray-200 placeholder:text-zinc-600" placeholder="Your E-mail" name="email" id="register-email" v-model="form.email">
+                        <input type="email" class="w-4/5 md:w-96 lg:w-96 h-14 rounded-lg mt-5 p-2 border-2 border-gray-200 shadow bg-gray-200 placeholder:text-zinc-600" placeholder="Your E-mail" name="email" id="register-email" v-model="form.email">
                     </div>
                     <div class="flex justify-center">
-                        <input type="password" class="w-4/5 md:w-full lg:w-full h-14 rounded-lg mt-5 p-2 border-2 border-gray-200 shadow bg-gray-200 placeholder:text-zinc-600" placeholder="Your Password" name="password" id="register-password" v-model="form.password">
+                        <input type="password" class="w-4/5 md:w-96 lg:w-96 h-14 rounded-lg mt-5 p-2 border-2 border-gray-200 shadow bg-gray-200 placeholder:text-zinc-600" placeholder="Your Password" name="password" id="register-password" v-model="form.password">
                     </div>
                     <div class="flex justify-center">
-                        <select class="w-4/5 md:w-full lg:w-full h-14 rounded-lg mt-5 p-2 border-2 border-gray-200 shadow bg-gray-200"  name="category" id="register-category" v-model="form.id_category">
+                        <select class="w-4/5 md:w-96 lg:w-96 h-14 rounded-lg mt-5 p-2 border-2 border-gray-200 shadow bg-gray-200"  name="category" id="register-category" v-model="form.id_category">
                             <option value="1">Personal Account</option>
                             <option value="2">Group Admin</option>
                         </select>    
                     </div>
                     <div class="flex justify-center mt-10">
-                        <button class="bg-gradient-to-r from-blue-800 to-indigo-800 rounded-lg border-2 w-4/5 md:w-full lg:w-full h-12 text-white font-semibold mb-5" type="submit">Sign Up</button>
+                        <button class="bg-gradient-to-r from-blue-800 to-indigo-800 rounded-lg border-2 w-4/5 md:w-96 lg:w-96 h-12 text-white font-semibold mb-5" type="submit">Sign Up</button>
                     </div>
                 </form>
             </div>
@@ -113,22 +113,22 @@ function validateForm(){
             <div>
                 <form @submit="submit($event)">
                     <div class="flex justify-center">
-                        <input type="text" class="w-4/5 md:w-full lg:w-full h-14 rounded-lg mt-10 p-2 border-2 border-gray-200 shadow bg-gray-200 placeholder:text-zinc-600" placeholder="Seu nome" name="name" id="register-name" v-model="form.name">
+                        <input type="text" class="w-4/5 md:w-96 lg:w-96 h-14 rounded-lg mt-10 p-2 border-2 border-gray-200 shadow bg-gray-200 placeholder:text-zinc-600" placeholder="Seu nome" name="name" id="register-name" v-model="form.name">
                     </div>
                     <div class="flex justify-center">
-                        <input type="email" class="w-4/5 md:w-full lg:w-full h-14 rounded-lg mt-5 p-2 border-2 border-gray-200 shadow bg-gray-200 placeholder:text-zinc-600" placeholder="Seu e-mail" name="email" id="register-email" v-model="form.email">
+                        <input type="email" class="w-4/5 md:w-96 lg:w-96 h-14 rounded-lg mt-5 p-2 border-2 border-gray-200 shadow bg-gray-200 placeholder:text-zinc-600" placeholder="Seu e-mail" name="email" id="register-email" v-model="form.email">
                     </div>
                     <div class="flex justify-center">
-                        <input type="password" class="w-4/5 md:w-full lg:w-full h-14 rounded-lg mt-5 p-2 border-2 border-gray-200 shadow bg-gray-200 placeholder:text-zinc-600" placeholder="Sua senha" name="password" id="register-password" v-model="form.password">
+                        <input type="password" class="w-4/5 md:w-96 lg:w-96 h-14 rounded-lg mt-5 p-2 border-2 border-gray-200 shadow bg-gray-200 placeholder:text-zinc-600" placeholder="Sua senha" name="password" id="register-password" v-model="form.password">
                     </div>
                     <div class="flex justify-center">
-                        <select class="w-4/5 md:w-full lg:w-full h-14 rounded-lg mt-5 p-2 border-2 border-gray-200 shadow bg-gray-200"  name="category" id="register-category" v-model="form.id_category">
+                        <select class="w-4/5 md:w-96 lg:w-96 h-14 rounded-lg mt-5 p-2 border-2 border-gray-200 shadow bg-gray-200"  name="category" id="register-category" v-model="form.id_category">
                             <option value="1">Conta pessoal</option>
                             <option value="2">Admnistrador de equipes</option>
                         </select>    
                     </div>
                     <div class="flex justify-center mt-10">
-                        <button class="bg-gradient-to-r from-blue-800 to-indigo-800 rounded-lg border-2 w-4/5 md:w-full lg:w-full h-12 text-white font-semibold mb-5" type="submit">Sign Up</button>
+                        <button class="bg-gradient-to-r from-blue-800 to-indigo-800 rounded-lg border-2 w-4/5 md:w-96 lg:w-96 h-12 text-white font-semibold mb-5" type="submit">Sign Up</button>
                     </div>
                 </form>
             </div>

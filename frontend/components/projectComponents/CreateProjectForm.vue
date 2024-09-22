@@ -3,6 +3,9 @@ import axios from 'axios';
 
 const runtimeConfig = useRuntimeConfig();
 const emit = defineEmits(['changeVisibilityCreateProjectModal', 'getProjects', 'checkProjectsLimit']);
+const props = defineProps({
+    visibleLanguage: String
+});
 
 let project = {
     'name': '',
@@ -56,47 +59,95 @@ const createProject = async () => {
 
 
 <template>
-    <div class="h-8">
-        <p class="text-black font-bold text-center text-2xl">Create a project</p>
+    <div v-if="visibleLanguage == 'en'">
+        <div class="h-8">
+            <p class="text-black font-bold text-center text-2xl">Create a project</p>
+        </div>
+
+        <div class="w-full mt-10">
+            <div class="text-center text-red-600">{{ errorMessage }}</div>
+            <form class="w-[100%]">
+                <div>
+                    <label for="name-project" class="font-semibold">Name</label>
+                    <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="name-project" name="name-project" placeholder="Project Name" required v-model="project.name">
+                </div>
+
+                <div class="mt-2">
+                    <label for="description-project" class="font-semibold">Description</label>
+                    <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="description-project" name="description-project" placeholder="Project Description" required v-model="project.description">
+                </div>
+
+                <div class="mt-2 grid grid-cols-1 md:grid-cols-2">
+                    <div class="md:mr-2">
+                        <label for="end-date-project" class="font-semibold">End Date</label>
+                        <input type="date" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="end-date-project" name="end-date-project" required v-model="project.expected_end_date">
+                    </div>
+                    <div class="md:ml-2">
+                        <label for="priority-project" class="font-semibold">Priority</label>
+                        <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="priority-project" name="priority-project" required v-model="project.priority">
+                            <option value="Low Priority">Low Priority</option>
+                            <option value="Medium Priority">Medium Priority</option>
+                            <option value="High Priority">High Priority</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- <div class="mt-2">
+                    <label for="project-model" class="font-semibold">Project Model</label>
+                    <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="project-model" name="project-model" required v-model="project.project_model">
+                        <option value="default" selected>Default</option>
+                    </select>
+                </div> -->
+            </form>
+        </div>        
+        <div class="h-10 mt-10">
+            <button type="button" class="h-full rounded w-[100%] text-white bg-emerald-600" @click="createProject">Create Project</button>
+        </div>
     </div>
 
-    <div class="w-full mt-10">
-        <div class="text-center text-red-600">{{ errorMessage }}</div>
-        <form class="w-[100%]">
-            <div>
-                <label for="name-project" class="font-semibold">Name</label>
-                <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="name-project" name="name-project" placeholder="Project Name" required v-model="project.name">
-            </div>
+    <div v-if="visibleLanguage == 'pt-br'">
+        <div class="h-8">
+            <p class="text-black font-bold text-center text-2xl">Criação de Projeto</p>
+        </div>
 
-            <div class="mt-2">
-                <label for="description-project" class="font-semibold">Description</label>
-                <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="description-project" name="description-project" placeholder="Project Description" required v-model="project.description">
-            </div>
-
-            <div class="mt-2 grid grid-cols-1 md:grid-cols-2">
-                <div class="md:mr-2">
-                    <label for="end-date-project" class="font-semibold">End Date</label>
-                    <input type="date" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="end-date-project" name="end-date-project" required v-model="project.expected_end_date">
+        <div class="w-full mt-10">
+            <div class="text-center text-red-600">{{ errorMessage }}</div>
+            <form class="w-[100%]">
+                <div>
+                    <label for="name-project" class="font-semibold">Nome</label>
+                    <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="name-project" name="name-project" placeholder="Nome do projeto" required v-model="project.name">
                 </div>
-                <div class="md:ml-2">
-                    <label for="priority-project" class="font-semibold">Priority</label>
-                    <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="priority-project" name="priority-project" required v-model="project.priority">
-                        <option value="Low Priority">Low Priority</option>
-                        <option value="Medium Priority">Medium Priority</option>
-                        <option value="High Priority">High Priority</option>
+
+                <div class="mt-2">
+                    <label for="description-project" class="font-semibold">Descrição</label>
+                    <input type="text" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="description-project" name="description-project" placeholder="Descrição do projeto" required v-model="project.description">
+                </div>
+
+                <div class="mt-2 grid grid-cols-1 md:grid-cols-2">
+                    <div class="md:mr-2">
+                        <label for="end-date-project" class="font-semibold">Data final</label>
+                        <input type="date" class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="end-date-project" name="end-date-project" required v-model="project.expected_end_date">
+                    </div>
+                    <div class="md:ml-2">
+                        <label for="priority-project" class="font-semibold">Prioridade</label>
+                        <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="priority-project" name="priority-project" required v-model="project.priority">
+                            <option value="Low Priority">Prioridade baixa</option>
+                            <option value="Medium Priority">Prioridade média</option>
+                            <option value="High Priority">Prioridade alta</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- <div class="mt-2">
+                    <label for="project-model" class="font-semibold">Project Model</label>
+                    <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="project-model" name="project-model" required v-model="project.project_model">
+                        <option value="default" selected>Default</option>
                     </select>
-                </div>
-            </div>
-            
-            <!-- <div class="mt-2">
-                <label for="project-model" class="font-semibold">Project Model</label>
-                <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="project-model" name="project-model" required v-model="project.project_model">
-                    <option value="default" selected>Default</option>
-                </select>
-            </div> -->
-        </form>
-    </div>        
-    <div class="h-10 mt-10">
-        <button type="button" class="h-full rounded w-[100%] text-white bg-emerald-600" @click="createProject">Create Project</button>
+                </div> -->
+            </form>
+        </div>        
+        <div class="h-10 mt-10">
+            <button type="button" class="h-full rounded w-[100%] text-white bg-emerald-600" @click="createProject">Criar Projeto</button>
+        </div>
     </div>
 </template>

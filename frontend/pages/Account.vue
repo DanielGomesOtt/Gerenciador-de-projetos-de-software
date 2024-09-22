@@ -10,6 +10,7 @@ let userName = ref('');
 let idUser = ref('');
 let avatarPath = ref('');
 let isOpen = ref(false);
+let visibleLanguage = ref(localStorage.getItem('language'));
 
 const showUserName = () => {
     let storage = JSON.parse(localStorage.getItem('userStorage'));
@@ -67,6 +68,10 @@ const getAvatarPath = async () => {
     }
 }
 
+const changeLanguage = () => {
+    visibleLanguage.value = localStorage.getItem('language');
+}
+
 onBeforeMount(() => {
     showUserName();
     getAvatarPath();
@@ -76,7 +81,7 @@ onBeforeMount(() => {
 
 <template>
     <div class="w-screen h-screen overflow-x-hidden">
-        <NavBar />
+        <NavBar @changeLanguageParent="changeLanguage"/>
         <div class="flex flex-col justify-center items-center mt-5">
             <div>
                 <div class="flex">
@@ -95,17 +100,22 @@ onBeforeMount(() => {
                 </div>
             </div>
             <div class="w-screen flex justify-center">
-                <FormAccount />
+                <FormAccount :visibleLanguage="visibleLanguage"/>
             </div>
         </div>
     </div>
     <UModal v-model="isOpen">
         <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
-            <p class="text-center text-2xl font-semibold">Confirm your avatar upload</p>
+            <p class="text-center text-2xl font-semibold" v-if="visibleLanguage == 'en'">Confirm your avatar upload</p>
+            <p class="text-center text-2xl font-semibold" v-if="visibleLanguage == 'pt-br'">Confirme o upload do seu avatar</p>
             <template #footer>
-                <div class="flex justify-around items-center">
+                <div class="flex justify-around items-center" v-if="visibleLanguage == 'en'">
                     <button class="bg-green-600 text-white rounded-md w-28 h-10" @click="uploadAvatarPath()">Confirm</button>
                     <button type="button" class="bg-red-600 text-white rounded-md ml-10 w-28 h-10" @click="() => {isOpen = false}">Cancel</button>
+                </div>
+                <div class="flex justify-around items-center" v-if="visibleLanguage == 'pt-br'">
+                    <button class="bg-green-600 text-white rounded-md w-28 h-10" @click="uploadAvatarPath()">Confirmar</button>
+                    <button type="button" class="bg-red-600 text-white rounded-md ml-10 w-28 h-10" @click="() => {isOpen = false}">Cancelar</button>
                 </div>
             </template>
         </UCard>

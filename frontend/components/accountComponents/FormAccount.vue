@@ -5,6 +5,9 @@ import axios from 'axios';
 const runtimeConfig = useRuntimeConfig();
 const isOpen = ref(false);
 const isOpenModalDisableAccount = ref(false);
+const props = defineProps({
+    visibleLanguage: String
+});
 
 let passwordConfirmIsVisible = ref(false);
 let form = {
@@ -135,7 +138,7 @@ onMounted(() => {
         <div class="w-full text-center">
             <span class="text-red-600" id="submit-message">{{ submitMessage }}</span>
         </div>
-        <form>
+        <form v-if="props.visibleLanguage == 'en'">
             <div class="w-full" v-if="!passwordConfirmIsVisible">
                 <label for="user-name-account">Name</label>
                 <input type="text" name="name" id="user-name-account" class="border-2 border-slate-200 rounded-md w-full h-12 my-4 bg-slate-100 pl-1" v-model="form.name">
@@ -161,17 +164,49 @@ onMounted(() => {
                 </div>
             </div>
         </form>
+        <form v-if="props.visibleLanguage == 'pt-br'">
+            <div class="w-full" v-if="!passwordConfirmIsVisible">
+                <label for="user-name-account">Nome</label>
+                <input type="text" name="name" id="user-name-account" class="border-2 border-slate-200 rounded-md w-full h-12 my-4 bg-slate-100 pl-1" v-model="form.name">
+            </div>
+            <div class="w-full" v-if="!passwordConfirmIsVisible">
+                <label for="user-email-account">E-mail</label>
+                <input type="email" name="email" id="user-email-account" class="border-2 border-slate-200 rounded-md w-full h-12 my-4 bg-slate-100 pl-1" placeholder="user@email.com" v-model="form.email">
+            </div>
+            <div class="w-full" v-if="passwordConfirmIsVisible">
+                <label for="user-password-account">Senha</label>
+                <input type="password" name="password" id="user-password-account" class="border-2 border-slate-200 rounded-md w-full h-12 my-4 bg-slate-100 pl-1" v-model="form.password">
+            </div>
+            <div class="w-full" v-if="passwordConfirmIsVisible">
+                <label for="user-password-confirm-account">Confirmação de senha</label>
+                <input type="password" name="password-confirm" id="user-password-confirm-account" class="border-2 border-slate-200 rounded-md w-full h-12 my-4 bg-slate-100 pl-1">
+            </div>
+            <div class="w-full flex justify-center">
+                <div class="w-full">
+                    <button type="button" class="text-green-600 rounded-md border-2 border-green-600 p-1 hover:text-white hover:bg-green-600 shadow-md w-full mb-3" @click="isOpen = true">Salvar mudanças</button>
+                    <button type="button" class="text-blue-600 rounded-md border-2 border-blue-600 p-1 hover:text-white hover:bg-blue-600 shadow-md w-full mb-3" @click="changeFormFieldsVisibility()" v-if="!passwordConfirmIsVisible">Mudar senha</button>
+                    <button type="button" class="text-red-600 rounded-md border-2 border-red-600 p-1 hover:text-white hover:bg-red-600 shadow-md w-full mb-3" @click="changeFormFieldsVisibility()" v-if="passwordConfirmIsVisible">Cancelar mudança de senha</button>
+                    <button type="button" class="text-red-600 rounded-md border-2 border-red-600 p-1 hover:text-white hover:bg-red-600 shadow-md w-full" v-if="!passwordConfirmIsVisible" @click="isOpenModalDisableAccount = true">Inativar sua conta</button>
+                </div>
+            </div>
+        </form>
     </div>
 
     <UModal v-model="isOpen">
         <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
 
-            <p class="text-center text-2xl font-semibold">Confirm to save the changes</p>
-
+            <p class="text-center text-2xl font-semibold" v-if="props.visibleLanguage == 'en'">Confirm to save the changes</p>
+            <p class="text-center text-2xl font-semibold" v-if="props.visibleLanguage == 'pt-br'">Confirme para salvar as mudanças</p>
+            
             <template #footer>
-                <div class="flex justify-around items-center">
+                <div class="flex justify-around items-center" v-if="props.visibleLanguage == 'en'">
                     <button class="bg-green-600 text-white rounded-md w-28 h-10" @click="submitAccountForm($event)">Confirm</button>
                     <button type="button" class="bg-red-600 text-white rounded-md ml-10 w-28 h-10" @click="isOpen = false">Cancel</button>
+                </div>
+
+                <div class="flex justify-around items-center" v-if="props.visibleLanguage == 'pt-br'">
+                    <button class="bg-green-600 text-white rounded-md w-28 h-10" @click="submitAccountForm($event)">Confirmar</button>
+                    <button type="button" class="bg-red-600 text-white rounded-md ml-10 w-28 h-10" @click="isOpen = false">Cancelar</button>
                 </div>
             </template>
         </UCard>
@@ -180,12 +215,18 @@ onMounted(() => {
     <UModal v-model="isOpenModalDisableAccount">
         <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
 
-            <p class="text-center text-2xl font-semibold">Are you sure? This action is irreversible.</p>
-
+            <p class="text-center text-2xl font-semibold" v-if="props.visibleLanguage == 'en'">Are you sure? This action is irreversible.</p>
+            <p class="text-center text-2xl font-semibold" v-if="props.visibleLanguage == 'pt-br'">Você tem certeza? Essa ação é irreversível.</p>
+            
             <template #footer>
-                <div class="flex justify-around items-center">
+                <div class="flex justify-around items-center" v-if="props.visibleLanguage == 'en'">
                     <button type="button" class="bg-green-600 text-white rounded-md w-28 h-10" @click="disableAccount($event)">Confirm</button>
                     <button type="button" class="bg-red-600 text-white rounded-md ml-10 w-28 h-10" @click="isOpenModalDisableAccount = false">Cancel</button>
+                </div>
+
+                <div class="flex justify-around items-center" v-if="props.visibleLanguage == 'pt-br'">
+                    <button type="button" class="bg-green-600 text-white rounded-md w-28 h-10" @click="disableAccount($event)">Confirmar</button>
+                    <button type="button" class="bg-red-600 text-white rounded-md ml-10 w-28 h-10" @click="isOpenModalDisableAccount = false">Cancelar</button>
                 </div>
             </template>
         </UCard>

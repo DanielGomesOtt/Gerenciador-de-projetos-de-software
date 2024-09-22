@@ -51,13 +51,13 @@ const submit = async (event) => {
             <div>
                 <form @submit="submit($event)">
                     <div class="flex justify-center">
-                        <input type="email" class="w-4/5 md:w-full lg:w-full h-14 rounded-lg mt-5 p-2 border-2 border-gray-200 shadow bg-gray-200 placeholder:text-zinc-600" placeholder="Your E-mail" name="email" id="login-email" v-model="form.email">
+                        <input type="email" class="w-4/5 md:w-96 lg:w-96 h-14 rounded-lg mt-5 p-2 border-2 border-gray-200 shadow bg-gray-200 placeholder:text-zinc-600" placeholder="Your E-mail" name="email" id="login-email" v-model="form.email">
                     </div>
                     <div class="flex justify-center">
-                        <input type="password" class="w-4/5 md:w-full lg:w-full h-14 rounded-lg mt-5 p-2 border-2 border-gray-200 shadow bg-gray-200 placeholder:text-zinc-600" placeholder="Your Password" name="password" id="login-password" v-model="form.password">
+                        <input type="password" class="w-4/5 md:w-96 lg:w-96 h-14 rounded-lg mt-5 p-2 border-2 border-gray-200 shadow bg-gray-200 placeholder:text-zinc-600" placeholder="Your Password" name="password" id="login-password" v-model="form.password">
                     </div>
                     <div class="flex justify-center mt-10">
-                        <button class="bg-gradient-to-r from-blue-800 to-indigo-800 rounded-lg border-2 w-4/5 md:w-full lg:w-full h-12 text-white font-semibold mb-5">Sign In</button>
+                        <button class="bg-gradient-to-r from-blue-800 to-indigo-800 rounded-lg border-2 w-4/5 md:w-96 lg:w-96 h-12 text-white font-semibold mb-5">Sign In</button>
                     </div>
                     <div class="flex justify-center mb-5">
                         <button type="submit"><a class="text-blue-800 font-medium hover:underline" href="/password_recovery">Forgot your password?</a></button>
@@ -73,13 +73,13 @@ const submit = async (event) => {
             <div>
                 <form @submit="submit($event)">
                     <div class="flex justify-center">
-                        <input type="email" class="w-4/5 md:w-full lg:w-full h-14 rounded-lg mt-5 p-2 border-2 border-gray-200 shadow bg-gray-200 placeholder:text-zinc-600" placeholder="Seu e-mail" name="email" id="login-email" v-model="form.email">
+                        <input type="email" class="w-4/5 md:w-96 lg:w-96 h-14 rounded-lg mt-5 p-2 border-2 border-gray-200 shadow bg-gray-200 placeholder:text-zinc-600" placeholder="Seu e-mail" name="email" id="login-email" v-model="form.email">
                     </div>
                     <div class="flex justify-center">
-                        <input type="password" class="w-4/5 md:w-full lg:w-full h-14 rounded-lg mt-5 p-2 border-2 border-gray-200 shadow bg-gray-200 placeholder:text-zinc-600" placeholder="Sua senha" name="password" id="login-password" v-model="form.password">
+                        <input type="password" class="w-4/5 md:w-96 lg:w-96 h-14 rounded-lg mt-5 p-2 border-2 border-gray-200 shadow bg-gray-200 placeholder:text-zinc-600" placeholder="Sua senha" name="password" id="login-password" v-model="form.password">
                     </div>
                     <div class="flex justify-center mt-10">
-                        <button class="bg-gradient-to-r from-blue-800 to-indigo-800 rounded-lg border-2 w-4/5 md:w-full lg:w-full h-12 text-white font-semibold mb-5">Sign In</button>
+                        <button class="bg-gradient-to-r from-blue-800 to-indigo-800 rounded-lg border-2 w-4/5 md:w-96 lg:w-96 h-12 text-white font-semibold mb-5">Sign In</button>
                     </div>
                     <div class="flex justify-center mb-5">
                         <button type="submit"><a class="text-blue-800 font-medium hover:underline" href="/password_recovery">Esqueceu sua senha ?</a></button>

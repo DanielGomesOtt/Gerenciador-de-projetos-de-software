@@ -43,9 +43,9 @@ const updateUserPassword = async (event) => {
             <p class="text-gray-500 font-lg text-lg md:text-xl lg:text-xl text-center mt-5">Enter your new password. It needs to have at least 8 characters.</p>
             <div class="mt-5 text-red-600">{{ errorMessage }}</div>
             <form class="flex flex-col w-full" @submit="updateUserPassword($event)">
-                <input type="password" class="w-4/5 md:w-2/6 h-14 rounded-lg mt-7 mb-5 p-2 border-2 border-gray-200 shadow bg-gray-200 placeholder:text-zinc-600 mx-auto" placeholder="******" name="password" id="user-password" v-model="form.password" autofocus autocomplete="off">
-                <input type="password" class="w-4/5 md:w-2/6 h-14 rounded-lg mt-7 mb-5 p-2 border-2 border-gray-200 shadow bg-gray-200 placeholder:text-zinc-600 mx-auto" placeholder="******" name="confirm-password" id="user-confirm-password" v-model="confirmPassword" autofocus autocomplete="off">
-                <button type="submit" class="bg-gradient-to-r from-blue-800 to-indigo-800 rounded-lg border-2 w-4/5 md:w-2/6 h-12 text-white font-semibold mb-5 mx-auto">Change password</button>
+                <input type="password" class="w-4/5 md:w-96 lg:w-96 h-14 rounded-lg mt-7 mb-5 p-2 border-2 border-gray-200 shadow bg-gray-200 placeholder:text-zinc-600 mx-auto" placeholder="******" name="password" id="user-password" v-model="form.password" autofocus autocomplete="off">
+                <input type="password" class="w-4/5 mmd:w-96 lg:w-96 h-14 rounded-lg mt-7 mb-5 p-2 border-2 border-gray-200 shadow bg-gray-200 placeholder:text-zinc-600 mx-auto" placeholder="******" name="confirm-password" id="user-confirm-password" v-model="confirmPassword" autofocus autocomplete="off">
+                <button type="submit" class="bg-gradient-to-r from-blue-800 to-indigo-800 rounded-lg border-2 w-4/5 md:w-96 lg:w-96 h-12 text-white font-semibold mb-5 mx-auto">Change password</button>
             </form>
         </div>
         <div v-if="visibleLanguage == 'pt-br'">
@@ -53,9 +53,9 @@ const updateUserPassword = async (event) => {
             <p class="text-gray-500 font-lg text-lg md:text-xl lg:text-xl text-center mt-5">Insira a senha. A senha precisa ter 8 digítos ou mais.</p>
             <div class="mt-5 text-red-600">{{ errorMessage }}</div>
             <form class="flex flex-col w-full" @submit="updateUserPassword($event)">
-                <input type="password" class="w-4/5 md:w-5/6 h-14 rounded-lg mt-7 mb-5 p-2 border-2 border-gray-200 shadow bg-gray-200 placeholder:text-zinc-600 mx-auto" placeholder="******" name="password" id="user-password" v-model="form.password" autofocus autocomplete="off">
-                <input type="password" class="w-4/5 md:w-5/6 h-14 rounded-lg mt-7 mb-5 p-2 border-2 border-gray-200 shadow bg-gray-200 placeholder:text-zinc-600 mx-auto" placeholder="******" name="confirm-password" id="user-confirm-password" v-model="confirmPassword" autofocus autocomplete="off">
-                <button type="submit" class="bg-gradient-to-r from-blue-800 to-indigo-800 rounded-lg border-2 w-4/5 md:w-2/6 h-12 text-white font-semibold mb-5 mx-auto">Mudar senha</button>
+                <input type="password" class="w-4/5 md:w-96 lg:w-96 h-14 rounded-lg mt-7 mb-5 p-2 border-2 border-gray-200 shadow bg-gray-200 placeholder:text-zinc-600 mx-auto" placeholder="******" name="password" id="user-password" v-model="form.password" autofocus autocomplete="off">
+                <input type="password" class="w-4/5 md:w-96 lg:w-96 h-14 rounded-lg mt-7 mb-5 p-2 border-2 border-gray-200 shadow bg-gray-200 placeholder:text-zinc-600 mx-auto" placeholder="******" name="confirm-password" id="user-confirm-password" v-model="confirmPassword" autofocus autocomplete="off">
+                <button type="submit" class="bg-gradient-to-r from-blue-800 to-indigo-800 rounded-lg border-2 w-4/5 md:w-96 lg:w-96 h-12 text-white font-semibold mb-5 mx-auto">Mudar senha</button>
             </form>
         </div>
     </div>

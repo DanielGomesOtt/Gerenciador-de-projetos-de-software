@@ -29,8 +29,18 @@ const changeScreenSide = () => {
     }
 }
 
-onMounted(() => {
-    localStorage.setItem('language', 'en');
+onBeforeMount(() => {
+    if(localStorage.getItem('language') && (localStorage.getItem('language') == 'en' || localStorage.getItem('language') == 'pt-br')){
+        visibleLanguage.value = localStorage.getItem('language');
+        if(visibleLanguage.value == 'en'){
+            language.value = false;
+        }else if(visibleLanguage.value == 'pt-br'){
+            language.value = true;
+        }
+    }else{
+        localStorage.setItem('language', 'en');
+        language.value = false
+    }
 });
 
 </script>

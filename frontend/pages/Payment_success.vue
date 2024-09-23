@@ -3,6 +3,7 @@ import NavBar from '~/components/layoutComponents/NavBar.vue';
 import axios from 'axios';
 
 const runtimeConfig = useRuntimeConfig();
+let visibleLanguage = ref(localStorage.getItem('language'));
 
 const setPlanToUser = async() => {
     try{
@@ -51,7 +52,8 @@ onMounted(() => {
     <div class="w-screen h-screen flex justify-center items-center">
         <div class="text-center w-full">
             <Icon name="mdi:check-underline-circle-outline" class="text-green-500" size="5em"/>
-            <h1 class="text-5xl font-bold">Successful Payment</h1>
+            <h1 class="text-5xl font-bold" v-if="visibleLanguage == 'en'">Successful Payment</h1>
+            <h1 class="text-5xl font-bold" v-if="visibleLanguage == 'pt-br'">Pagamento bem-sucedido</h1>
         </div>
     </div>
 </template>

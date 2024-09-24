@@ -26,6 +26,7 @@ let idUser = JSON.parse(localStorage.getItem('userStorage')).id;
 let conversationMessages = ref([]);
 let quantityUnreadMessages = ref([]);
 let isProjectPremium = ref(false);
+let visibleLanguage = ref(localStorage.getItem('language'));
 
 
 const setMessageNotification = (id_user) => {
@@ -242,6 +243,10 @@ const getProjectCreatorData = async () => {
     }
 }
 
+const changeLanguage = () => {
+    visibleLanguage.value = localStorage.getItem('language');
+}
+
 onBeforeMount(() => {
     connectSocket(runtimeConfig.public.BASE_URL);
     getUsersByProject();
@@ -261,10 +266,10 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <NavBar />
+    <NavBar @changeLanguageParent="changeLanguage"/>
     <div class="flex justify-between">
         <div v-if="myProjectData && myProjectData.Project && myProjectData.Project.project_model && myProjectData.Project.project_model == 'default'">
-            <DefaultModelProject :myProjectData="myProjectData"/>
+            <DefaultModelProject :myProjectData="myProjectData" :visibleLanguage="visibleLanguage"/>
         </div>
         <div class="flex items-center" v-if="id_category > 1">
             <UChip size="2xl" class="mr-2 fixed right-5 bottom-14" v-if="quantityUnreadMessages.length > 0 && isProjectPremium == true">
@@ -296,7 +301,8 @@ onUnmounted(() => {
                             <UButton color="white" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1 hover:bg-blue-400" @click="changeChatVisibility('', '', '', '')" />
                         </div>
                         <div class="bg-blue-400 flex justify-between" v-if="chat == 'off'">
-                            <button class="text-white" v-if="myProjectData.administrator" @click="changeVisibilityModalAddMember"><Icon name="mdi:plus" color="white" size="1.8em"/>New Member</button>
+                            <button class="text-white" v-if="myProjectData.administrator && visibleLanguage == 'en'" @click="changeVisibilityModalAddMember"><Icon name="mdi:plus" color="white" size="1.8em"/>New Member</button>
+                            <button class="text-white" v-if="myProjectData.administrator && visibleLanguage == 'pt-br'" @click="changeVisibilityModalAddMember"><Icon name="mdi:plus" color="white" size="1.8em"/>Novo Membro</button>
                             <UButton
                                 color="gray"
                                 variant="ghost"
@@ -338,9 +344,13 @@ onUnmounted(() => {
                                             </span>
                                         </div>
                                     </div>
-                                    <div class="flex items-center mt-2">
+                                    <div class="flex items-center mt-2" v-if="visibleLanguage == 'en'">
                                         <button type="button" class="hover:bg-blue-600 bg-blue-400 text-white text-sm py-1 px-2 rounded-lg mx-2" @click="changeChatVisibility(member.id, member.name, member.email, member.avatar_path)" v-if="isProjectPremium == true">Chat</button>
                                         <button type="button" class="hover:bg-red-600 bg-red-400 text-white text-sm p-1 rounded-lg" @click="changeVisibilityModalRemoveMember(member.id)" v-if="myProjectData.administrator">Remove</button>
+                                    </div>
+                                    <div class="flex items-center mt-2" v-if="visibleLanguage == 'pt-br'">
+                                        <button type="button" class="hover:bg-blue-600 bg-blue-400 text-white text-sm py-1 px-2 rounded-lg mx-2" @click="changeChatVisibility(member.id, member.name, member.email, member.avatar_path)" v-if="isProjectPremium == true">Chat</button>
+                                        <button type="button" class="hover:bg-red-600 bg-red-400 text-white text-sm p-1 rounded-lg" @click="changeVisibilityModalRemoveMember(member.id)" v-if="myProjectData.administrator">Remover</button>
                                     </div>
                                 </div>
                             </UCard>
@@ -352,7 +362,8 @@ onUnmounted(() => {
                                     <UButton trailing-icon="i-heroicons-chevron-down-20-solid" class="bg-green-300 hover:bg-green-300" />
                                     <template #panel>
                                         <div class="max-h-48 overflow-y-auto">
-                                            <button class="p-1 bg-red-300 hover:bg-red-500 text-white" @click="deleteMessage(message[2], 'sender')">Delete message</button>
+                                            <button class="p-1 bg-red-300 hover:bg-red-500 text-white" @click="deleteMessage(message[2], 'sender')" v-if="visibleLanguage == 'en'">Delete message</button>
+                                            <button class="p-1 bg-red-300 hover:bg-red-500 text-white" @click="deleteMessage(message[2], 'sender')" v-if="visibleLanguage == 'pt-br'">Deletar mensagem</button>
                                         </div>
                                     </template>
                                 </UPopover>
@@ -363,7 +374,8 @@ onUnmounted(() => {
                                     <UButton trailing-icon="i-heroicons-chevron-down-20-solid" class="bg-blue-300 hover:bg-blue-300"/>
                                     <template #panel>
                                         <div class="max-h-48 overflow-y-auto">
-                                            <button class="p-1 bg-red-300 hover:bg-red-500 text-white" @click="deleteMessage(message[2], 'recipient')">Delete message</button>
+                                            <button class="p-1 bg-red-300 hover:bg-red-500 text-white" @click="deleteMessage(message[2], 'recipient')" v-if="visibleLanguage == 'en'">Delete message</button>
+                                            <button class="p-1 bg-red-300 hover:bg-red-500 text-white" @click="deleteMessage(message[2], 'recipient')" v-if="visibleLanguage == 'pt-br'">Deletar mensagem</button>
                                         </div>
                                     </template>
                                 </UPopover>
@@ -400,16 +412,21 @@ onUnmounted(() => {
     </div>
     <UModal v-model="visibilityModalAddMember">
         <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
-            <AddMemberForm @changeVisibilityModalAddMember="changeVisibilityModalAddMember"/>
+            <AddMemberForm @changeVisibilityModalAddMember="changeVisibilityModalAddMember" :visibleLanguage="visibleLanguage"/>
         </UCard>
     </UModal>
     <UModal v-model="isOpenModalRemoveMember">
         <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
-            <p class="text-center text-2xl font-semibold">Are you sure you want to proceed with this action?</p>
+            <p class="text-center text-2xl font-semibold" v-if="visibleLanguage == 'en'">Are you sure you want to proceed with this action?</p>
+            <p class="text-center text-2xl font-semibold" v-if="visibleLanguage == 'pt-br'">Você tem certeza que quer prosseguir com essa ação?</p>
             <template #footer>
-                <div class="flex justify-around items-center">
+                <div class="flex justify-around items-center" v-if="visibleLanguage == 'en'">
                     <button type="button" class="bg-green-600 text-white rounded-md w-28 h-10" @click="removeMemberFromProject($event)">Confirm</button>
                     <button type="button" class="bg-red-600 text-white rounded-md ml-10 w-28 h-10" @click="changeVisibilityModalRemoveMember(0)">Cancel</button>
+                </div>
+                <div class="flex justify-around items-center" v-if="visibleLanguage == 'pt-br'">
+                    <button type="button" class="bg-green-600 text-white rounded-md w-28 h-10" @click="removeMemberFromProject($event)">Confirmar</button>
+                    <button type="button" class="bg-red-600 text-white rounded-md ml-10 w-28 h-10" @click="changeVisibilityModalRemoveMember(0)">Cancelar</button>
                 </div>
             </template>
         </UCard>

@@ -21,15 +21,15 @@ const setRenewAlert = () => {
     endPlanDate = endPlanDate[0];
 
     let today = new Date();
-
+    endPlanDate = new Date(endPlanDate);
+    const diffTime = endPlanDate - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     if(JSON.parse(localStorage.getItem('userStorage')).type_premium == 'monthly'){
-        today.setDate(today.getDate() + 7);
-        if(`${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, "0")}-${today.getDate()}` == endPlanDate){
+        if (diffDays <= 7 && diffDays >= 0) {
             renewAlert.value = true;
         }
     }else if(JSON.parse(localStorage.getItem('userStorage')).type_premium == 'yearly'){
-        today.setDate(today.getDate() + 7);
-        if(`${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, "0")}-${today.getDate()}` == endPlanDate){
+        if (diffDays <= 7 && diffDays >= 0) {
             renewAlert.value = true;
         }
     }
@@ -120,9 +120,11 @@ const changeLanguage = () => {
     if(language.value == false){
         language.value = true;
         localStorage.setItem('language', 'pt-br');
+        visibleLanguage.value = 'pt-br';
     }else{
         language.value = false;
         localStorage.setItem('language', 'en');
+        visibleLanguage.value = 'en';
     }
     emit('changeLanguageParent');
 }
@@ -293,8 +295,10 @@ setInterval(() => {
         </ul>  
     </nav>
     <div class="flex w-full h-12 bg-red-600 text-white text-center items-center justify-center" v-if="renewAlert">
-        <span class="mr-5">Your plan will expire on {{ expirationDay[0] }}. Renew your plan:</span>
-        <button class="bg-red-600 border-2 border-white p-2 rounded-lg" @click="renewPlan">Renew</button>
+        <span class="mr-5" v-if="visibleLanguage == 'en'">Your plan will expire on {{ expirationDay[0] }}. Renew your plan:</span>
+        <button class="bg-red-600 border-2 border-white p-2 rounded-lg" @click="renewPlan" v-if="visibleLanguage == 'en'">Renew</button>
+        <span class="mr-5" v-if="visibleLanguage == 'pt-br'">Seu plano irá expirar no dia {{ expirationDay[0].split('-').reverse().join('/') }}. Renove seu plano:</span>
+        <button class="bg-red-600 border-2 border-white p-2 rounded-lg" @click="renewPlan" v-if="visibleLanguage == 'pt-br'">Renovar</button>
     </div>
 </template>
 

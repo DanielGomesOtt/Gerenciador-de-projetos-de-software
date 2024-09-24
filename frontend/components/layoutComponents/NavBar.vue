@@ -189,7 +189,7 @@ setInterval(() => {
         <ul class="flex justify-around items-center w-[70%] lg:w-[80%]" id="nav-items" v-if="!isOpenMobile && language == false">
             <li><a href="/home" class="font-medium text-lg nav-link">Home</a></li>
             <li><a href="/project" class="font-medium text-lg nav-link">Projects</a></li>
-            <li><a href="/paid_plans" class="font-medium text-lg nav-lik">Prices</a></li>
+            <li><a href="/paid_plans" class="font-medium text-lg nav-link">Prices</a></li>
             <li>
                 <UPopover>
                     <UChip :text="myInvites.length" size="2xl">

@@ -37,8 +37,6 @@ let paginatedTasks = computed(() => {
 });
 let taskCard = 'true';
 
-
-
 const changeVisibilityCreateTaskModal = () => {
     visibilityCreateTaskModal.value = !visibilityCreateTaskModal.value;
 }
@@ -400,7 +398,6 @@ onBeforeMount(() => {
             </div>
             <div class="flex justify-center my-2">
                 <UPagination
-                    
                     v-model="currentPagination" 
                     :page-count="itemsPerPage" 
                     :total="tasks.length"
@@ -434,7 +431,7 @@ onBeforeMount(() => {
                 <div class="flex justify-end w-full">
                     <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="my-1" @click="visibilityAiTaskModal = false" />
                 </div>
-                <CreateTaskByAiForm @getTasks="getTasks" @changeVisibilityCreateTaskAiModal="changeVisibilityCreateTaskAiModal" :visibleLanguage="visibleLanguage"/>
+                <CreateTaskByAiForm @getTasks="checkTasksLimit" @changeVisibilityCreateTaskAiModal="changeVisibilityCreateTaskAiModal" :visibleLanguage="visibleLanguage"/>
             </UCard>
         </UModal>
     </div>
@@ -680,7 +677,7 @@ onBeforeMount(() => {
                 <div class="flex justify-end w-full">
                     <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="my-1" @click="visibilityAiTaskModal = false" />
                 </div>
-                <CreateTaskByAiForm @getTasks="getTasks" @changeVisibilityCreateTaskAiModal="changeVisibilityCreateTaskAiModal" :visibleLanguage="visibleLanguage"/>
+                <CreateTaskByAiForm @getTasks="checkTasksLimit" @changeVisibilityCreateTaskAiModal="changeVisibilityCreateTaskAiModal" :visibleLanguage="visibleLanguage"/>
             </UCard>
         </UModal>
     </div>

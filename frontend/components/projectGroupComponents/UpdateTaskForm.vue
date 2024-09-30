@@ -33,7 +33,7 @@ const emit = defineEmits(['changeVisibilityUpdateTaskModal', 'getTasks', 'checkT
 let errorMessage = ref('');
 let members = ref([]);
 let id_user = JSON.parse(localStorage.getItem('userStorage')).id;
-let name_user = JSON.parse(localStorage.getItem('userStorage')).name;
+let name_user = ref(JSON.parse(localStorage.getItem('userStorage')).name);
 let task = {
     'id_task': localData.id,
     'title': localData.title,
@@ -216,7 +216,6 @@ onBeforeMount(() => {
                     <label for="responsible-task-update" class="font-semibold">Responsible</label>
                     <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="responsible-task-update" name="responsible-task-update" required v-model="task.id_user" :disabled="updateCheck.value">
                         <option value="">Select a responsible</option>
-                        <option :value="id_user">{{ name_user.toUpperCase() }}</option>
                         <option :value="member.id" v-for="member in members" :key="member.id">{{ member.name.toUpperCase() }}</option>
                     </select>
                 </div>
@@ -321,7 +320,6 @@ onBeforeMount(() => {
                     <label for="responsible-task-update" class="font-semibold">Responsável</label>
                     <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="responsible-task-update" name="responsible-task-update" required v-model="task.id_user" :disabled="updateCheck.value">
                         <option value="">Selecione um responsável</option>
-                        <option :value="id_user">{{ name_user.toUpperCase() }}</option>
                         <option :value="member.id" v-for="member in members" :key="member.id">{{ member.name.toUpperCase() }}</option>
                     </select>
                 </div>

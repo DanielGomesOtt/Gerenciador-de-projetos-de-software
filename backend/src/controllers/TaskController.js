@@ -161,8 +161,8 @@ async function searchTasks(req, res){
     }
 }
 
-async function setTaskByGemini(req, res){
-    try{
+async function setTaskByGemini(req, res) {
+    try {
         let prompt = `Crie ${req.body.quantity_task} tasks para um projeto de desenvolvimento relacionado ao tópico: ${req.body.topic}`;
         let json = `{
                         "type": "object",
@@ -184,29 +184,61 @@ async function setTaskByGemini(req, res){
                             "description": { "type": "string" }
                         }
                     }
-                    `
+                    `;
         prompt = prompt + `: ${json}`;
         let result = await jsonModel.generateContent(prompt);
         let response = new Array(result.response.text());
         response = JSON.parse(response);
-        response.forEach(async (task) => {
-            let taskData = {
-                'id_user': req.body.id_user,
-                'id_project': req.body.id_project,
-                'title': (task && task.title && task !== undefined && task.title !== undefined ? task.title : ''),
-                'description': (task && task.description && task !== undefined && task.description !== undefined ? task.description : ''),
-                'expected_end_date': (task && task.expected_end_date && task.expected_end_date.end_date && task !== undefined && task.expected_end_date !== undefined &&task.expected_end_date.end_date !== undefined ? task.expected_end_date.end_date : ''),
-                'type_task': (task && task.type_task && task !== undefined && task.type_task !== undefined ? task.type_task : ''),
-                'status': (task && task.status && task !== undefined && task.status !== undefined && task.status == 'in progress' ? task.status : 'in progress')
-            }
 
-            await Task.create(taskData);
-        });
-        res.status(201).json({ message: 'Tasks created successfully.' });
-    }catch(error){
-        console.log(error)
-        res.status(500).json({ message: error });
+        
+        let errors = [];
+
+        if (response) {
+            response.forEach(async (task) => {
+                try {
+                    let verifyDate = '';
+                    let today = new Date();
+                    if (task && task.expected_end_date && task.expected_end_date.end_date) {
+                        verifyDate = new Date(task.expected_end_date.end_date);
+                    } else {
+                        task.expected_end_date = {
+                            ...task.expected_end_date,
+                            end_date: `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()} 00:00:00`
+                        };
+                    }
+
+                    if (isNaN(verifyDate.getDate())) {
+                        task.expected_end_date.end_date = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()} 00:00:00`;
+                    }
+
+                    let taskData = {
+                        'id_user': req.body.id_user,
+                        'id_project': req.body.id_project,
+                        'title': task?.title || '',
+                        'description': task?.description || '',
+                        'expected_end_date': task?.expected_end_date?.end_date || '',
+                        'type_task': task?.type_task || 'created by gemini',
+                        'status': task?.status === 'in progress' ? 'in progress' : 'in progress'
+                    };
+
+                    await Task.create(taskData);
+                } catch (taskError) {
+                    errors.push({ task, error: taskError.message });
+                }
+            });
+        }
+
+        if (errors.length > 0) {
+            res.status(207).json({ message: 'Some tasks encountered errors.', errors });
+        } else {
+            res.status(201).json({ message: 'Tasks created successfully.' });
+        }
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error.', error: error.message });
     }
 }
+
 
 module.exports = { setTask, getTasks, checkTasksLimit, updateTask, searchTasks, setTaskByGemini };

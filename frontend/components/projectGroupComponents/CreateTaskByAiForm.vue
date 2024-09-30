@@ -50,6 +50,13 @@ const setTaskByGemini = async () => {
             if(response && response.status == 201){
                 emit('getTasks');
                 emit('changeVisibilityCreateTaskAiModal');
+            }else{
+                loadingModal.value = false;
+                if(visibleLanguage == 'en'){
+                    errorMessage.value = "The error occurred on Gemini's side, please try again.";
+                }else{
+                    errorMessage.value = "Ocorreu algum erro por parte do Gemini, tente novamente.";
+                }
             }
         }
     }catch(error){

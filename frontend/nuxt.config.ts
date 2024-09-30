@@ -7,6 +7,7 @@ export default defineNuxtConfig({
     public: {
       BASE_URL: process.env.BASE_URL,
       BASE_AVATAR_PATH: process.env.BASE_AVATAR_PATH,
+      USER_EMAIL: process.env.USER_EMAIL,
     },
   },
   colorMode: {

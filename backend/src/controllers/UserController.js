@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const jwt = require('../middlewares/accessTokenMiddleware');
+const Email = require('../utils/email');
 
 async function setUser(req, res) {
     try {
@@ -53,5 +54,16 @@ async function getUserById(req, res){
     }
 }
 
+async function sendSupportEmail(req, res){
+    try{
+        Email.sendSupportEmail(req.body);
+        
+        res.status(200).send({ message: 'success' });
+        
+    }catch(error){
+        res.status(500).json({ message: error });
+    }
+}
 
-module.exports = {setUser, getUserAvatar, getUserById};
+
+module.exports = {setUser, getUserAvatar, getUserById, sendSupportEmail};

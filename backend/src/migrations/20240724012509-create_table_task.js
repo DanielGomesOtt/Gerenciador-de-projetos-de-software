@@ -50,7 +50,10 @@ module.exports = {
       },
       status: {
         type: Sequelize.STRING,
-        defaultValue: 'in progress'
+        defaultValue: 'to do'
+      },
+      in_progress_date: {
+        type: Sequelize.DATE,
       },
       created_at: {
         type: Sequelize.DATE,

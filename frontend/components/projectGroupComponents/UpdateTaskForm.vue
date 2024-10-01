@@ -148,6 +148,7 @@ onBeforeMount(() => {
                     <div class="md:mr-2">
                         <label for="status-task-update" class="font-semibold">Status</label>
                         <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="status-task-update" name="status-task-update" required v-model="task.status" :disabled="updateCheck.value">
+                            <option value="to do">To do</option>
                             <option value="in progress">In progress</option>
                             <option value="cancelled">Cancelled</option>
                             <option value="overdue">Overdue</option>
@@ -252,6 +253,7 @@ onBeforeMount(() => {
                     <div class="md:mr-2">
                         <label for="status-task-update" class="font-semibold">Status</label>
                         <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="status-task-update" name="status-task-update" required v-model="task.status" :disabled="updateCheck.value">
+                            <option value="to do">A fazer</option>
                             <option value="in progress">Em andamento</option>
                             <option value="cancelled">Cancelada</option>
                             <option value="overdue">Atrasada</option>

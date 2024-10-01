@@ -17,7 +17,7 @@ let task = {
     'description': '',
     'expected_end_date': '',
     'type_task': 'development of new features',
-    'status': 'in progress',
+    'status': 'to do',
     'id_user': '',
     'id_project': route.params.id_project
 };
@@ -101,6 +101,7 @@ onBeforeMount(() => {
                     <div class="md:mr-2">
                         <label for="status-task" class="font-semibold">Status</label>
                         <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="status-task" name="status-task" required v-model="task.status">
+                            <option value="to do">To do</option>
                             <option value="in progress">In progress</option>
                             <option value="cancelled">Cancelled</option>
                             <option value="overdue">Overdue</option>
@@ -207,6 +208,7 @@ onBeforeMount(() => {
                     <div class="md:mr-2">
                         <label for="status-task" class="font-semibold">Status</label>
                         <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="status-task" name="status-task" required v-model="task.status">
+                            <option value="to do">A fazer</option>
                             <option value="in progress">Em andamento</option>
                             <option value="cancelled">Cancelada</option>
                             <option value="overdue">Atrasada</option>

@@ -286,6 +286,7 @@ onBeforeMount(() => {
                     <div class="mt-2">
                         <select class="w-56 md:w-32 h-7 rounded-sm" v-model="status_task" @change="searchTasks">
                             <option value="">Status</option>
+                            <option value="to do">To do</option>
                             <option value="in progress">In progress</option>
                             <option value="urgent">Urgent</option>
                             <option value="overdue">Overdue</option>
@@ -306,6 +307,7 @@ onBeforeMount(() => {
                     <div v-for="task in paginatedTasks" :key="task.id">
                         <UCard class="shadow mx-5 border-2 mt-3 h-full">
                             <template #header>
+                                <div class="py-1 px-2 h-full w-full text-center font-semibold capitalize bg-yellow-500 text-white rounded-lg" v-if="task.status == 'to do'">{{ task.status }}</div>
                                 <div class="py-1 px-2 h-full w-full text-center font-semibold capitalize bg-blue-500 text-white rounded-lg" v-if="task.status == 'in progress'">{{ task.status }}</div>
                                 <div class="py-1 px-2 h-full w-full text-center font-semibold capitalize bg-red-500 text-white rounded-lg" v-if="task.status == 'cancelled'">{{ task.status }}</div>
                                 <div class="py-1 px-2 h-full w-full text-center font-semibold capitalize bg-green-500 text-white rounded-lg" v-if="task.status == 'completed'">{{ task.status }}</div>
@@ -361,6 +363,7 @@ onBeforeMount(() => {
                     </thead>
                     <tbody>
                         <tr v-for="task in paginatedTasks" :key="task.id" class="border-2 border-gray-400">
+                            <div class="py-1 px-2 h-full w-full text-center font-semibold capitalize bg-yellow-500 text-white rounded-lg" v-if="task.status == 'to do'">{{ task.status }}</div>
                             <td class="py-1 px-2 border-2 border-gray-400 text-center font-semibold capitalize bg-blue-500 text-white" v-if="task.status == 'in progress'">{{ task.status }}</td>
                             <td class="py-1 px-2 border-2 border-gray-400 text-center font-semibold capitalize bg-red-500 text-white" v-if="task.status == 'cancelled'">{{ task.status }}</td>
                             <td class="py-1 px-2 border-2 border-gray-400 text-center font-semibold capitalize bg-green-500 text-white" v-if="task.status == 'completed'">{{ task.status }}</td>
@@ -531,6 +534,7 @@ onBeforeMount(() => {
                     <div class="mt-2">
                         <select class="w-56 md:w-32 h-7 rounded-sm" v-model="status_task" @change="searchTasks">
                             <option value="">Status</option>
+                            <option value="to do">To do</option>
                             <option value="in progress">Em andamento</option>
                             <option value="urgent">Urgente</option>
                             <option value="overdue">Atrasada</option>
@@ -551,6 +555,7 @@ onBeforeMount(() => {
                     <div v-for="task in paginatedTasks" :key="task.id">
                         <UCard class="shadow mx-5 border-2 mt-3 h-full">
                             <template #header>
+                                <div class="py-1 px-2 h-full w-full text-center font-semibold capitalize bg-yellow-500 text-white rounded-lg" v-if="task.status == 'to do'">A fazer</div>
                                 <div class="py-1 px-2 h-full w-full text-center font-semibold capitalize bg-blue-500 text-white rounded-lg" v-if="task.status == 'in progress'">Em andamento</div>
                                 <div class="py-1 px-2 h-full w-full text-center font-semibold capitalize bg-red-500 text-white rounded-lg" v-if="task.status == 'cancelled'">Cancelada</div>
                                 <div class="py-1 px-2 h-full w-full text-center font-semibold capitalize bg-green-500 text-white rounded-lg" v-if="task.status == 'completed'">Finalizada</div>
@@ -606,6 +611,7 @@ onBeforeMount(() => {
                     </thead>
                     <tbody>
                         <tr v-for="task in paginatedTasks" :key="task.id" class="border-2 border-gray-400">
+                            <div class="py-1 px-2 h-full w-full text-center font-semibold capitalize bg-yellow-500 text-white rounded-lg" v-if="task.status == 'to do'">A fazer</div>
                             <td class="py-1 px-2 border-2 border-gray-400 text-center font-semibold capitalize bg-blue-500 text-white" v-if="task.status == 'in progress'">Em andamento</td>
                             <td class="py-1 px-2 border-2 border-gray-400 text-center font-semibold capitalize bg-red-500 text-white" v-if="task.status == 'cancelled'">Cancelada</td>
                             <td class="py-1 px-2 border-2 border-gray-400 text-center font-semibold capitalize bg-green-500 text-white" v-if="task.status == 'completed'">Finalizada</td>

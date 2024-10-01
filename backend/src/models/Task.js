@@ -9,6 +9,7 @@ class Task extends Model {
       expected_end_date: DataTypes.DATE,
       real_end_date: DataTypes.INTEGER,
       status: DataTypes.STRING,
+      in_progress_date: DataTypes.DATE,
       project_stage: DataTypes.STRING,
       type_task: DataTypes.STRING,
       description: DataTypes.TEXT,

@@ -5,8 +5,12 @@ const { jsonModel } = require('../config/gemini');
 
 async function setTask(req, res){
     try{
-        const task = await Task.create(req.body);
 
+        if(req.body.status == 'in progress'){
+            req.body.in_progress_date = new Date();
+        }
+
+        const task = await Task.create(req.body);
         if(task){
             res.status(201).json({ message: 'Task created successfully.' });
         }
@@ -23,7 +27,7 @@ async function getTasks(req, res) {
         const condition = {
             id_project,
             status: {
-                [Op.or]: ['in progress', 'overdue', 'urgent']
+                [Op.or]: ['to do', 'in progress', 'overdue', 'urgent']
             }
         };
 
@@ -67,7 +71,7 @@ async function checkTasksLimit(req, res) {
         });
 
         check_limit = await Task.update({
-            status: 'in progress'
+            status: 'to do'
         }, {
             where: {
                 [Sequelize.Op.and]: [
@@ -75,7 +79,7 @@ async function checkTasksLimit(req, res) {
                     { id_project: id_project },
                     {
                         status: {
-                            [Sequelize.Op.notIn]: ['cancelled', 'completed', 'in progress', 'urgent']
+                            [Sequelize.Op.notIn]: ['to do', 'cancelled', 'completed', 'in progress', 'urgent']
                         }
                     }
                 ]
@@ -99,6 +103,12 @@ async function updateTask(req, res){
             'id_user': req.body.id_user,
         };
 
+        const currentTask = await Task.findByPk(req.body.id_task);
+
+        if(currentTask && currentTask.dataValues && currentTask.dataValues.status !== 'in progress' && data.status == 'in progress'){
+            data.in_progress_date = new Date();
+            data.in_progress_date.setHours(data.in_progress_date.getHours() - 3);
+        }
 
         if(data.status == 'completed'){
             let today = new Date();
@@ -107,7 +117,7 @@ async function updateTask(req, res){
             const month = String(today.getMonth() + 1).padStart(2, '0');
             const day = String(today.getDate()).padStart(2, '0');
 
-            today = `${year}-${month}-${day}`;
+            today = `${year}-${month}-${day} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
             
             data.real_end_date = today;
         }
@@ -145,7 +155,7 @@ async function searchTasks(req, res){
         }
 
         if(Object.keys(filter).length === 0){
-            filter.status = { [Op.or]: ['in progress', 'overdue', 'urgent'] };
+            filter.status = { [Op.or]: ['to do', 'in progress', 'overdue', 'urgent'] };
         }
 
         filter.id_project = req.headers.id_project;
@@ -178,7 +188,7 @@ async function setTaskByGemini(req, res) {
                                 },
                                 "required": ["start_date", "end_date"]
                             },
-                            "status": "in progress",
+                            "status": "to do",
                             "project_stage": { "type": "empty string" },
                             "type_task": "created by gemini",
                             "description": { "type": "string" }
@@ -218,7 +228,7 @@ async function setTaskByGemini(req, res) {
                         'description': task?.description || '',
                         'expected_end_date': task?.expected_end_date?.end_date || '',
                         'type_task': task?.type_task || 'created by gemini',
-                        'status': task?.status === 'in progress' ? 'in progress' : 'in progress'
+                        'status': task?.status === 'to do' ? 'to do' : 'to do'
                     };
 
                     await Task.create(taskData);

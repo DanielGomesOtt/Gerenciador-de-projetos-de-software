@@ -2,9 +2,9 @@ const User = require('../models/User');
 const Project = require('../models/Project');
 const { Op, Sequelize } = require('sequelize');
 
-async function verifyPlanPayment (){
+async function verifyPlanPayment () {
     let today = new Date();
-    today = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, "0")}-${today.getDate()}`
+    today = today.toISOString().split('T')[0];
 
     await Project.update(
         { project_premium: 0 }, 
@@ -29,5 +29,6 @@ async function verifyPlanPayment (){
         }
     );
 }
+
 
 module.exports = { verifyPlanPayment };

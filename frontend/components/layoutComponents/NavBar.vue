@@ -190,6 +190,7 @@ setInterval(() => {
             <li><a href="/home" class="font-medium text-lg nav-link">Home</a></li>
             <li><a href="/project" class="font-medium text-lg nav-link">Projects</a></li>
             <li><a href="/paid_plans" class="font-medium text-lg nav-link">Prices</a></li>
+            <li><a href="/reports" class="font-medium text-lg nav-link">Reports</a></li>
             <li>
                 <UPopover>
                     <UChip :text="myInvites.length" size="2xl">
@@ -221,6 +222,7 @@ setInterval(() => {
             <li><a href="/home" class="font-medium text-lg nav-link">Home</a></li>
             <li><a href="/project" class="font-medium text-lg nav-link">Projetos</a></li>
             <li><a href="/paid_plans" class="font-medium text-lg nav-lik">Preços</a></li>
+            <li><a href="/reports" class="font-medium text-lg nav-lik">Relatórios</a></li>
             <li>
                 <UPopover>
                     <UChip :text="myInvites.length" size="2xl">
@@ -261,7 +263,7 @@ setInterval(() => {
             <Icon name="mdi:format-list-bulleted" color="white" size="2em"/>
         </button>
 
-        <ul class="w-screen absolute pb-2 bg-blue-400 shadow-xl z-50" v-if="isOpenMobile" id="menu-mobile" style="top: 4em;">
+        <ul class="w-screen absolute pb-2 bg-blue-400 shadow-xl z-50" v-if="isOpenMobile && visibleLanguage == 'en'" id="menu-mobile" style="top: 4em;">
             <li>
                 <div class="flex justify-start items-center">
                     <Icon name="mdi:home" size="1.5em" color="white" class="ml-5" />
@@ -282,8 +284,53 @@ setInterval(() => {
             </li>
             <li>
                 <div class="flex justify-start items-center">
+                    <Icon name="ic:baseline-list" size="1.5em" color="white" class="ml-5"/>
+                    <a href="/reports" class="text-lg nav-link text-blue-800 ml-10" style="color: #fff">Reports</a>
+                </div>
+            </li>
+            <li>
+                <div class="flex justify-start items-center">
                     <Icon name="mdi:account-arrow-right" size="1.5em" color="white" class="ml-5"/>
                     <a href="/account" class="text-lg nav-link text-blue-800 ml-10" style="color: #fff">Account</a>
+                </div>
+            </li>
+            <li>
+                <div class="flex justify-start items-center">
+                    <Icon name="mdi:logout" size="1.5em" color="white" class="ml-5"/>
+                    <button  class="text-lg nav-link text-blue-800 bg-transparent ml-10" style="color: #fff" @click="logOut()">Logout</button>
+                </div>
+            </li>
+        </ul>
+        
+        <ul class="w-screen absolute pb-2 bg-blue-400 shadow-xl z-50" v-if="isOpenMobile && visibleLanguage == 'pt-br'" id="menu-mobile" style="top: 4em;">
+            <li>
+                <div class="flex justify-start items-center">
+                    <Icon name="mdi:home" size="1.5em" color="white" class="ml-5" />
+                    <a href="/home" class="text-lg nav-link text-blue-800 ml-10" style="color: #fff">Home</a>
+                </div>
+            </li>
+            <li>
+                <div class="flex justify-start items-center">
+                    <Icon name="mdi:clipboard-list" size="1.5em" color="white" class="ml-5"/>
+                    <a href="/project" class="text-lg nav-link text-blue-800 ml-10" style="color: #fff">Projetos</a>
+                </div>
+            </li>
+            <li>
+                <div class="flex justify-start items-center">
+                    <Icon name="ic:baseline-price-check" size="1.5em" color="white" class="ml-5"/>
+                    <a href="/paid_plans" class="text-lg nav-link text-blue-800 ml-10" style="color: #fff">Preços</a>
+                </div>
+            </li>
+            <li>
+                <div class="flex justify-start items-center">
+                    <Icon name="ic:baseline-list" size="1.5em" color="white" class="ml-5"/>
+                    <a href="/reports" class="text-lg nav-link text-blue-800 ml-10" style="color: #fff">Relatórios</a>
+                </div>
+            </li>
+            <li>
+                <div class="flex justify-start items-center">
+                    <Icon name="mdi:account-arrow-right" size="1.5em" color="white" class="ml-5"/>
+                    <a href="/account" class="text-lg nav-link text-blue-800 ml-10" style="color: #fff">Conta</a>
                 </div>
             </li>
             <li>

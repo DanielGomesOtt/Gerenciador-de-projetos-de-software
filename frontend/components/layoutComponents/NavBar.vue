@@ -186,11 +186,11 @@ setInterval(() => {
                 </template>
             </UPopover>
         </div>
-        <ul class="flex justify-around items-center w-[70%] lg:w-[80%]" id="nav-items" v-if="!isOpenMobile && language == false">
-            <li><a href="/home" class="font-medium text-lg nav-link">Home</a></li>
-            <li><a href="/project" class="font-medium text-lg nav-link">Projects</a></li>
-            <li><a href="/paid_plans" class="font-medium text-lg nav-link">Prices</a></li>
-            <li><a href="/reports" class="font-medium text-lg nav-link">Reports</a></li>
+        <ul class="flex justify-around items-center w-[70%] lg:w-[80%]" id="nav-items" v-if="!isOpenMobile && visibleLanguage == 'en'">
+            <li><a href="/home" class="font-medium text-base lg:text-lg nav-link">Home</a></li>
+            <li><a href="/project" class="font-medium text-base lg:text-lg nav-link">Projects</a></li>
+            <li><a href="/paid_plans" class="font-medium text-base lg:text-lg nav-link">Prices</a></li>
+            <li><a href="/reports" class="font-medium text-base lg:text-lg nav-link">Reports</a></li>
             <li>
                 <UPopover>
                     <UChip :text="myInvites.length" size="2xl">
@@ -218,11 +218,11 @@ setInterval(() => {
             </li>
         </ul>
 
-        <ul class="flex justify-around items-center w-[70%] lg:w-[80%]" id="nav-items" v-if="!isOpenMobile && language == true">
-            <li><a href="/home" class="font-medium text-lg nav-link">Home</a></li>
-            <li><a href="/project" class="font-medium text-lg nav-link">Projetos</a></li>
-            <li><a href="/paid_plans" class="font-medium text-lg nav-lik">Preços</a></li>
-            <li><a href="/reports" class="font-medium text-lg nav-lik">Relatórios</a></li>
+        <ul class="flex justify-around items-center w-[70%] lg:w-[80%]" id="nav-items" v-if="!isOpenMobile && visibleLanguage == 'pt-br'">
+            <li><a href="/home" class="font-medium text-base lg:text-lg nav-link">Home</a></li>
+            <li><a href="/project" class="font-medium text-base lg:text-lg nav-link">Projetos</a></li>
+            <li><a href="/paid_plans" class="font-medium text-base lg:text-lg nav-link">Preços</a></li>
+            <li><a href="/reports" class="font-medium text-base lg:text-lg nav-link">Relatórios</a></li>
             <li>
                 <UPopover>
                     <UChip :text="myInvites.length" size="2xl">

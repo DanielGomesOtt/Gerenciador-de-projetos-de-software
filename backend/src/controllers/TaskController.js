@@ -6,10 +6,6 @@ const { jsonModel } = require('../config/gemini');
 async function setTask(req, res){
     try{
 
-        if(req.body.status == 'in progress'){
-            req.body.in_progress_date = new Date();
-        }
-
         const task = await Task.create(req.body);
         if(task){
             res.status(201).json({ message: 'Task created successfully.' });
@@ -173,28 +169,39 @@ async function searchTasks(req, res){
 
 async function setTaskByGemini(req, res) {
     try {
-        let prompt = `Crie ${req.body.quantity_task} tasks para um projeto de desenvolvimento relacionado ao tópico: ${req.body.topic}`;
+        let prompt = `Crie ${req.body.quantity_task} tasks para um projeto de desenvolvimento relacionado ao tópico: ${req.body.topic}. `;
+
         let json = `{
-                        "type": "object",
-                        "properties": {
-                            "id_user": ${req.body.id_user},
-                            "id_project": ${req.body.id_project},
-                            "title": { "type": "string" },
-                            "expected_end_date": {
-                                "type": "object",
-                                "properties": {
-                                    "start_date": ${req.body.initial_date},
-                                    "end_date": ${req.body.end_date}
-                                },
-                                "required": ["start_date", "end_date"]
-                            },
-                            "status": "to do",
-                            "project_stage": { "type": "empty string" },
-                            "type_task": "created by gemini",
-                            "description": { "type": "string" }
-                        }
-                    }
-                    `;
+            "type": "object",
+            "properties": {
+                "id_user": ${req.body.id_user},
+                "id_project": ${req.body.id_project},
+                "title": { "type": "string" },
+                "expected_end_date": {
+                    "type": "object",
+                    "properties": {
+                        "start_date": ${req.body.initial_date},
+                        "end_date": ${req.body.end_date}
+                    },
+                    "required": ["start_date", "end_date"]
+                },
+                "status": "to do",
+                "project_stage": {
+                    "type": "string",
+                    "options": [
+                        "initial planning and requirements gathering",
+                        "project design",
+                        "development",
+                        "tests",
+                        "deployment",
+                        "maintenance"
+                    ]
+                },
+                "type_task": "created by gemini",
+                "description": { "type": "string" }
+            },
+            "required": ["id_user", "id_project", "title", "expected_end_date", "status", "project_stage", "type_task", "description"]
+        }`;
         prompt = prompt + `: ${json}`;
         let result = await jsonModel.generateContent(prompt);
         let response = new Array(result.response.text());
@@ -202,8 +209,8 @@ async function setTaskByGemini(req, res) {
 
         
         let errors = [];
-
-        if (response) {
+        if (response && response !== '' && response !== undefined && Array.isArray(response)) {
+            
             response.forEach(async (task) => {
                 try {
                     let verifyDate = '';
@@ -228,7 +235,8 @@ async function setTaskByGemini(req, res) {
                         'description': task?.description || '',
                         'expected_end_date': task?.expected_end_date?.end_date || '',
                         'type_task': task?.type_task || 'created by gemini',
-                        'status': task?.status === 'to do' ? 'to do' : 'to do'
+                        'status': task?.status === 'to do' ? 'to do' : 'to do',
+                        'project_stage': task?.project_stage || '',
                     };
 
                     await Task.create(taskData);
@@ -236,6 +244,7 @@ async function setTaskByGemini(req, res) {
                     errors.push({ task, error: taskError.message });
                 }
             });
+            
         }
 
         if (errors.length > 0) {

@@ -42,6 +42,7 @@ let task = {
     'type_task': localData.type_task,
     'status': localData.status,
     'id_user': localData.id_user,
+    'project_stage': localData.project_stage,
     'id_project': route.params.id_project
 };
 
@@ -94,6 +95,8 @@ const updateTask = async () => {
             errorMessage.value = (props.visibleLanguage == 'en' ? 'Provide a expected end date.' : 'Forneça a data final esperada.');
         }else if(task.id_user.length == 0){
             errorMessage.value = (props.visibleLanguage == 'en' ? 'Assign a responsible to the task.' : 'Atribua um responsável para a task.');
+        }else if(task.project_stage.length == 0){
+            errorMessage.value = (props.visibleLanguage == 'en' ? 'Select a project stage to the task.' : 'Selecione uma etapa do projeto para a task.');
         }else{
             errorMessage.value = '';
             const response = await axios.patch(runtimeConfig.public.BASE_URL + 'task', task, {
@@ -214,6 +217,18 @@ onBeforeMount(() => {
                     </select>
                 </div>
                 <div class="mt-2">
+                    <label for="project-stage-task-update" class="font-semibold">Project stage</label>
+                    <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="project-stage-task-update" name="project-stage-task-update" required v-model="task.project_stage">
+                        <option value="">Select a project stage</option>
+                        <option value="initial planning and requirements gathering">Initial planning and requirements gathering</option>
+                        <option value="project design">Project design</option>
+                        <option value="development">Development</option>
+                        <option value="tests">Tests</option>
+                        <option value="deployment">Deployment</option>
+                        <option value="maintenance">Maintenance</option>
+                    </select>
+                </div>
+                <div class="mt-2">
                     <label for="responsible-task-update" class="font-semibold">Responsible</label>
                     <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="responsible-task-update" name="responsible-task-update" required v-model="task.id_user" :disabled="updateCheck.value">
                         <option value="">Select a responsible</option>
@@ -316,6 +331,18 @@ onBeforeMount(() => {
                         <option value="change management">Gerenciamento de mudança</option>
                         <option value="security policy review and update">Revisão e atualização da política de segurança</option>
                         <option value="created by gemini" disabled>Criado pelo Gemini</option>
+                    </select>
+                </div>
+                <div class="mt-2">
+                    <label for="project-stage-task-update" class="font-semibold">Etapa do projeto</label>
+                    <select class="w-full h-10 rounded mt-2 p-2 bg-slate-200 shadow" id="project-stage-task-update" name="project-stage-task-update" required v-model="task.project_stage">
+                        <option value="">Selecione uma etapa do projeto</option>
+                        <option value="initial planning and requirements gathering">Planejamento e levantamento inicial</option>
+                        <option value="project design">Design de projeto</option>
+                        <option value="development">Desenvolvimento</option>
+                        <option value="tests">Testes</option>
+                        <option value="deployment">Implantação</option>
+                        <option value="maintenance">Manutenção</option>
                     </select>
                 </div>
                 <div class="mt-2">

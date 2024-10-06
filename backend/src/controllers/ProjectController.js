@@ -452,4 +452,26 @@ async function getAllProjects(req, res){
     }
 }
 
-module.exports = { setProject, getProjects, updateProject, getProjectById, getProjectsByFilter, getUsersByProject, getMyProjectData, sendInvite, getMyInvites, respondInvite, removeMemberFromProject, exitProject, checkProjectsLimit, getAllProjects };
+async function getProjectProgress (req, res){
+    try{
+        let id_user = req.headers.id_user;
+
+        const projects = await Project.findAll({
+            include: [
+                {
+                    model: UserProject,
+                    where: {
+                        id_user: id_user
+                    }
+                }
+            ]
+        });
+
+        res.send(projects);
+          
+    }catch(error){
+        res.status(500).json({ message: error });
+    }
+}
+
+module.exports = { setProject, getProjects, updateProject, getProjectById, getProjectsByFilter, getUsersByProject, getMyProjectData, sendInvite, getMyInvites, respondInvite, removeMemberFromProject, exitProject, checkProjectsLimit, getAllProjects, getProjectProgress };

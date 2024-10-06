@@ -2,6 +2,7 @@
 import NavBar from '~/components/layoutComponents/NavBar.vue';
 import ProjectProgressReport from '~/components/reportsComponents/ProjectProgressReport.vue';
 import ProjectsPriorityReport from '~/components/reportsComponents/ProjectsPriorityReport.vue';
+import ProjectPerformanceStage from '~/components/reportsComponents/ProjectPerformanceStage.vue';
 
 let visibleLanguage = ref(localStorage.getItem('language'));
 let selectedReport = ref('');
@@ -17,6 +18,12 @@ let projectReports = [
         label: 'Projects priority report',
         click: () => {
             selectedReport.value = 'project priority report';
+        }
+    }],
+    [{
+        label: 'Performance in projects by project stage',
+        click: () => {
+            selectedReport.value = 'performance in projects by project stage';
         }
     }],
 ];
@@ -59,6 +66,9 @@ const changeLanguage = () => {
         </div>
         <div v-if="selectedReport == 'project priority report'">
             <ProjectsPriorityReport :visibleLanguage="visibleLanguage"/>
+        </div>
+        <div v-if="selectedReport ==  'performance in projects by project stage'">
+            <ProjectPerformanceStage :visibleLanguage="visibleLanguage"/>
         </div>
     </div>
 

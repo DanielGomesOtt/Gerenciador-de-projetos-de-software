@@ -1,0 +1,386 @@
+<script setup lang="js">
+import { Chart, registerables } from 'chart.js';
+import { ref, watch, onMounted } from 'vue';
+import axios from 'axios';
+
+
+Chart.register(...registerables);
+
+const props = defineProps({
+    visibleLanguage: String,
+});
+const runtimeConfig = useRuntimeConfig();
+const chartLabelsEn = ["initial planning and requirements gathering", "project design", "development", "tests", "deployment", "maintenance"];
+const chartLabelsPtbr = ["planejamento e levantamento inicial", "design do projeto", "desenvolvimento", "testes", "implantação", "manutenção"];
+const chartEn = ref(null);
+const chartPtbr = ref(null);
+
+
+let chartInstance = null;
+let chartData = ref([]);
+let tasksData = ref([]);
+let allProjects = ref([]);
+let selectedProject = ref('');
+
+let initial_planning_overdue_data = ref(0);
+let initial_planning_completed_data = ref(0);
+
+let project_design_overdue_data = ref(0);
+let project_design_completed_data = ref(0);
+
+let development_overdue_data = ref(0);
+let development_completed_data = ref(0);
+
+let tests_overdue_data = ref(0);
+let tests_completed_data = ref(0);
+
+let deployment_overdue_data = ref(0);
+let deployment_completed_data = ref(0);
+
+let maintenance_overdue_data = ref(0);
+let maintenance_completed_data = ref(0);
+
+function createChart(language) {
+    
+    if (chartInstance) {
+        chartInstance.destroy();
+    }
+
+    if(props.visibleLanguage == 'en'){
+        document.getElementById('container-chart-pt').setAttribute('hidden', '');
+        document.getElementById('container-chart-en').removeAttribute('hidden');
+    }else{
+        document.getElementById('container-chart-en').setAttribute('hidden', '');
+        document.getElementById('container-chart-pt').removeAttribute('hidden');
+    }
+
+    const canvas = language == 'pt-br' ? chartPtbr.value : chartEn.value;
+    const labels = language == 'pt-br' ? chartLabelsPtbr : chartLabelsEn;
+    const labelTitle = language == 'pt-br' ? '% de performance: (% conclusão no estágio) - (% de atraso no estágio)' : '% of performance: (% completion in the stage) - (% delay in the stage)';
+
+    chartInstance = new Chart(canvas, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: labelTitle,
+                data: chartData.value,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            backgroundColor: [
+                'rgba(0, 128, 0, 0.2)',    
+                'rgba(0, 0, 255, 0.2)',    
+                'rgba(255, 0, 0, 0.2)',    
+                'rgba(255, 165, 0, 0.2)',  
+                'rgba(128, 0, 128, 0.2)',  
+                'rgba(255, 255, 0, 0.2)'   
+            ],
+            borderColor: [
+                'rgba(0, 128, 0, 1)',    
+                'rgba(0, 0, 255, 1)',    
+                'rgba(255, 0, 0, 1)',    
+                'rgba(255, 165, 0, 1)',  
+                'rgba(128, 0, 128, 1)',  
+                'rgba(255, 255, 0, 1)' 
+            ],
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+const getProjectStagePerformance = async() => {
+    try{
+        const response = await axios.get(runtimeConfig.public.BASE_URL + 'project_stage_performance', {
+            headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
+                id_user: JSON.parse(localStorage.getItem('userStorage')).id,
+                id_project: selectedProject.value, 
+            }
+        });
+
+        if(response && response.data && response.data.length > 0){
+            const tasks = response.data;
+            tasksData.value = response.data;
+            let initial_planning = 0;
+            let project_design = 0;
+            let development = 0;
+            let tests = 0;
+            let deployment = 0;
+            let maintenance = 0;
+
+            let initial_planning_overdue = 0;
+            let project_design_overdue = 0;
+            let development_overdue = 0;
+            let tests_overdue = 0;
+            let deployment_overdue = 0;
+            let maintenance_overdue = 0;
+
+            let initial_planning_completed = 0;
+            let project_design_completed = 0;
+            let development_completed = 0;
+            let tests_completed = 0;
+            let deployment_completed = 0;
+            let maintenance_completed = 0;
+
+            if(tasks !== null && tasks !== undefined && Array.isArray(tasks)){
+                tasks.forEach((task) => {
+                    if(task.project_stage == 'initial planning and requirements gathering' && task.status !== 'cancelled'){
+                        initial_planning = initial_planning + 1;
+                        if(task.status == 'overdue'){
+                            initial_planning_overdue = initial_planning_overdue + 1;
+                        }else if(task.status == 'completed'){
+                            initial_planning_completed = initial_planning_completed + 1;
+                        }
+                    }else if(task.project_stage == 'project design' && task.status !== 'cancelled'){
+                        project_design = project_design + 1;
+                        if(task.status == 'overdue'){
+                            project_design_overdue = project_design_overdue + 1;
+                        }else if(task.status == 'completed'){
+                            project_design_completed = project_design_completed + 1;
+                        }
+                    }else if(task.project_stage == 'development' && task.status !== 'cancelled'){
+                        development = development + 1;
+                        if(task.status == 'overdue'){
+                            development_overdue = development_overdue + 1;
+                        }else if(task.status == 'completed'){
+                            development_completed = development_completed + 1;
+                        }
+                    }else if(task.project_stage == 'tests' && task.status !== 'cancelled'){
+                        tests = tests + 1;
+                        if(task.status == 'overdue'){
+                            tests_overdue = tests_overdue + 1;
+                        }else if(task.status == 'completed'){
+                            tests_completed = tests_completed + 1;
+                        }
+                    }else if(task.project_stage == 'deployment' && task.status !== 'cancelled'){
+                        deployment = deployment + 1;
+                        if(task.status == 'overdue'){
+                            deployment_overdue = deployment_overdue + 1;
+                        }else if(task.status == 'completed'){
+                            deployment_completed = deployment_completed + 1;
+                        }
+                    }else if(task.project_stage == 'maintenance' && task.status !== 'cancelled'){
+                        maintenance = maintenance + 1;
+                        if(task.status == 'overdue'){
+                            maintenance_overdue = maintenance_overdue + 1;
+                        }else if(task.status == 'completed'){
+                            maintenance_completed = maintenance_completed + 1;
+                        }
+                    }
+                });
+
+                initial_planning_completed_data.value = (initial_planning_completed / initial_planning) * 100;
+                initial_planning_overdue_data.value = (initial_planning_overdue / initial_planning) * 100;
+                initial_planning = initial_planning_completed_data.value - initial_planning_overdue_data.value;
+
+                project_design_completed_data.value = (project_design_completed / project_design) * 100;
+                project_design_overdue_data.value = (project_design_overdue / project_design) * 100;
+                project_design = project_design_completed_data.value - project_design_overdue_data.value;
+
+                development_completed_data.value = (development_completed / development) * 100;
+                development_overdue_data.value = (development_overdue / development) * 100;
+                development = development_completed_data.value - development_overdue_data.value;
+
+                tests_completed_data.value = (tests_completed / tests) * 100;
+                tests_overdue_data.value = (tests_overdue / tests) * 100;
+                tests = tests_completed_data.value - tests_overdue_data.value;
+
+                deployment_completed_data.value = (deployment_completed / deployment) * 100;
+                deployment_overdue_data.value = (deployment_overdue / deployment) * 100;
+                deployment = deployment_completed_data.value - deployment_overdue_data.value;
+
+                maintenance_completed_data.value = (maintenance_completed / maintenance) * 100;
+                maintenance_overdue_data.value = (maintenance_overdue / maintenance) * 100;
+                maintenance = maintenance_completed_data.value - maintenance_overdue_data.value;
+                
+                chartData.value = [initial_planning, project_design, development, tests, deployment, maintenance];
+            }
+            createChart(props.visibleLanguage);
+        }else{
+            chartData.value = [0, 0, 0, 0, 0, 0];
+            initial_planning_overdue_data.value = 0;
+            initial_planning_completed_data.value = 0;
+
+            project_design_overdue_data.value = 0;
+            project_design_completed_data.value = 0;
+
+            development_overdue_data.value = 0;
+            development_completed_data.value = 0;
+
+            tests_overdue_data.value = 0;
+            tests_completed_data.value = 0;
+
+            deployment_overdue_data.value = 0;
+            deployment_completed_data.value = 0;
+
+            maintenance_overdue_data.value = 0;
+            maintenance_completed_data.value = 0;
+            createChart(props.visibleLanguage);
+        }
+    }catch(error){
+        console.log(error);
+    }
+}
+
+const getAllMyProjects = async() => {
+    try{
+        const response = await axios.get(runtimeConfig.public.BASE_URL + 'get_all_my_projects', {
+            headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
+                id_user: JSON.parse(localStorage.getItem('userStorage')).id 
+            }
+        });
+
+        if(response.data){
+            allProjects.value = response.data;
+        }
+    }catch(error){
+        console.log(error);
+    }
+}
+
+onMounted(() => {
+    getProjectStagePerformance();
+    getAllMyProjects();
+});
+
+
+watch(() => props.visibleLanguage, (newLanguage) => {
+    createChart(newLanguage);
+});
+</script>
+
+<template>
+    <h2 class="text-2xl md:text-4xl font-bold text-center mb-14" v-if="props.visibleLanguage == 'en'">Performance in projects by project stage</h2>
+    <h2 class="text-2xl md:text-4xl font-bold text-center mb-14" v-if="props.visibleLanguage == 'pt-br'">Performance em projetos pelo estágio do projeto</h2>
+    <div class="w-screen flex flex-wrap justify-around">
+        <div>
+            <div id="container-chart-en" hidden class="w-full md:w-[800px]">
+                <canvas ref="chartEn" class="w-full h-auto"></canvas>
+            </div>
+            <div id="container-chart-pt" hidden class="w-full md:w-[800px]">
+                <canvas ref="chartPtbr" class="w-full h-auto"></canvas>
+            </div>
+        </div>
+        <div class="w-full md:w-[700px] h-80 overflow-auto border-2 rounded-lg" v-if="props.visibleLanguage == 'en'">
+
+            <div class="w-full flex justify-center mt-1" v-if="visibleLanguage == 'en'">
+                <select name="project_filter" id="project_filter" v-model="selectedProject" @change="getProjectStagePerformance" class="border-2 rounded-lg p-2">
+                    <option value="">Filter By Project</option>
+                    <option :value="project.id" v-for="project in allProjects" :key="project.id">{{ project.Project.name.toUpperCase() }}</option>
+                </select>
+            </div>
+            <table class="border-collapse border-2 w-full">
+                <thead class="bg-blue-400 text-white">
+                    <tr>
+                        <th>Project stage</th>
+                        <th>Performance (%)</th>
+                        <th>Overdue (%)</th>
+                        <th>Completed (%)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-2">
+                        <th class="border-2 p-5">initial planning and requirements gathering</th>
+                        <th class="border-2 text-center p-5">{{ chartData[0] }}%</th>
+                        <th class="border-2 text-center p-5">{{ initial_planning_overdue_data }}%</th>
+                        <th class="border-2 text-center p-5">{{ initial_planning_completed_data }}%</th>
+                    </tr>
+                    <tr class="border-2">
+                        <th class="border-2 p-5">Project design</th>
+                        <th class="border-2 text-center p-5">{{ chartData[1] }}%</th>
+                        <th class="border-2 text-center p-5">{{ project_design_overdue_data }}%</th>
+                        <th class="border-2 text-center p-5">{{ project_design_completed_data }}%</th>
+                    </tr>
+                    <tr class="border-2">
+                        <th class="border-2 p-5">Development</th>
+                        <th class="border-2 text-center p-5">{{ chartData[2] }}%</th>
+                        <th class="border-2 text-center p-5">{{ development_overdue_data }}%</th>
+                        <th class="border-2 text-center p-5">{{ development_completed_data }}%</th>
+                    </tr>
+                    <tr class="border-2">
+                        <th class="border-2 p-5">Tests</th>
+                        <th class="border-2 text-center p-5">{{ chartData[3] }}%</th>
+                        <th class="border-2 text-center p-5">{{ tests_overdue_data }}%</th>
+                        <th class="border-2 text-center p-5">{{ tests_completed_data }}%</th>
+                    </tr>
+                    <tr class="border-2">
+                        <th class="border-2 p-5">Deployment</th>
+                        <th class="border-2 text-center p-5">{{ chartData[4] }}%</th>
+                        <th class="border-2 text-center p-5">{{ deployment_overdue_data }}%</th>
+                        <th class="border-2 text-center p-5">{{ deployment_completed_data }}%</th>
+                    </tr>
+                    <tr class="border-2">
+                        <th class="border-2 p-5">Maintenance</th>
+                        <th class="border-2 text-center p-5">{{ chartData[5] }}%</th>
+                        <th class="border-2 text-center p-5">{{ maintenance_overdue_data }}%</th>
+                        <th class="border-2 text-center p-5">{{ maintenance_completed_data }}%</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="w-full md:w-[700px] h-80 overflow-auto border-2 rounded-lg" v-if="props.visibleLanguage == 'pt-br'">
+            <div class="w-full flex justify-center mt-1" v-if="visibleLanguage == 'pt-br'">
+                <select name="project_filter" id="project_filter" v-model="selectedProject" @change="getProjectStagePerformance" class="border-2 rounded-lg p-2">
+                    <option value="">Filtrar por Projeto</option>
+                    <option :value="project.id" v-for="project in allProjects" :key="project.id">{{ project.Project.name.toUpperCase() }}</option>
+                </select>
+            </div>
+            <table class="border-collapse border-2 w-full">
+                <thead class="bg-blue-400 text-white">
+                    <tr>
+                        <th>Estágio do projeto</th>
+                        <th>Performance (%)</th>
+                        <th>Atraso (%)</th>
+                        <th>Conclusão (%)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="border-2">
+                        <th class="border-2 p-5">Planejamento e levantamento inicial</th>
+                        <th class="border-2 text-center p-5">{{ chartData[0] }}%</th>
+                        <th class="border-2 text-center p-5">{{ initial_planning_overdue_data }}%</th>
+                        <th class="border-2 text-center p-5">{{ initial_planning_completed_data }}%</th>
+                    </tr>
+                    <tr class="border-2">
+                        <th class="border-2 p-5">Design do projeto</th>
+                        <th class="border-2 text-center p-5">{{ chartData[1] }}%</th>
+                        <th class="border-2 text-center p-5">{{ project_design_overdue_data }}%</th>
+                        <th class="border-2 text-center p-5">{{ project_design_completed_data }}%</th>
+                    </tr>
+                    <tr class="border-2">
+                        <th class="border-2 p-5">Desenvolvimento</th>
+                        <th class="border-2 text-center p-5">{{ chartData[2] }}%</th>
+                        <th class="border-2 text-center p-5">{{ development_overdue_data }}%</th>
+                        <th class="border-2 text-center p-5">{{ development_completed_data }}%</th>
+                    </tr>
+                    <tr class="border-2">
+                        <th class="border-2 p-5">Testes</th>
+                        <th class="border-2 text-center p-5">{{ chartData[3] }}%</th>
+                        <th class="border-2 text-center p-5">{{ tests_overdue_data }}%</th>
+                        <th class="border-2 text-center p-5">{{ tests_completed_data }}%</th>
+                    </tr>
+                    <tr class="border-2">
+                        <th class="border-2 p-5">Implantação</th>
+                        <th class="border-2 text-center p-5">{{ chartData[4] }}%</th>
+                        <th class="border-2 text-center p-5">{{ deployment_overdue_data }}%</th>
+                        <th class="border-2 text-center p-5">{{ deployment_completed_data }}%</th>
+                    </tr>
+                    <tr class="border-2">
+                        <th class="border-2 p-5">Manutenção</th>
+                        <th class="border-2 text-center p-5">{{ chartData[5] }}%</th>
+                        <th class="border-2 text-center p-5">{{ maintenance_overdue_data }}%</th>
+                        <th class="border-2 text-center p-5">{{ maintenance_completed_data }}%</th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</template>

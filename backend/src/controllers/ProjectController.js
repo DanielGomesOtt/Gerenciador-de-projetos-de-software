@@ -2,6 +2,7 @@ const Project = require('../models/Project');
 const UserProject = require('../models/UserProject');
 const User = require('../models/User');
 const ProjectInvite = require('../models/ProjectInvite');
+const Task = require('../models/Task');
 
 const { Op, Sequelize } = require('sequelize');
 
@@ -461,7 +462,8 @@ async function getProjectProgress (req, res){
                 {
                     model: UserProject,
                     where: {
-                        id_user: id_user
+                        id_user: id_user,
+                        status: 1
                     }
                 }
             ]
@@ -474,4 +476,75 @@ async function getProjectProgress (req, res){
     }
 }
 
-module.exports = { setProject, getProjects, updateProject, getProjectById, getProjectsByFilter, getUsersByProject, getMyProjectData, sendInvite, getMyInvites, respondInvite, removeMemberFromProject, exitProject, checkProjectsLimit, getAllProjects, getProjectProgress };
+async function getProjectStagePerformance(req, res){
+    try{
+        let id_user = req.headers.id_user;
+
+        if(req.headers.id_project.length > 0){
+            const tasks = await Task.findAll({
+                where: {
+                    id_project: req.headers.id_project
+                },
+                include: [
+                    {
+                        model: Project,
+                        include: [
+                            {
+                                model: UserProject, 
+                                where: {
+                                    id_user: id_user,
+                                    status: 1
+                                }
+                            }
+                        ]
+                    }
+                ]
+            });
+            res.send(tasks);
+        }else{
+            const tasks = await Task.findAll({
+                include: [
+                    {
+                        model: Project,
+                        include: [
+                            {
+                                model: UserProject, 
+                                where: {
+                                    id_user: id_user,
+                                    status: 1
+                                }
+                            }
+                        ]
+                    }
+                ]
+            });
+            res.send(tasks);
+        }
+    }catch(error){
+        res.status(500).json({ message: error });
+    }
+}
+
+async function getAllMyProjects(req, res) {
+    try{
+        let id_user = req.headers.id_user;
+
+        const response = await UserProject.findAll({
+            where: {
+                id_user: id_user,
+                status: 1
+            },
+            include: [
+                {
+                    model: Project, 
+                }
+            ]
+        });
+
+        res.send(response);
+    }catch(error){
+        res.status(500).json({ message: error });
+    }
+}
+
+module.exports = { setProject, getProjects, updateProject, getProjectById, getProjectsByFilter, getUsersByProject, getMyProjectData, sendInvite, getMyInvites, respondInvite, removeMemberFromProject, exitProject, checkProjectsLimit, getAllProjects, getProjectProgress, getProjectStagePerformance, getAllMyProjects };

@@ -1,6 +1,10 @@
 const User = require('../models/User');
 const jwt = require('../middlewares/accessTokenMiddleware');
 const Email = require('../utils/email');
+const Project = require('../models/Project');
+const UserProject = require('../models/UserProject');
+
+
 
 async function setUser(req, res) {
     try {
@@ -65,5 +69,75 @@ async function sendSupportEmail(req, res){
     }
 }
 
+async function getUsersForReport(req, res) {
+    try {
+        const users = await User.findAll({
+            include: [{
+                model: UserProject,
+                as: 'userProjects',
+                required: true,
+                where: {
+                    id_user: req.headers.id_user,
+                    administrator: 1 
+                },
+                include: [{
+                    model: User,
+                    as: 'user',  
+                },
+                {
+                    model: Project,  // Faz o join com a tabela Project
+                    as: 'project',   // Certifique-se de que o alias está correto
+                }
+                ]
+            }],
+            distinct: true
+        });
 
-module.exports = {setUser, getUserAvatar, getUserById, sendSupportEmail};
+        res.send(users);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+async function getUsersTableForReport(req, res) {
+    try {
+        if(req.headers.id_user.length > 0){
+            const users = await User.findAll({
+                where: {
+                    id: req.headers.id_user
+                }
+            });
+    
+            res.send(users);
+        }else{
+            const users = await User.findAll({
+                include: [{
+                    model: UserProject,
+                    as: 'userProjects',
+                    required: true,
+                    where: {
+                        id_user: req.headers.id_current_user,
+                        administrator: 1 
+                    },
+                    include: [{
+                        model: User,
+                        as: 'user',  
+                    },
+                    {
+                        model: Project,  
+                        as: 'project',   
+                    }
+                    ]
+                }],
+                distinct: true
+            });
+    
+            res.send(users);
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+
+module.exports = {setUser, getUserAvatar, getUserById, sendSupportEmail, getUsersForReport, getUsersTableForReport};

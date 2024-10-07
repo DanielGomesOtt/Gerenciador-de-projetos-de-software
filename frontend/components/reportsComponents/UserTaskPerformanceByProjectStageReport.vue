@@ -19,8 +19,9 @@ const chartPtbr = ref(null);
 let chartInstance = null;
 let chartData = ref([]);
 let tasksData = ref([]);
-let allProjects = ref([]);
+let users = ref([])
 let selectedProject = ref('');
+let idUser = ref(JSON.parse(localStorage.getItem('userStorage')).id);
 
 let initial_planning_overdue_data = ref(0);
 let initial_planning_completed_data = ref(0);
@@ -94,13 +95,29 @@ function createChart(language) {
     });
 }
 
-const getProjectStagePerformance = async() => {
+const getUsers = async() =>{
     try{
-        const response = await axios.get(runtimeConfig.public.BASE_URL + 'project_stage_performance', {
+        const response = await axios.get(runtimeConfig.public.BASE_URL + 'users_report', {
             headers: {
                 Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
-                id_user: JSON.parse(localStorage.getItem('userStorage')).id,
-                id_project: selectedProject.value, 
+                id_user: JSON.parse(localStorage.getItem('userStorage')).id
+            }
+        });
+
+        if(response && response.data){
+            users.value = response.data;
+        }
+    }catch(error){
+        console.log(error);
+    }
+}
+
+const getProjectStagePerformance = async() => {
+    try{
+        const response = await axios.get(runtimeConfig.public.BASE_URL + 'project_stage_user_performance', {
+            headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
+                id_user: idUser.value,
             }
         });
 
@@ -228,23 +245,6 @@ const getProjectStagePerformance = async() => {
     }
 }
 
-const getAllMyProjects = async() => {
-    try{
-        const response = await axios.get(runtimeConfig.public.BASE_URL + 'get_all_my_projects', {
-            headers: {
-                Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
-                id_user: JSON.parse(localStorage.getItem('userStorage')).id 
-            }
-        });
-
-        if(response.data){
-            allProjects.value = response.data;
-        }
-    }catch(error){
-        console.log(error);
-    }
-}
-
 const printReport = () => {
     // Obter o conteúdo da tabela
     const table = document.getElementById('table-report').outerHTML;
@@ -291,7 +291,7 @@ const printReport = () => {
                 </style>
             </head>
             <body>
-                <h2 style="text-align: center; font-size: 2rem; font-weight: bold; margin-bottom: 1rem;">Performance in projects by project stage</h2>
+                <h2 style="text-align: center; font-size: 2rem; font-weight: bold; margin-bottom: 1rem;">Performance in tasks by project stage</h2>
                 <div class="overflow-auto">
                     ${table}
                 </div>
@@ -339,7 +339,7 @@ const printReport = () => {
                 </style>
             </head>
             <body>
-                <h2 style="text-align: center; font-size: 2rem; font-weight: bold; margin-bottom: 1rem;">Performance em projetos pelo estágio do projeto</h2>
+                <h2 style="text-align: center; font-size: 2rem; font-weight: bold; margin-bottom: 1rem;">Performance em tasks pelo estágio do projeto</h2>
                 <div class="overflow-auto">
                     ${table}
                 </div>
@@ -365,7 +365,7 @@ const printReport = () => {
 
 onMounted(() => {
     getProjectStagePerformance();
-    getAllMyProjects();
+    getUsers();
 });
 
 
@@ -376,8 +376,8 @@ watch(() => props.visibleLanguage, (newLanguage) => {
 
 <template>
     <div class="flex justify-center w-full">
-        <h2 class="text-2xl md:text-4xl font-bold text-center mb-14" v-if="props.visibleLanguage == 'en'">Performance in projects by project stage</h2>
-        <h2 class="text-2xl md:text-4xl font-bold text-center mb-14" v-if="props.visibleLanguage == 'pt-br'">Performance em projetos pelo estágio do projeto</h2>
+        <h2 class="text-2xl md:text-4xl font-bold text-center mb-14" v-if="props.visibleLanguage == 'en'">Performance in tasks by project stage</h2>
+        <h2 class="text-2xl md:text-4xl font-bold text-center mb-14" v-if="props.visibleLanguage == 'pt-br'">Performance em tasks pelo estágio do projeto</h2>
         <button class=" bg-blue-400 text-white rounded-lg ml-5 w-20 h-10" v-if="visibleLanguage == 'en'" @click="printReport">Print</button>
         <button class=" bg-blue-400 text-white rounded-lg ml-5 w-20 h-10" v-if="visibleLanguage == 'pt-br'" @click="printReport">Imprimir</button>
     </div>
@@ -393,9 +393,8 @@ watch(() => props.visibleLanguage, (newLanguage) => {
         <div class="w-full md:w-[700px] h-80 overflow-auto border-2 rounded-lg" v-if="props.visibleLanguage == 'en'">
 
             <div class="w-full flex justify-center mt-1" v-if="visibleLanguage == 'en'">
-                <select name="project_filter" id="project_filter" v-model="selectedProject" @change="getProjectStagePerformance" class="border-2 rounded-lg p-2">
-                    <option value="">Filter By Project</option>
-                    <option :value="project.id" v-for="project in allProjects" :key="project.id">{{ project.Project.name.toUpperCase() }}</option>
+                <select name="user_filter" id="user_filter" v-model="idUser" @change="getProjectStagePerformance" class="border-2 rounded-lg p-2 w-full md:w-1/4">
+                    <option v-for="user in users"  :value="user.id" :key="user.id">{{ user.name }}</option>
                 </select>
             </div>
             <table class="border-collapse border-2 w-full" id="table-report">
@@ -449,9 +448,8 @@ watch(() => props.visibleLanguage, (newLanguage) => {
         </div>
         <div class="w-full md:w-[700px] h-80 overflow-auto border-2 rounded-lg" v-if="props.visibleLanguage == 'pt-br'">
             <div class="w-full flex justify-center mt-1" v-if="visibleLanguage == 'pt-br'">
-                <select name="project_filter" id="project_filter" v-model="selectedProject" @change="getProjectStagePerformance" class="border-2 rounded-lg p-2">
-                    <option value="">Filtrar por Projeto</option>
-                    <option :value="project.id" v-for="project in allProjects" :key="project.id">{{ project.Project.name.toUpperCase() }}</option>
+                <select name="user_filter" id="user_filter" v-model="idUser" @change="getProjectStagePerformance" class="border-2 rounded-lg p-2 w-full md:w-1/4">
+                    <option v-for="user in users"  :value="user.id" :key="user.id">{{ user.name }}</option>
                 </select>
             </div>
             <table class="border-collapse border-2 w-full" id="table-report">

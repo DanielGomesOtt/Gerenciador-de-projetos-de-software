@@ -1,6 +1,8 @@
 const Task = require('../models/Task');
 const { Sequelize, Op } = require('sequelize');
 const { jsonModel } = require('../config/gemini');
+const Project = require('../models/Project');
+const UserProject = require('../models/UserProject');
 
 
 async function setTask(req, res){
@@ -259,5 +261,129 @@ async function setTaskByGemini(req, res) {
     }
 }
 
+async function getTaskProgress(req, res){
+    try{
+        let id_user = req.headers.id_user;
 
-module.exports = { setTask, getTasks, checkTasksLimit, updateTask, searchTasks, setTaskByGemini };
+        if(req.headers.id_project.length > 0 && req.headers.project_stage.length > 0){
+            const tasks = await Task.findAll({
+                where: {
+                    id_project: req.headers.id_project,
+                    project_stage: req.headers.project_stage
+                },
+                include: [
+                    {
+                        model: Project,
+                        include: [
+                            {
+                                model: UserProject, 
+                                where: {
+                                    id_user: id_user,
+                                    status: 1
+                                }
+                            }
+                        ]
+                    }
+                ]
+            });
+            res.send(tasks);
+        }else if(req.headers.id_project.length > 0 && req.headers.project_stage.length <= 0){
+            const tasks = await Task.findAll({
+                where: {
+                    id_project: req.headers.id_project,
+                },
+                include: [
+                    {
+                        model: Project,
+                        include: [
+                            {
+                                model: UserProject, 
+                                where: {
+                                    id_user: id_user,
+                                    status: 1
+                                }
+                            }
+                        ]
+                    }
+                ]
+            });
+            res.send(tasks);
+        }else if(req.headers.id_project.length <= 0 && req.headers.project_stage.length > 0){
+            const tasks = await Task.findAll({
+                where: {
+                    project_stage: req.headers.project_stage
+                },
+                include: [
+                    {
+                        model: Project,
+                        include: [
+                            {
+                                model: UserProject, 
+                                where: {
+                                    id_user: id_user,
+                                    status: 1
+                                }
+                            }
+                        ]
+                    }
+                ]
+            });
+            res.send(tasks);
+        }else{
+            const tasks = await Task.findAll({
+                include: [
+                    {
+                        model: Project,
+                        include: [
+                            {
+                                model: UserProject, 
+                                where: {
+                                    id_user: id_user,
+                                    status: 1
+                                }
+                            }
+                        ]
+                    }
+                ]
+            });
+            res.send(tasks);
+        }
+          
+    }catch(error){
+        res.status(500).json({ message: error });
+    }
+
+}
+
+async function getTasksByUser(req, res) {
+    try {
+        
+        let where = {
+            id_user: req.headers.id_user
+        };
+
+        if (req.headers.project_stage && req.headers.project_stage.length > 0) {
+            where.project_stage = req.headers.project_stage;
+        }
+
+        if (req.headers.status && req.headers.status.length > 0) {
+            where.status = req.headers.status;
+        }
+
+        if (req.headers.type_task && req.headers.type_task.length > 0) {
+            where.type_task = req.headers.type_task;
+        }
+
+       
+        const tasks = await Task.findAll({
+            where: where  
+        });
+
+        res.send(tasks);
+    } catch (error) {
+        res.status(500).json({ message: error.message }); 
+    }
+}
+
+
+module.exports = { setTask, getTasks, checkTasksLimit, updateTask, searchTasks, setTaskByGemini, getTaskProgress, getTasksByUser };

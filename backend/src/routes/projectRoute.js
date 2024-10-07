@@ -20,5 +20,6 @@ route.patch('/project/check_limit', accessTokenMiddleware.verifyToken, ProjectCo
 route.get('/get_all_projects', accessTokenMiddleware.verifyToken, ProjectController.getAllProjects);
 route.get('/project_progress', accessTokenMiddleware.verifyToken, ProjectController.getProjectProgress);
 route.get('/project_stage_performance', accessTokenMiddleware.verifyToken, ProjectController.getProjectStagePerformance);
+route.get('/project_stage_user_performance', accessTokenMiddleware.verifyToken, ProjectController.getUserProjectStagePerformance);
 route.get('/get_all_my_projects', accessTokenMiddleware.verifyToken, ProjectController.getAllMyProjects);
 module.exports =  route;

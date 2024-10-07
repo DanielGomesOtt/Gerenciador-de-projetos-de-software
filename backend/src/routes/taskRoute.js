@@ -12,5 +12,9 @@ route.patch('/task/check_limit', accessTokenMiddleware.verifyToken, TaskControll
 route.patch('/task', accessTokenMiddleware.verifyToken, TaskController.updateTask);
 route.get('/task/search', accessTokenMiddleware.verifyToken, TaskController.searchTasks);
 route.get('/user_task', accessTokenMiddleware.verifyToken, UserController.getUserById);
+route.get('/task_progress', accessTokenMiddleware.verifyToken, TaskController.getTaskProgress);
+route.get('/users_report', accessTokenMiddleware.verifyToken, UserController.getUsersForReport);
+route.get('/users_table_report', accessTokenMiddleware.verifyToken, UserController.getUsersTableForReport);
+route.get('/tasks_by_user', accessTokenMiddleware.verifyToken, TaskController.getTasksByUser);
 
 module.exports = route;

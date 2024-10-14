@@ -2,8 +2,14 @@
 import { errorMessages } from 'vue/compiler-sfc';
 import NavBar from '~/components/layoutComponents/NavBar.vue';
 import axios from 'axios';
+import AccountCard from '~/components/homeComponents/AccountCard.vue';
+import ProjectCard from '~/components/homeComponents/ProjectCard.vue';
+import PricesCard from '~/components/homeComponents/PricesCard.vue';
+import ReportCard from '~/components/homeComponents/ReportCard.vue';
 
 const runtimeConfig = useRuntimeConfig();
+
+
 
 let visibleLanguage = ref(localStorage.getItem('language'));
 let visibilitySupportModal = ref(false);
@@ -16,6 +22,43 @@ let formData = {
     'description': '',
 }
 
+const itemsEn = [
+  {
+    component: AccountCard,
+    props: { visibleLanguage: 'en' }
+  },
+  {
+    component: ProjectCard,
+    props: { visibleLanguage: 'en' }
+  },
+  {
+    component: PricesCard,
+    props: { visibleLanguage: 'en' }
+  },
+  {
+    component: ReportCard,
+    props: { visibleLanguage: 'en' }
+  }
+]
+
+const itemsPtBr = [
+  {
+    component: AccountCard,
+    props: { visibleLanguage: 'pt-br' }
+  },
+  {
+    component: ProjectCard,
+    props: { visibleLanguage: 'pt-br' }
+  },
+  {
+    component: PricesCard,
+    props: { visibleLanguage: 'pt-br' }
+  },
+  {
+    component: ReportCard,
+    props: { visibleLanguage: 'pt-br' }
+  }
+]
 const changeVisibilitySupportModal = () => {
     errorMessage.value = '';
     successMessage.value = '';
@@ -94,57 +137,16 @@ const sendSupportEmail = async () => {
         <p class="text-lg md:font-semibold text-slate-400">Entre em contato caso precise de algum suporte da nossa equipe: <button class="p-1 md:p-2 bg-blue-600 text-white rounded-lg" @click="changeVisibilitySupportModal">Entrar em contato</button></p>
     </div>
 
-    <div class="flex flex-wrap justify-around mt-10">
-        <UCard class="w-96 text-center font-bold hover:shadow-lg hover:cursor-pointer my-5 border-2"
-            :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800', header: {background: 'bg-blue-600 text-white rounded-t-lg'} }"
-        >
-            <template #header>
-                <div>
-                    <a href="/project" v-if="visibleLanguage == 'en'">Projects</a>
-                    <a href="/project" v-if="visibleLanguage == 'pt-br'">Projetos</a>
-                </div>
-            </template>
-            <div class="bg-white text-black p-5 rounded-lg w-full">
-                <p class="text-justify" v-if="visibleLanguage == 'pt-br'">A página de projetos, é o lugar aonde você irá criar seus projetos e administrá-los.</p>
-                <p class="text-justify mt-2" v-if="visibleLanguage == 'pt-br'">Também será possível entrar nos projetos e gerenciar as tarefas criadas para aquele projeto.</p>
-                <p class="text-justify" v-if="visibleLanguage == 'en'">The projects page is where you will create and manage your projects.</p>
-                <p class="text-justify mt-2" v-if="visibleLanguage == 'en'">It will also be possible to enter the projects and manage the tasks created for that project.</p>
-            </div>
-        </UCard>
+    <div class="flex flex-wrap justify-center mt-2" v-if="visibleLanguage == 'en'">
+        <UCarousel v-slot="{ item }" :items="itemsEn" :ui="{ item: 'basis-full' }" class="rounded-lg overflow-hidden w-[1000px] h-[550px]" arrows="">
+            <component :is="item.component" v-bind="item.props" :key="item.props.visibleLanguage"/>
+        </UCarousel>
+    </div>
 
-        <UCard class="w-96 text-center font-bold hover:shadow-lg hover:cursor-pointer my-5 border-2"
-            :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800', header: {background: 'bg-blue-600 text-white rounded-t-lg'} }"
-        >
-            <template #header>
-                <div>
-                    <a href="/paid_plans" v-if="visibleLanguage == 'en'">Prices</a>
-                    <a href="/paid_plans" v-if="visibleLanguage == 'pt-br'">Preços</a>
-                </div>
-            </template>
-            <div class="bg-white text-black p-5 rounded-lg w-full">
-                <p class="text-justify" v-if="visibleLanguage == 'pt-br'">A página de preços, é o lugar aonde você poderá conferir os planos e escolher o melhor para você.</p>
-                <p class="text-justify mt-2" v-if="visibleLanguage == 'pt-br'">Também será possível verificar seu plano atual e melhorar seu plano mensal.</p>
-                <p class="text-justify" v-if="visibleLanguage == 'en'">The pricing page is where you can review the plans and choose the one that suits you best.</p>
-                <p class="text-justify mt-2" v-if="visibleLanguage == 'en'">You will also be able to check your current plan and upgrade your monthly plan.</p>
-            </div>
-        </UCard>
-
-        <UCard class="w-96 text-center font-bold hover:shadow-lg hover:cursor-pointer my-5 border-2"
-            :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800', header: {background: 'bg-blue-600 text-white rounded-t-lg'} }"
-        >
-            <template #header>
-                <div>
-                    <a href="/account" v-if="visibleLanguage == 'en'">Account</a>
-                    <a href="/account" v-if="visibleLanguage == 'pt-br'">Conta</a>
-                </div>
-            </template>
-            <div class="bg-white text-black p-5 rounded-lg w-full">
-                <p class="text-justify" v-if="visibleLanguage == 'pt-br'">A página da sua conta, é o lugar aonde você poderá visualizar e editar suas informações.</p>
-                <p class="text-justify mt-2" v-if="visibleLanguage == 'pt-br'">Também será possível escolher uma foto de avatar ou inativar sua conta.</p>
-                <p class="text-justify" v-if="visibleLanguage == 'en'">The account page is where you can view and edit your information.</p>
-                <p class="text-justify mt-2" v-if="visibleLanguage == 'en'">You will also be able to choose an avatar photo or deactivate your account.</p>
-            </div>
-        </UCard>
+    <div class="flex flex-wrap justify-center mt-2" v-if="visibleLanguage == 'pt-br'">
+        <UCarousel v-slot="{ item }" :items="itemsPtBr" :ui="{ item: 'basis-full' }" class="rounded-lg overflow-hidden w-[1000px] h-[550px]" arrows="">
+            <component :is="item.component" v-bind="item.props" :key="item.props.visibleLanguage"/>
+        </UCarousel>
     </div>
 
     <UModal v-model="visibilitySupportModal">

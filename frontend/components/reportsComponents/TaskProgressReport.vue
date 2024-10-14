@@ -142,10 +142,10 @@ const getAllMyProjects = async() => {
 }
 
 const printReport = () => {
-    // Obter o conteúdo da tabela
+    
     const table = document.getElementById('table-report').outerHTML;
     let html = ``;
-    // Criar o HTML que será impresso
+   
     if(props.visibleLanguage == 'en'){
         html = `
         <html>
@@ -243,20 +243,20 @@ const printReport = () => {
         </html>
     `;
     }
-    // Abrir uma nova janela
+   
     const tela_impressao = window.open('', '_blank');
 
-    // Escrever o conteúdo HTML na nova janela
+   
     tela_impressao.document.write(html);
 
-    // Fechar o documento para garantir que o conteúdo seja renderizado
+   
     tela_impressao.document.close();
 
-    // Usar setTimeout para dar tempo de a nova janela carregar
+   
     setTimeout(() => {
         tela_impressao.print();
         tela_impressao.close();
-    }, 1000); // Espera 1 segundo antes de imprimir
+    }, 1000); 
 }
 
 onMounted(() => {

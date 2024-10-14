@@ -7,9 +7,12 @@ import TaskProgressReport from '~/components/reportsComponents/TaskProgressRepor
 import TaskByUserReport from '~/components/reportsComponents/TaskByUserReport.vue';
 import UserTaskPerformanceByProjectStageReport from '~/components/reportsComponents/UserTaskPerformanceByProjectStageReport.vue';
 import ProjectMembersReport from '~/components/reportsComponents/ProjectMembersReport.vue';
+import GeneralReport from '~/components/reportsComponents/generalReport.vue';
+
+
 
 let visibleLanguage = ref(localStorage.getItem('language'));
-let selectedReport = ref('');
+let selectedReport = ref('general report');
 
 let projectReports = [
     [{
@@ -148,10 +151,9 @@ const changeLanguage = () => {
         </div>
     </div>
 
-    <div class="w-screen flex justify-center mt-14">
-        <div v-if="selectedReport == ''" class="h-96 flex items-center justify-center">
-            <h2 class="text-2xl md:text-4xl font-bold" v-if="visibleLanguage == 'en'">No report selected.</h2>
-            <h2 class="text-2xl md:text-4xl font-bold" v-if="visibleLanguage == 'pt-br'">Nenhum relatório foi selecionado.</h2>
+    <div class="w-screen flex justify-center mt-5">
+        <div v-if="selectedReport == 'general report'">
+            <GeneralReport :visibleLanguage="visibleLanguage"/>
         </div>
         <div v-if="selectedReport == 'project progress report'">
             <ProjectProgressReport :visibleLanguage="visibleLanguage"/>

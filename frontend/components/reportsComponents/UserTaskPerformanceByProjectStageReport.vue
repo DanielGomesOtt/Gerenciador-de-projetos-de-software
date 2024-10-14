@@ -10,8 +10,8 @@ const props = defineProps({
     visibleLanguage: String,
 });
 const runtimeConfig = useRuntimeConfig();
-const chartLabelsEn = ["initial planning and requirements gathering", "project design", "development", "tests", "deployment", "maintenance"];
-const chartLabelsPtbr = ["planejamento e levantamento inicial", "design do projeto", "desenvolvimento", "testes", "implantação", "manutenção"];
+const chartLabelsEn = ["initial planning", "project design", "development", "tests", "deployment", "maintenance"];
+const chartLabelsPtbr = ["planejamento inicial", "design do projeto", "desenvolvimento", "testes", "implantação", "manutenção"];
 const chartEn = ref(null);
 const chartPtbr = ref(null);
 
@@ -60,7 +60,7 @@ function createChart(language) {
     const labelTitle = language == 'pt-br' ? '% de performance: (% conclusão no estágio) - (% de atraso no estágio)' : '% of performance: (% completion in the stage) - (% delay in the stage)';
 
     chartInstance = new Chart(canvas, {
-        type: 'bar',
+        type: 'line',
         data: {
             labels: labels,
             datasets: [{

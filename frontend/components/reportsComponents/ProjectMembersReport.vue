@@ -215,13 +215,15 @@ onMounted(() => {
                         <th>Name</th>
                         <th>E-mail</th>
                         <th>Premium</th>
+                        <th>Project</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="user in usersTable" :key="user.id" class="border-2">
-                        <th class="border-2 p-2">{{ user.name }}</th>
-                        <th class="border-2 p-2">{{ user.email }}</th>
+                        <th class="border-2 p-2">{{ user.user.name }}</th>
+                        <th class="border-2 p-2">{{ user.user.email }}</th>
                         <th class="border-2 p-2">{{ (user.premium_user == 1 ? 'Premium user' : 'Normal user') }}</th>
+                        <th class="border-2 p-2">{{ user.project.name.toUpperCase() }}</th>
                     </tr>
                 </tbody>
             </table>
@@ -239,13 +241,15 @@ onMounted(() => {
                         <th>Nome</th>
                         <th>E-mail</th>
                         <th>Premium</th>
+                        <th>Projeto</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="user in usersTable" :key="user.id" class="border-2">
-                        <th class="border-2 p-2">{{ user.name }}</th>
-                        <th class="border-2 p-2">{{ user.email }}</th>
+                        <th class="border-2 p-2">{{ user.user.name }}</th>
+                        <th class="border-2 p-2">{{ user.user.email }}</th>
                         <th class="border-2 p-2">{{ (user.premium_user == 1 ? 'Usuário premium' : 'Usuário normal') }}</th>
+                        <th class="border-2 p-2">{{ user.project.name.toUpperCase() }}</th>
                     </tr>
                 </tbody>
             </table>

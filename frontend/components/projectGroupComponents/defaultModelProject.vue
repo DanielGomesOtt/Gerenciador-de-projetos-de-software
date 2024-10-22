@@ -459,7 +459,7 @@ onBeforeMount(() => {
                             <button type="button" @click="() => {visibilityCreateTaskModal = true}">Criação manual</button>
                         </div>
                         <div class="flex justify-center items-center p-3 hover:text-blue-600" v-if="myProjectData.Project.project_premium == true">
-                            <button type="button" @click="() => {visibilityAiTaskModal = true}">Crição pelo Gemini</button>
+                            <button type="button" @click="() => {visibilityAiTaskModal = true}">Criação pelo Gemini</button>
                         </div>
                     </template>
                 </UPopover>

@@ -71,6 +71,30 @@ const changeVisibilitySupportModal = () => {
     visibilitySupportModal.value = !visibilitySupportModal.value;
 }
 
+const uploadAvatarPath = async () => {
+    try {
+        let formData = new FormData();
+        formData.append('id', idUser.value);
+        formData.append('avatar_path', document.getElementById('upload-avatar-input').files[0]);
+
+        const response = await axios.post(runtimeConfig.public.BASE_URL + 'account/upload_avatar', formData, {
+            headers: {
+                Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+
+        isOpen.value = false;
+
+        if(response.status == 200){
+            avatarPath.value = runtimeConfig.public.BASE_URL + response.data;
+            window.location.reload();
+        }
+    } catch(error) {
+        console.error(error);
+    }
+}
+
 const changeLanguage = () => {
     visibleLanguage.value = localStorage.getItem('language');
 }
@@ -94,9 +118,17 @@ const sendSupportEmail = async () => {
                 errorMessage.value = 'Você precisa fornecer uma descrição';
             }    
         }else{
-            const response = await axios.post(runtimeConfig.public.BASE_URL + 'send_support_email', formData, {
+
+            let form = new FormData();
+            form.append('email', formData.email);
+            form.append('id_user', formData.id_user);
+            form.append('subject', formData.subject);
+            form.append('description', formData.description);
+            form.append('image', document.getElementById('upload-image-support').files[0]);
+            const response = await axios.post(runtimeConfig.public.BASE_URL + 'send_support_email', form, {
                 headers: {
                     Authorization: `Bearer ${JSON.parse(localStorage.getItem('userStorage')).token}`,
+                    'Content-Type': 'multipart/form-data',
                 }
             });
 
@@ -112,8 +144,8 @@ const sendSupportEmail = async () => {
                     'id_user': JSON.parse(localStorage.getItem('userStorage')).id,
                     'subject': '',
                     'description': '',
-                }
-
+                };
+                document.getElementById('upload-image-support').value = '';
                 setTimeout(() => {
                     changeVisibilitySupportModal();
                 }, 3000);
@@ -194,6 +226,10 @@ const sendSupportEmail = async () => {
                         <label for="description-support" class="font-semibold">Descrição</label>
                         <textarea class="w-full rounded mt-2 p-2 bg-slate-200 shadow" name="description-support" id="description-support" placeholder="Forneça o máximo de detalhes sobre a solicitação" v-model="formData.description" required></textarea>
                     </div>
+                    <div class="mt-5">
+                        <label for="upload-image-support" class="font-semibold">Enviar Imagem</label>
+                        <input class="w-full rounded mt-2 p-2 bg-slate-200 shadow" type="file" id="upload-image-support" name="upload-image-support">
+                    </div>
                 </form>
             </div>
 
@@ -224,6 +260,10 @@ const sendSupportEmail = async () => {
                     <div class="mt-5">
                         <label for="description-support" class="font-semibold">Description</label>
                         <textarea class="w-full rounded mt-2 p-2 bg-slate-200 shadow" name="description-support" id="description-support" placeholder="Provide as many details as possible about the request."  v-model="formData.description" required></textarea>
+                    </div>
+                    <div class="mt-5">
+                        <label for="upload-image-support" class="font-semibold">Upload Image</label>
+                        <input class="w-full rounded mt-2 p-2 bg-slate-200 shadow" type="file" id="upload-image-support" name="upload-image-support">
                     </div>
                 </form>
             </div>

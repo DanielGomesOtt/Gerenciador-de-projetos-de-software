@@ -3,6 +3,7 @@ const jwt = require('../middlewares/accessTokenMiddleware');
 const Email = require('../utils/email');
 const Project = require('../models/Project');
 const UserProject = require('../models/UserProject');
+const { Op, Sequelize } = require('sequelize');
 
 
 
@@ -58,16 +59,30 @@ async function getUserById(req, res){
     }
 }
 
-async function sendSupportEmail(req, res){
-    try{
-        Email.sendSupportEmail(req.body);
+async function sendSupportEmail(req, res) {
+    try {
+        
+        const { email, id_user, description, subject } = req.body; 
+        const file = req.file;
+
+        const emailData = {
+            email,
+            id_user,
+            description,
+            subject,
+            file: file ? file.path : null 
+        };
+
+        
+        await Email.sendSupportEmail(emailData);
         
         res.status(200).send({ message: 'success' });
         
-    }catch(error){
-        res.status(500).json({ message: error });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 }
+
 
 async function getUsersForReport(req, res) {
     try {
@@ -85,8 +100,8 @@ async function getUsersForReport(req, res) {
                     as: 'user',  
                 },
                 {
-                    model: Project,  // Faz o join com a tabela Project
-                    as: 'project',   // Certifique-se de que o alias está correto
+                    model: Project,
+                    as: 'project',   
                 }
                 ]
             }],
@@ -102,36 +117,63 @@ async function getUsersForReport(req, res) {
 async function getUsersTableForReport(req, res) {
     try {
         if(req.headers.id_user.length > 0){
-            const users = await User.findAll({
+            const users = await UserProject.findAll({
+                include: [
+                    {
+                        model: User,
+                        required: true,
+                        as: 'user', // Use o alias correto se necessário
+                    },
+                    {
+                        model: Project,
+                        required: true,
+                        as: 'project', // Use o alias correto se necessário
+                    }
+                ],
                 where: {
-                    id: req.headers.id_user
+                    id_user: req.headers.id_user,
+                    id_project: {
+                        [Op.in]: Sequelize.literal(`(
+                            SELECT user_project.id_project 
+                            FROM project 
+                            JOIN user_project ON user_project.id_project = project.id 
+                            JOIN user ON user.id = user_project.id_user
+                            WHERE user_project.id_user = ${req.headers.id_current_user} AND user_project.administrator = 1
+                        )`)
+                    }
                 }
             });
+            
     
             res.send(users);
         }else{
-            const users = await User.findAll({
-                include: [{
-                    model: UserProject,
-                    as: 'userProjects',
-                    required: true,
-                    where: {
-                        id_user: req.headers.id_current_user,
-                        administrator: 1 
-                    },
-                    include: [{
+            const users = await UserProject.findAll({
+                include: [
+                    {
                         model: User,
-                        as: 'user',  
+                        required: true,
+                        as: 'user', // Use o alias correto se necessário
                     },
                     {
-                        model: Project,  
-                        as: 'project',   
+                        model: Project,
+                        required: true,
+                        as: 'project', // Use o alias correto se necessário
                     }
-                    ]
-                }],
-                distinct: true
+                ],
+                where: {
+                    id_project: {
+                        [Op.in]: Sequelize.literal(`(
+                            SELECT user_project.id_project 
+                            FROM project 
+                            JOIN user_project ON user_project.id_project = project.id 
+                            JOIN user ON user.id = user_project.id_user
+                            WHERE user_project.id_user = ${req.headers.id_current_user} AND user_project.administrator = 1
+                        )`)
+                    }
+                }
             });
-    
+            
+            
             res.send(users);
         }
     } catch (error) {

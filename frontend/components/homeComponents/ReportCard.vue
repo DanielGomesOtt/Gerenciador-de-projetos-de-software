@@ -10,8 +10,8 @@ const props = defineProps({
     >
         <template #header>
             <div>
-                <a href="/account" v-if="props.visibleLanguage == 'en'">Reports</a>
-                <a href="/account" v-if="props.visibleLanguage == 'pt-br'">Relatórios</a>
+                <a href="/reports" v-if="props.visibleLanguage == 'en'">Reports</a>
+                <a href="/reports" v-if="props.visibleLanguage == 'pt-br'">Relatórios</a>
             </div>
         </template>
         <div class="bg-white text-black p-5 rounded-lg w-full">

@@ -1,5 +1,6 @@
 require('dotenv').config();
 const nodemailer = require("nodemailer");
+const fs = require('fs');
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_SERVICE,
@@ -19,13 +20,36 @@ async function sendEmail(email, code) {
     });
 }
 
-async function sendSupportEmail(data){
-  await transporter.sendMail({
+async function sendSupportEmail(data) {
+  const mailOptions = {
     from: process.env.USER_EMAIL,
     to: process.env.USER_EMAIL,
     subject: data.subject,
     text: `id_user: ${data.id_user}, email: ${data.email}\ndescription: ${data.description}`,
-  });
+  };
+
+  
+  if (data.file) {
+    mailOptions.attachments = [
+      {
+        path: data.file, 
+      },
+    ];
+  }
+
+ 
+  await transporter.sendMail(mailOptions);
+
+  if (data.file) {
+    fs.unlink(data.file, (err) => {
+      if (err) {
+        console.error('Erro ao apagar o arquivo:', err);
+      } else {
+        console.log('Arquivo apagado com sucesso:', data.file);
+      }
+    });
+  }
 }
+
 
 module.exports = { sendEmail, sendSupportEmail };

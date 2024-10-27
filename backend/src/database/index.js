@@ -9,12 +9,13 @@ const ProjectInvite = require('../models/ProjectInvite');
 const Task = require('../models/Task');
 const Message = require('../models/Message');
 const Payment = require('../models/Payment');
+const Administrator = require('../models/Administrator');
 
 // Inicialize a conexão
 const connection = new Sequelize(dbConfig);
 
 // Inicialize todos os modelos
-const models = [User, Category, ResetCode, Project, UserProject, ProjectInvite, Task, Message, Payment];
+const models = [User, Category, ResetCode, Project, UserProject, ProjectInvite, Task, Message, Payment, Administrator];
 models.forEach(model => model.init(connection));
 
 // Relacionamentos

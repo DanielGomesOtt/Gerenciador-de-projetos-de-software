@@ -41,6 +41,7 @@ const openMenuMobile = () => {
 
 const logOut = () => {
     localStorage.removeItem('userStorage');
+    localStorage.removeItem('email');
     navigateTo('/');
 }
 

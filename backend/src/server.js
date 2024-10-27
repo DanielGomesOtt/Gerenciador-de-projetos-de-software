@@ -15,6 +15,7 @@ const { createServer } = require('node:http');
 const { Server } = require('socket.io');
 const socketHandlers = require('./websocket/socketHandlers');
 const verifyPlanPayment = require('./utils/verifyPlanPayment');
+const adminRoute = require('../src/routes/adminRoute');
 
 const app = express();
 const server = createServer(app);
@@ -37,6 +38,7 @@ app.use(projectRoute);
 app.use(taskRoute);
 app.use(messageRoute);
 app.use(paymentRoute);
+app.use(adminRoute);
 
 socketHandlers(io);
 

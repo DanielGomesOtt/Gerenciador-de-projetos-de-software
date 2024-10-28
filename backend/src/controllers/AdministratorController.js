@@ -1,6 +1,8 @@
 const Administrator = require('../models/Administrator');
 const jwt = require('../middlewares/accessTokenMiddleware');
-
+const User = require('../models/User');
+const Payment = require('../models/Payment');
+const Project = require('../models/Project');
 
 async function handleLogin(req, res){
     try{
@@ -32,4 +34,34 @@ async function handleLogin(req, res){
     }
 }
 
-module.exports = {handleLogin};
+async function usersReport(req, res){
+    try{
+        const users = await User.findAll();
+
+        res.send(users);
+    }catch(error){
+        res.status(500).json({ message: error });
+    }
+}
+
+async function paymentsReport(req, res){
+    try{
+        const payments = await Payment.findAll();
+
+        res.send(payments);
+    }catch(error){
+        res.status(500).json({ message: error });
+    }
+}
+
+async function projectsReport(req, res){
+    try{
+        const projects = await Project.findAll();
+
+        res.send(projects);
+    }catch(error){
+        res.status(500).json({ message: error });
+    }
+}
+
+module.exports = {handleLogin, usersReport, paymentsReport, projectsReport};

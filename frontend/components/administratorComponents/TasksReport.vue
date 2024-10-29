@@ -8,7 +8,7 @@ Chart.register(...registerables);
 
 
 const runtimeConfig = useRuntimeConfig();
-const chartLabelsEn = ['in progress', 'overdue', 'completed', 'cancelled'];
+const chartLabelsEn = ['to do', 'in progress', 'cancelled', 'overdue', 'urgent', 'completed'];
 const chartEn = ref(null);
 
 
@@ -26,7 +26,7 @@ function createChart() {
 
     const canvas = chartEn.value;
     const labels = chartLabelsEn;
-    const labelTitle =  'Nº of projects by status';
+    const labelTitle =  'Nº of tasks by status';
 
     chartInstance = new Chart(canvas, {
         type: 'bar',
@@ -60,35 +60,42 @@ function createChart() {
     });
 }
 
-const getProjectsReport = async() => {
+const getTasksReport = async() => {
     try{
-        const response = await axios.get(runtimeConfig.public.BASE_URL + 'administrator/projects_report', {
+        const response = await axios.get(runtimeConfig.public.BASE_URL + 'administrator/tasks_report', {
             headers: {
                 Authorization: `Bearer ${JSON.parse(localStorage.getItem('adminStorage')).token}`, 
             }
         });
 
         if(response){
+            let to_do = 0;
             let in_progress = 0;
             let overdue = 0;
             let completed = 0;
             let cancelled = 0;
+            let urgent = 0;
+
               
             
-            response.data.forEach(project => {
-                if(project.status == 'in progress'){
+            response.data.forEach(task => {
+                if(task.status == 'in progress'){
                     in_progress++;
-                }else if(project.status == 'overdue'){
+                }else if(task.status == 'overdue'){
                     overdue++;
-                }else if(project.status == 'completed'){
+                }else if(task.status == 'completed'){
                     completed++;
-                }else if(project.status == 'cancelled'){
+                }else if(task.status == 'cancelled'){
                     cancelled++;
+                }else if(task.status == 'urgent'){
+                    urgent++;
+                }else if(task.status == 'to do'){
+                    to_do++;
                 }
             });
 
 
-            chartData.value = [in_progress, overdue, completed, cancelled];
+            chartData.value = [to_do, in_progress, cancelled, overdue, urgent, completed];
             
             createChart();
         }
@@ -100,7 +107,7 @@ const getProjectsReport = async() => {
 
 
 onMounted(() => {
-    getProjectsReport();
+    getTasksReport();
 });
 
 </script>

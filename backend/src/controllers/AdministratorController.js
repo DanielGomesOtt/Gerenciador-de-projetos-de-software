@@ -3,6 +3,7 @@ const jwt = require('../middlewares/accessTokenMiddleware');
 const User = require('../models/User');
 const Payment = require('../models/Payment');
 const Project = require('../models/Project');
+const Task = require('../models/Task');
 
 async function handleLogin(req, res){
     try{
@@ -64,4 +65,42 @@ async function projectsReport(req, res){
     }
 }
 
-module.exports = {handleLogin, usersReport, paymentsReport, projectsReport};
+async function tasksReport(req, res){
+    try{
+        const tasks = await Task.findAll();
+
+        res.send(tasks);
+    }catch(error){
+        res.status(500).json({ message: error });
+    }
+}
+
+async function monthlyPlanReport(req, res){
+    try{
+        const plans = await Payment.findAll({
+            where: {
+                status: 'monthly'
+            }
+        });
+
+        res.send(plans);
+    }catch(error){
+        res.status(500).json({ message: error });
+    }
+}
+
+async function yearlyPlanReport(req, res){
+    try{
+        const plans = await Payment.findAll({
+            where: {
+                status: 'yearly'
+            }
+        });
+
+        res.send(plans);
+    }catch(error){
+        res.status(500).json({ message: error });
+    }
+}
+
+module.exports = {handleLogin, usersReport, paymentsReport, projectsReport, tasksReport, monthlyPlanReport, yearlyPlanReport};

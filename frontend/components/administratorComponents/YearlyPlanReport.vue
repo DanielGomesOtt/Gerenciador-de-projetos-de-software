@@ -22,7 +22,7 @@ const yearlyPlanReport = async () => {
         if(response){
             let today = new Date();
             response.data.forEach(payment => {
-                let date = new Date(payment.created_at);
+                let date = new Date(payment.createdAt);
                 if(today.getFullYear() == date.getFullYear() && today.getMonth() == date.getMonth() && today.getDate() == date.getDate()){
                     yearlyPlanToday.value += Number(payment.value);
                 }else if(today.getFullYear() == date.getFullYear() && today.getMonth() == date.getMonth()){
@@ -48,17 +48,17 @@ onMounted(() => {
 <template>
     <div>
         <div>
-            <div class="grid grid-cols-1 lg:grid-cols-3">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-2">
                 <div class="text-center border-2 rounded-lg border-slate-500 shadow hover:shadow-xl hover:cursor-pointer w-96 h-20">
-                    <p class="text-2xl font-bold">yearly Plan Today</p>
+                    <p class="text-2xl font-bold">Yearly Plan Today</p>
                     <p class="text-2xl text-emerald-600 font-semibold">{{ yearlyPlanToday }}</p>
                 </div>
                 <div class="text-center border-2 rounded-lg border-slate-500 shadow hover:shadow-xl hover:cursor-pointer w-96 h-20">
-                    <p class="text-2xl font-bold">yearly Plan This Month</p>
+                    <p class="text-2xl font-bold">Yearly Plan This Month</p>
                     <p class="text-2xl text-emerald-600 font-semibold">{{ yearlyPlanMonth }}</p>
                 </div>
                 <div class="text-center border-2 rounded-lg border-slate-500 shadow hover:shadow-xl hover:cursor-pointer w-96 h-20">
-                    <p class="text-2xl font-bold">yearly Plan This Year</p>
+                    <p class="text-2xl font-bold">Yearly Plan This Year</p>
                     <p class="text-2xl text-emerald-600 font-semibold">{{ yearlyPlanYear }}</p>
                 </div>
             </div>

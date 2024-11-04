@@ -32,10 +32,13 @@ window.addEventListener('resize', function() {
         </div>
 
         
-        <ul class="flex justify-around items-center w-[70%] lg:w-[80%]" id="nav-items">
+        <ul class="flex justify-around items-center w-[35%] lg:w-[40%]" id="nav-items">
             <li><a href="/administrator/home" class="font-medium text-base lg:text-lg nav-link">Home</a></li>
         </ul>
 
+        <ul class="flex justify-around items-center w-[35%] lg:w-[40%]" id="nav-items">
+            <li><a href="/administrator/projects" class="font-medium text-base lg:text-lg nav-link">Projects Management</a></li>
+        </ul>
       
         <div class="flex justify-around w-[10%]" id="nav-buttons-container" v-if="!isOpenMobile">
             <button class="bg-transparent" @click="logOut">
@@ -53,6 +56,7 @@ window.addEventListener('resize', function() {
             class="w-screen absolute pb-2 bg-blue-400 shadow-xl z-50"
             id="menu-mobile"
             style="top: 4em;"
+            v-if="isOpenMobile"
         >
             <li>
                 <div class="flex justify-start items-center py-2 pl-5">
@@ -60,6 +64,14 @@ window.addEventListener('resize', function() {
                     <a href="/administrator/home" class="text-lg nav-link ml-5 text-white">Home</a>
                 </div>
             </li>
+
+            <li>
+                <div class="flex justify-start items-center py-2 pl-5">
+                    <Icon name="mdi:clipboard-list" size="1.5em" color="white" />
+                    <a href="/administrator/projects" class="text-lg nav-link ml-5 text-white">Projects Management</a>
+                </div>
+            </li>
+
             <li>
                 <div class="flex justify-start items-center py-2 pl-5">
                     <Icon name="mdi:logout" size="1.5em" color="white" />

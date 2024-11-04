@@ -4,6 +4,7 @@ const User = require('../models/User');
 const Payment = require('../models/Payment');
 const Project = require('../models/Project');
 const Task = require('../models/Task');
+const UserProject = require('../models/UserProject');
 
 async function handleLogin(req, res){
     try{
@@ -103,4 +104,29 @@ async function yearlyPlanReport(req, res){
     }
 }
 
-module.exports = {handleLogin, usersReport, paymentsReport, projectsReport, tasksReport, monthlyPlanReport, yearlyPlanReport};
+async function getProjects(req, res){
+    try{
+
+        let where = {}
+
+        if(req.headers.name !== null && req.headers.name !== undefined && req.headers.name.length > 0){
+            where.name = req.headers.name;
+        }
+
+        if(req.headers.email !== null && req.headers.email !== undefined && req.headers.email.length > 0){
+            where.email = req.headers.email;
+        }
+
+        const projects = await Project.findAll({
+            order: [
+                ['id', 'DESC']
+            ]
+        });
+
+        res.send(projects);
+    }catch(error){
+        res.status(500).json({ message: error });
+    }
+}
+
+module.exports = {handleLogin, usersReport, paymentsReport, projectsReport, tasksReport, monthlyPlanReport, yearlyPlanReport, getProjects};

@@ -10,4 +10,5 @@ route.get('/administrator/projects_report', accessTokenMiddleware.verifyToken, A
 route.get('/administrator/tasks_report', accessTokenMiddleware.verifyToken, AdministratorController.tasksReport);
 route.get('/administrator/monthly_plan_report', accessTokenMiddleware.verifyToken, AdministratorController.monthlyPlanReport);
 route.get('/administrator/yearly_plan_report', accessTokenMiddleware.verifyToken, AdministratorController.yearlyPlanReport);
+route.get('/administrator/get_projects', accessTokenMiddleware.verifyToken, AdministratorController.getProjects);
 module.exports =  route;

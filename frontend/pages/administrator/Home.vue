@@ -10,27 +10,29 @@ import YearlyPlanReport from '~/components/administratorComponents/YearlyPlanRep
 </script>
 
 <template>
-    <NavBarAdmin />
-    <div class="w-screen mt-10">
-        <div class="w-full flex justify-center">
-            <MonthlyPlanReport />
-        </div>
-        <div class="w-full flex justify-center">
-            <YearlyPlanReport />
-        </div>
-        <div class="flex justify-center">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <UsersReport />
-                </div>
-                <div>
-                    <PaymentsReport />
-                </div>
-                <div>
-                    <ProjectsReport />
-                </div>
-                <div>
-                    <TasksReport />
+    <div class="overflow-x-hidden">
+        <NavBarAdmin />
+        <div class="w-screen mt-10 pb-5">
+            <div class="w-full flex justify-center">
+                <MonthlyPlanReport />
+            </div>
+            <div class="w-full flex justify-center mt-5">
+                <YearlyPlanReport />
+            </div>
+            <div class="flex justify-center mt-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <UsersReport />
+                    </div>
+                    <div>
+                        <PaymentsReport />
+                    </div>
+                    <div>
+                        <ProjectsReport />
+                    </div>
+                    <div>
+                        <TasksReport />
+                    </div>
                 </div>
             </div>
         </div>

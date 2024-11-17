@@ -11,4 +11,6 @@ route.get('/administrator/tasks_report', accessTokenMiddleware.verifyToken, Admi
 route.get('/administrator/monthly_plan_report', accessTokenMiddleware.verifyToken, AdministratorController.monthlyPlanReport);
 route.get('/administrator/yearly_plan_report', accessTokenMiddleware.verifyToken, AdministratorController.yearlyPlanReport);
 route.get('/administrator/get_projects', accessTokenMiddleware.verifyToken, AdministratorController.getProjects);
+route.post('/administrator/set_manage_project', accessTokenMiddleware.verifyToken, AdministratorController.setManageProject);
+route.post('/administrator/set_administrator', accessTokenMiddleware.verifyToken, AdministratorController.setAdministrator);
 module.exports =  route;

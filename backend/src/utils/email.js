@@ -51,5 +51,16 @@ async function sendSupportEmail(data) {
   }
 }
 
+async function sendAdminCredentialEmail(email, password, register){
+  const mailOptions = {
+    from: process.env.USER_EMAIL,
+    to: email,
+    subject: 'Task Life Administrator Credentials',
+    text: `Administrator register: ${register}, Email: ${email}, Password: ${password}`
+  };
 
-module.exports = { sendEmail, sendSupportEmail };
+  await transporter.sendMail(mailOptions);
+}
+
+
+module.exports = { sendEmail, sendSupportEmail, sendAdminCredentialEmail };

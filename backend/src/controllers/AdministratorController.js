@@ -5,6 +5,8 @@ const Payment = require('../models/Payment');
 const Project = require('../models/Project');
 const Task = require('../models/Task');
 const UserProject = require('../models/UserProject');
+const { Op, fn, col } = require('sequelize');
+const { sendAdminCredentialEmail } = require('../utils/email');
 
 async function handleLogin(req, res){
     try{
@@ -104,29 +106,133 @@ async function yearlyPlanReport(req, res){
     }
 }
 
-async function getProjects(req, res){
-    try{
+async function getProjects(req, res) {
+    try {
+        
+        const projectWhere = {};
+        const userWhere = {};
 
-        let where = {}
-
-        if(req.headers.name !== null && req.headers.name !== undefined && req.headers.name.length > 0){
-            where.name = req.headers.name;
+        
+        if (req.headers.name) {
+            projectWhere.name = {
+                [Op.like]: fn('UPPER', `%${req.headers.name.toUpperCase()}%`)
+            };
         }
 
-        if(req.headers.email !== null && req.headers.email !== undefined && req.headers.email.length > 0){
-            where.email = req.headers.email;
+        
+        if (req.headers.email) {
+            userWhere.email = {
+                [Op.like]: fn('UPPER', `%${req.headers.email.toUpperCase()}%`)
+            };
         }
 
+        
         const projects = await Project.findAll({
-            order: [
-                ['id', 'DESC']
-            ]
+            where: projectWhere,
+            include: [
+                {
+                    model: UserProject,
+                    include: [
+                        {
+                            model: User,
+                            where: userWhere
+                        }
+                    ]
+                }
+            ],
+            order: [['id', 'DESC']]
         });
 
         res.send(projects);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+async function setManageProject(req, res){
+    try{
+        
+        const user = await UserProject.findOne({
+            where: {
+                id_project: req.body.id_project,
+                status: 1
+            },
+            include: [
+                {
+                    model: User,
+                    required: true,
+                    where: {
+                        
+                        email: req.body.email.toUpperCase(),
+                        status: 1
+                    }
+                }
+            ]
+        });
+        if(user && user.User.dataValues){
+            let update = {
+                administrator: req.body.permission
+            }
+            await UserProject.update(update, {
+                where: {
+                    id_project: req.body.id_project,
+                    id_user: user.User.dataValues.id
+                }
+            })
+            res.status(201).json({ message: 'success' });
+        }else{
+            res.status(200).json({ message: 'This user is not in this project' });
+        }
+        
     }catch(error){
         res.status(500).json({ message: error });
     }
 }
 
-module.exports = {handleLogin, usersReport, paymentsReport, projectsReport, tasksReport, monthlyPlanReport, yearlyPlanReport, getProjects};
+async function setAdministrator(req, res){
+    try{
+        const administrator = await Administrator.findOne({
+            where: {
+                email: req.body.email,
+                status: 1
+            }
+        });
+        
+        if(administrator && administrator.dataValues){
+            res.status(409).json({ message: 'Email already registered' });
+        }else{
+            let adminData = {
+                admin_register: req.body.admin_register,
+                name: req.body.name,
+                email: req.body.email,
+                password: generateRandomPassword(),
+                status: req.body.status
+            }
+            
+            const newAdmin = await Administrator.create(adminData);
+
+            if(newAdmin){
+                sendAdminCredentialEmail(adminData.email, adminData.password, adminData.admin_register);
+                res.status(201).json({ message: 'Administrator created successfully' });
+            }else{
+                res.status(500).json({ message: 'An error occurred while trying to create the administrator' });
+            }
+        }
+    }catch(error){
+        res.status(500).json({ message: error });
+    }
+}
+
+function generateRandomPassword(length = 12) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let password = '';
+  
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      password += characters[randomIndex];
+    }
+  
+    return password;
+}
+
+module.exports = {handleLogin, usersReport, paymentsReport, projectsReport, tasksReport, monthlyPlanReport, yearlyPlanReport, getProjects, setManageProject, setAdministrator};

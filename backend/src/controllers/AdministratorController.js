@@ -223,6 +223,26 @@ async function setAdministrator(req, res){
     }
 }
 
+async function recoverCredentials(req, res){
+    try{
+        const administrator = await Administrator.findOne({
+            where: {
+                email: req.headers.email,
+                status: 1
+            }
+        });
+        
+        if(administrator){
+            sendAdminCredentialEmail(req.headers.email, administrator.dataValues.password, administrator.dataValues.admin_register);
+            res.status(200).json({ message: 'Your credentials have been sent to your email' });
+        }else{
+            res.status(404).json({ message: 'User not found' });
+        }
+    }catch(error){
+        res.status(500).json({ message: error });
+    }
+}
+
 function generateRandomPassword(length = 12) {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let password = '';
@@ -235,4 +255,4 @@ function generateRandomPassword(length = 12) {
     return password;
 }
 
-module.exports = {handleLogin, usersReport, paymentsReport, projectsReport, tasksReport, monthlyPlanReport, yearlyPlanReport, getProjects, setManageProject, setAdministrator};
+module.exports = {handleLogin, usersReport, paymentsReport, projectsReport, tasksReport, monthlyPlanReport, yearlyPlanReport, getProjects, setManageProject, setAdministrator, recoverCredentials};

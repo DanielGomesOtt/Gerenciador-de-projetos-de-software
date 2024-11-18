@@ -7,6 +7,7 @@ const Task = require('../models/Task');
 const UserProject = require('../models/UserProject');
 const { Op, fn, col } = require('sequelize');
 const { sendAdminCredentialEmail } = require('../utils/email');
+const { hashPassword } = require('../utils/hashPassword');
 
 async function handleLogin(req, res){
     try{
@@ -243,6 +244,56 @@ async function recoverCredentials(req, res){
     }
 }
 
+async function setTestAccount(req, res){
+    try{
+        const account = await User.findOne({
+            where: {
+                email: req.body.email,
+                status: 1
+            }
+        });
+
+        if(account){
+            res.status(409).json({ message: 'Email already used in an account' });
+        }else{
+            const administrator = await Administrator.findOne({
+                where: {
+                    email: req.body.email,
+                    status: 1
+                }
+            });
+
+            const testUser = {
+                name: req.body.name,
+                email: req.body.email,
+                password: hashPassword(administrator.dataValues.password),
+                id_category: req.body.id_category,
+                end_plan_premium: req.body.end_plan_premium,
+                type_premium: req.body.type_premium,
+                premium_user: req.body.premium_user,
+                id_group: 0,
+                status: 1
+            }
+
+            const createdTestUser = await User.create(testUser);
+
+            if(createdTestUser){
+                let testPassword = administrator.dataValues.password;
+                await Administrator.update({ test_password: testPassword }, {
+                    where: {
+                        email: req.body.email,
+                        status: 1
+                    }
+                })
+
+                res.status(201).json({ message: 'Test account successfully created' });
+            }
+        }
+    }catch(error){
+        res.status(500).json({ message: error });
+    }
+}
+
 function generateRandomPassword(length = 12) {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let password = '';
@@ -255,4 +306,4 @@ function generateRandomPassword(length = 12) {
     return password;
 }
 
-module.exports = {handleLogin, usersReport, paymentsReport, projectsReport, tasksReport, monthlyPlanReport, yearlyPlanReport, getProjects, setManageProject, setAdministrator, recoverCredentials};
+module.exports = {handleLogin, usersReport, paymentsReport, projectsReport, tasksReport, monthlyPlanReport, yearlyPlanReport, getProjects, setManageProject, setAdministrator, recoverCredentials, setTestAccount};

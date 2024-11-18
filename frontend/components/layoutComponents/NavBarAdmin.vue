@@ -2,14 +2,20 @@
 import { Icon } from '#components';
 import axios from 'axios';
 import CreateAdminForm from '../administratorComponents/CreateAdminForm.vue';
+import CreateTestAccountForm from '../administratorComponents/CreateTestAccountForm.vue';
 
 const runtimeConfig = useRuntimeConfig();
 
 let isOpenMobile = ref(false);
 let visibilityCreateAdminModal = ref(false);
+let visibilityTestAccountModal = ref(false);
 
 const changeVisibilityCreateAdminModal = () => {
     visibilityCreateAdminModal.value = !visibilityCreateAdminModal.value;
+}
+
+const changeVisibilityTestAccountModal = () => {
+    visibilityTestAccountModal.value = !visibilityTestAccountModal.value;
 }
 
 const openMenuMobile = () => {
@@ -38,17 +44,23 @@ window.addEventListener('resize', function() {
         </div>
 
         
-        <ul class="flex justify-around items-center w-[25%] lg:w-[30%]" id="nav-items">
+        <ul class="flex justify-around items-center w-[15%] lg:w-[20%]" id="nav-items">
             <li><a href="/administrator/home" class="font-medium text-base lg:text-lg nav-link">Home</a></li>
         </ul>
 
-        <ul class="flex justify-around items-center w-[25%] lg:w-[30%]" id="nav-items">
+        <ul class="flex justify-around items-center w-[15%] lg:w-[20%]" id="nav-items">
             <li><a href="/administrator/projects" class="font-medium text-base lg:text-lg nav-link">Projects Management</a></li>
         </ul>
 
         <ul class="flex justify-around items-center w-[20%] lg:w-[20%]" id="nav-items">
             <li>
                 <button class="bg-blue-600 rounded-lg p-2 text-white text-sm" @click="changeVisibilityCreateAdminModal()"><Icon name="mdi:plus" color="white" size="1.5em"/>&nbsp;New admin</button>
+            </li>
+        </ul>
+
+        <ul class="flex justify-around items-center w-[20%] lg:w-[20%]" id="nav-items">
+            <li>
+                <button class="bg-blue-600 rounded-lg p-2 text-white text-sm" @click="changeVisibilityTestAccountModal()"><Icon name="mdi:user" color="white" size="1.5em"/>&nbsp;Test Account</button>
             </li>
         </ul>
       
@@ -93,6 +105,13 @@ window.addEventListener('resize', function() {
 
             <li>
                 <div class="flex justify-start items-center py-2 pl-5">
+                    <Icon name="mdi:user" size="1.5em" color="white" />
+                    <a class="text-lg nav-link ml-5 text-white" @click="changeVisibilityTestAccountModal()">Test Account</a>
+                </div>
+            </li>
+
+            <li>
+                <div class="flex justify-start items-center py-2 pl-5">
                     <Icon name="mdi:logout" size="1.5em" color="white" />
                     <button class="text-lg nav-link bg-transparent ml-5 text-white" @click="logOut">Logout</button>
                 </div>
@@ -105,6 +124,15 @@ window.addEventListener('resize', function() {
                 <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="my-1" @click="visibilityCreateAdminModal = false" />
             </div>
             <CreateAdminForm @changeVisibilityCreateAdminModal="changeVisibilityCreateAdminModal" />
+        </UCard>
+    </UModal>
+
+    <UModal v-model="visibilityTestAccountModal">
+        <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
+            <div class="flex justify-end w-full">
+                <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="my-1" @click="visibilityTestAccountModal = false" />
+            </div>
+            <CreateTestAccountForm @changeVisibilityTestAccountModal="changeVisibilityTestAccountModal" />
         </UCard>
     </UModal>
 

@@ -14,5 +14,6 @@ route.get('/administrator/get_projects', accessTokenMiddleware.verifyToken, Admi
 route.post('/administrator/set_manage_project', accessTokenMiddleware.verifyToken, AdministratorController.setManageProject);
 route.post('/administrator/set_administrator', accessTokenMiddleware.verifyToken, AdministratorController.setAdministrator);
 route.get('/administrator/recover_credentials', AdministratorController.recoverCredentials);
+route.post('/administrator/set_test_account', accessTokenMiddleware.verifyToken, AdministratorController.setTestAccount);
 
 module.exports =  route;

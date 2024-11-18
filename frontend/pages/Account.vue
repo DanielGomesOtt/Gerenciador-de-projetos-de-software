@@ -11,6 +11,11 @@ let idUser = ref('');
 let avatarPath = ref('');
 let isOpen = ref(false);
 let visibleLanguage = ref(localStorage.getItem('language'));
+let visibilityHelpModal = ref(false);
+
+const changeVisibilityHelpModal = () => {
+    visibilityHelpModal.value = !visibilityHelpModal.value;
+}
 
 const showUserName = () => {
     let storage = JSON.parse(localStorage.getItem('userStorage'));
@@ -81,7 +86,7 @@ onBeforeMount(() => {
 
 <template>
     <div class="w-screen h-screen overflow-x-hidden">
-        <NavBar @changeLanguageParent="changeLanguage"/>
+        <NavBar @changeLanguageParent="changeLanguage" @changeVisibilityHelpModal="changeVisibilityHelpModal"/>
         <div class="flex flex-col justify-center items-center mt-5">
             <div>
                 <div class="flex">
@@ -116,6 +121,29 @@ onBeforeMount(() => {
                 <div class="flex justify-around items-center" v-if="visibleLanguage == 'pt-br'">
                     <button class="bg-green-600 text-white rounded-md w-28 h-10" @click="uploadAvatarPath()">Confirmar</button>
                     <button type="button" class="bg-red-600 text-white rounded-md ml-10 w-28 h-10" @click="() => {isOpen = false}">Cancelar</button>
+                </div>
+            </template>
+        </UCard>
+    </UModal>
+    <UModal v-model="visibilityHelpModal">
+        <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
+            <p class="text-center text-2xl font-semibold" v-if="visibleLanguage == 'en'">Page Guide</p>
+            <p class="text-center text-2xl font-semibold" v-if="visibleLanguage == 'pt-br'">Manual da Página</p>
+            <template #footer>
+                <div v-if="visibleLanguage == 'en'">
+                    <p class="text-justify">To edit the name or email of your account, fill in the respective fields and click on save changes.</p>
+                    <p class="text-justify">To deactivate your account, click the deactivate your account button and confirm.</p>
+                    <img src="../assets/img/página_conta.png" alt="account page" class="w-64 mx-auto border-2 my-5">
+                    <p class="text-justify">To change your password, click on change password, fill in both fields with valid and matching passwords, and then click save changes. If you no longer want to change the password, click cancel password change.</p>
+                    <img src="../assets/img/mudar senha.png" alt="password change" class="w-64 mx-auto border-2 my-5">
+
+                </div>
+                <div v-if="visibleLanguage == 'pt-br'">
+                    <p class="text-justify">Para editar editar nome ou e-mail da sua conta, preencha os respectivos campos e clique em salvar mudanças.</p>
+                    <p class="text-justify">Para inativar sua conta, clique no botão inativar sua conta e confirme.</p>
+                    <img src="../assets/img/página_conta.png" alt="página de conta" class="w-64 mx-auto border-2 my-5">
+                    <p class="text-justify">Para mudar a senha clique em mudar senha, preencha os dois campos com senhas válidas e iguais e em seguida clique em salvar mudanças. Se não quiser mais mudar a senha, clique em cancelar mudança de senha.</p>
+                    <img src="../assets/img/mudar senha.png" alt="mudança de senha" class="w-64 mx-auto border-2 my-5">
                 </div>
             </template>
         </UCard>

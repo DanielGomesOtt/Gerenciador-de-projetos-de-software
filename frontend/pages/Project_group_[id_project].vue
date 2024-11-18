@@ -27,6 +27,11 @@ let conversationMessages = ref([]);
 let quantityUnreadMessages = ref([]);
 let isProjectPremium = ref(false);
 let visibleLanguage = ref(localStorage.getItem('language'));
+let visibilityHelpModal = ref(false);
+
+const changeVisibilityHelpModal = () => {
+    visibilityHelpModal.value = !visibilityHelpModal.value;
+}
 
 
 const setMessageNotification = (id_user) => {
@@ -266,7 +271,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <NavBar @changeLanguageParent="changeLanguage"/>
+    <NavBar @changeLanguageParent="changeLanguage" @changeVisibilityHelpModal="changeVisibilityHelpModal"/>
     <div class="flex justify-between">
         <div v-if="myProjectData && myProjectData.Project && myProjectData.Project.project_model && myProjectData.Project.project_model == 'default'">
             <DefaultModelProject :myProjectData="myProjectData" :visibleLanguage="visibleLanguage"/>
@@ -427,6 +432,40 @@ onUnmounted(() => {
                 <div class="flex justify-around items-center" v-if="visibleLanguage == 'pt-br'">
                     <button type="button" class="bg-green-600 text-white rounded-md w-28 h-10" @click="removeMemberFromProject($event)">Confirmar</button>
                     <button type="button" class="bg-red-600 text-white rounded-md ml-10 w-28 h-10" @click="changeVisibilityModalRemoveMember(0)">Cancelar</button>
+                </div>
+            </template>
+        </UCard>
+    </UModal>
+    <UModal v-model="visibilityHelpModal">
+        <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
+            <p class="text-center text-2xl font-semibold" v-if="visibleLanguage == 'en'">Page Guide</p>
+            <p class="text-center text-2xl font-semibold" v-if="visibleLanguage == 'pt-br'">Manual da Página</p>
+            <template #footer>
+                <div v-if="visibleLanguage == 'en'">
+                    <p class="text-justify">To create a task, click on the new task button and choose between creating it manually or using Gemini if you are a premium user. Use the filter bar to filter the tasks.</p>
+                    <p class="text-justify">To use the task filter bar, simply adjust the available filtering options, and the search will happen automatically. If you're using the search bar, select a filter and press Enter to perform the search.</p>
+                    <img src="../assets/img/barra de pesquisa.png" alt="Search bar and new task button" class="mx-auto my-5 border-2">
+                    <p class="text-justify">When you click to create the task manually, a form will appear. Fill out the entire form and click Create Task.</p>
+                    <img src="../assets/img/criar manual.png" alt="Manual creation" class="w-64 mx-auto my-5 border-2">
+                    <p>To create using Gemini, click on the new task button and choose the Gemini Creation option. After that, a form will appear. Fill out the entire form and wait for Gemini to create the tasks for you.</p>
+                    <img src="../assets/img/criar via gemini.png" alt="Creation via Gemini" class="w-64 mx-auto my-5 border-2">
+                    <p>Once created, the task will appear as a Card, with a button to edit.</p>
+                    <img src="../assets/img/task.png" alt="task" class="w-64 mx-auto my-5 border-2">
+                    <p>By clicking on edit, a form will open to edit the task. Fill out the form and click Update Task.</p>
+                    <img src="../assets/img/atualizar task.png" alt="task update" class="w-64 mx-auto my-5 border-2">
+                </div>
+                <div v-if="visibleLanguage == 'pt-br'">
+                    <p class="text-justify">Para criar uma tarefa, clique no botão nova task e escolha entre criar de forma manual ou com o Gemini se você for um usuário premium. Use a barra de filtragem para filtrar as tasks.</p>
+                    <p class="text-justify">Para utilizar a barra de filtrar tasks, é só modificar as opções de filtragem disponíveis que a pesquisa já irá ocorrer. Se for usar a barra de pesquisa, seleciona um filtro e clique em Enter para realizar a pesquisa.</p>
+                    <img src="../assets/img/barra de pesquisa.png" alt="Barra de pesquisa e botão de nova tarefa" class="mx-auto my-5 border-2">
+                    <p class="text-justify">Ao clicar em criar a tarefa manualmente, irá aparecer um formulário. Preencha o formulário inteiro e clique em Criar Task.</p>
+                    <img src="../assets/img/criar manual.png" alt="Criação manual" class="w-64 mx-auto my-5 border-2">
+                    <p>Para criar usando o Gemini, clique no botão de nova task e escolha a opção Criação pelo Gemini. Após isso irá aparecer um formulário. Preencha todo o formulário e aguarde que o Gemini irá criar as tarefas para você.</p>
+                    <img src="../assets/img/criar via gemini.png" alt="Criação via Gemini" class="w-64 mx-auto my-5 border-2">
+                    <p>Após ser criada, a task irá aparecer como um Card, com um botão para editar.</p>
+                    <img src="../assets/img/task.png" alt="tarefa" class="w-64 mx-auto my-5 border-2">
+                    <p>Ao clicar em editar, irá se abrir um formulário para editar a tarefa. Preencha o formulário e clique em Atualizar Task.</p>
+                    <img src="../assets/img/atualizar task.png" alt="atualização de tarefa" class="w-64 mx-auto my-5 border-2">
                 </div>
             </template>
         </UCard>

@@ -13,6 +13,7 @@ const runtimeConfig = useRuntimeConfig();
 
 let visibleLanguage = ref(localStorage.getItem('language'));
 let visibilitySupportModal = ref(false);
+let visibilityHelpModal = ref(false);
 let errorMessage = ref('');
 let successMessage = ref('');
 let formData = {
@@ -59,6 +60,11 @@ const itemsPtBr = [
     props: { visibleLanguage: 'pt-br' }
   }
 ]
+
+const changeVisibilityHelpModal = () => {
+    visibilityHelpModal.value = !visibilityHelpModal.value;
+}
+
 const changeVisibilitySupportModal = () => {
     errorMessage.value = '';
     successMessage.value = '';
@@ -159,7 +165,7 @@ const sendSupportEmail = async () => {
 </script>
 
 <template>
-    <NavBar @changeLanguageParent="changeLanguage"/>
+    <NavBar @changeLanguageParent="changeLanguage" @changeVisibilityHelpModal="changeVisibilityHelpModal"/>
 
     <div class="flex justify-center mt-10" v-if="visibleLanguage == 'en'">
         <p class="text-lg md:font-semibold text-slate-400">Contact us if you need any support from our team: <button class="p-1 md:p-2 bg-blue-600 text-white rounded-lg" @click="changeVisibilitySupportModal">Contact us</button></p>
@@ -274,6 +280,36 @@ const sendSupportEmail = async () => {
                 </div>
                 <div class="w-full" v-if="visibleLanguage == 'en'">
                     <button class="text-white bg-blue-600 w-full p-2 rounded-lg" @click="sendSupportEmail">Send</button>
+                </div>
+            </template>
+        </UCard>
+    </UModal>
+    <UModal v-model="visibilityHelpModal">
+        <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
+            <p class="text-center text-2xl font-semibold" v-if="visibleLanguage == 'en'">Page Guide</p>
+            <p class="text-center text-2xl font-semibold" v-if="visibleLanguage == 'pt-br'">Manual da Página</p>
+            <template #footer>
+                <div v-if="visibleLanguage == 'en'">
+                    <p class="text-justify">In the navigation bar, we have the pages that we can navigate to by clicking on them.</p>
+                    <p class="text-justify">We also have the project invitations button, which we can click to view received invitations and accept or decline them.</p>
+                    <p class="text-justify">Next, we have the page language button, where we can choose the page's language. The options currently available are English and Portuguese.</p>
+                    <p class="text-justify">The light bulb icon is used to open the page manual.</p>
+                    <p class="text-justify">The icon representing a person, when clicked, redirects the user to their account page.</p>
+                    <p class="text-justify">And the last button on the navigation bar is the log out button.</p>
+                    <img src="../assets/img/navbar.png" alt="navigation bar" class=" mx-auto my-5 border-2">
+                    <p class="text-justify">By clicking the contact us button, simply fill out the form and click send. Support will continue via email.</p>
+                    <img src="../assets/img/formulario_suporte.png" alt="support form" class="w-64 mx-auto my-5 border-2">
+                </div>
+                <div v-if="visibleLanguage == 'pt-br'">
+                    <p class="text-justify">Na barra de navegação temos as páginas em que podemos navegar clicando nelas.</p>
+                    <p class="text-justify">Também temos o botão de convites de projetos, que podemos clicar, ver os convites recebidos e aceitar ou recusar esses convites.</p>
+                    <p class="text-justify">Em seguida temos o botão de linguagem da página, onde podemos escolher a linguagem da página. As opções disponíveis no momento são inglês e português.</p>
+                    <p class="text-justify">O ícone de lâmpada serve para abrir o Manual da página.</p>
+                    <p class="text-justify">O ícone que representa uma pessoa, ao ser clicado, redireciona o usuário para a página da sua conta.</p>
+                    <p class="text-justify">E o último botão da barra de navegação é o botão para realizar o log out.</p>
+                    <img src="../assets/img/navbar.png" alt="barra de navegação" class="mx-auto my-5 border-2">
+                    <p class="text-justify">Ao clicar no botão de entrar em contato, basta preencher o formulário e clicar em enviar. O atendimento continuará via e-mail</p>
+                    <img src="../assets/img/formulario_suporte.png" alt="formulario de suporte" class="w-64 mx-auto my-5 border-2">
                 </div>
             </template>
         </UCard>

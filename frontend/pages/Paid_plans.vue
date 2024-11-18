@@ -7,6 +7,11 @@ const runtimeConfig = useRuntimeConfig();
 
 let isPremiumUser = ref(JSON.parse(localStorage.getItem('userStorage')).premium_user);
 let visibleLanguage = ref(localStorage.getItem('language'));
+let visibilityHelpModal = ref(false);
+
+const changeVisibilityHelpModal = () => {
+    visibilityHelpModal.value = !visibilityHelpModal.value;
+}
 
 const setPaymentMonthlyPlan = async () => {
     try{
@@ -61,7 +66,7 @@ const changeLanguage = () => {
 </script>
 
 <template>
-    <NavBar @changeLanguageParent="changeLanguage"/>
+    <NavBar @changeLanguageParent="changeLanguage" @changeVisibilityHelpModal="changeVisibilityHelpModal"/>
     <div class="flex w-screen justify-center mt-24" v-if="isPremiumUser !== true && visibleLanguage == 'en'">
         <div>
             <h1 class="text-5xl font-bold text-center">Choose your plan</h1>
@@ -211,4 +216,32 @@ const changeLanguage = () => {
         </div>
     </div>
     <ChangePlan  v-if="isPremiumUser == true" :visibleLanguage="visibleLanguage"/>
+    <UModal v-model="visibilityHelpModal">
+        <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
+            <p class="text-center text-2xl font-semibold" v-if="visibleLanguage == 'en'">Page Guide</p>
+            <p class="text-center text-2xl font-semibold" v-if="visibleLanguage == 'pt-br'">Manual da Página</p>
+            <template #footer>
+                <div v-if="visibleLanguage == 'en'">
+                    <p class="text-justify">To subscribe to a plan, just click the subscribe button on the card of the desired plan.</p>
+                    <img src="../assets/img/planos.png" alt="plans screen" class="w-64 mx-auto my-5 border-2">
+                    <p class="text-justify">By clicking to subscribe to the chosen plan, you will be redirected to Mercado Pago, and after completing the payment, you will be redirected back to the system, to the payment completed screen.</p>
+                    <img src="../assets/img/pagamento realizado.png" alt="payment completed" class="w-64 mx-auto my-5 border-2">
+                    <p class="text-justify">If you subscribe to the monthly plan, you will see a screen with a button to upgrade to the annual plan.</p>
+                    <img src="../assets/img/upgrade de plano.png" alt="monthly plan" class="w-64 mx-auto my-5 border-2">
+                    <p class="text-justify">If you already have the annual plan, you will see a screen indicating that you already have the best plan.</p>
+                    <img src="../assets/img/plano anual.png" alt="annual plan" class="w-64 mx-auto my-5 border-2">
+                </div>
+                <div v-if="visibleLanguage == 'pt-br'">
+                    <p class="text-justify">Para assinar um plano, é só clicar no botão de assinar no card do plano que deseja.</p>
+                    <img src="../assets/img/planos.png" alt="tela de planos" class="w-64 mx-auto my-5 border-2">
+                    <p class="text-justify">Ao clicar para assinar o plano escolhido, você será direcionado ao mercado pago e ao realizar o pagamento você será redirecionado de volta para o sistema, para a tela de pagamento realizado.</p>
+                    <img src="../assets/img/pagamento realizado.png" alt="pagamento realizado" class="w-64 mx-auto my-5 border-2">
+                    <p class="text-justify">Se assinar o plano mensal, terá uma tela com um botão para fazer a melhora do plano para o plano anual.</p>
+                    <img src="../assets/img/upgrade de plano.png" alt="plano mensal" class="w-64 mx-auto my-5 border-2">
+                    <p class="text-justify">Se você já possui o plano anual, terá uma tela dizendo que você já possui o melhor plano.</p>
+                    <img src="../assets/img/plano anual.png" alt="plano anual" class="w-64 mx-auto my-5 border-2">
+                </div>
+            </template>
+        </UCard>
+    </UModal>
 </template>

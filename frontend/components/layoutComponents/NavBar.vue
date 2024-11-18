@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const runtimeConfig = useRuntimeConfig();
 
-const emit = defineEmits(['changeLanguageParent']);
+const emit = defineEmits(['changeLanguageParent', 'changeVisibilityHelpModal']);
 
 let isOpenMobile = ref(false);
 let avatarPath = ref('');
@@ -217,6 +217,11 @@ setInterval(() => {
                     <span class="mx-1 font-semibold">pt-br</span>
                 </div>
             </li>
+            <li>
+                <div class="flex items-center">
+                    <button class="bg-transparent" @click="() => emit('changeVisibilityHelpModal')"><Icon name="mdi:lightbulb-question" size="2em" color="black"/></button>
+                </div>
+            </li>
         </ul>
 
         <ul class="flex justify-around items-center w-[70%] lg:w-[80%]" id="nav-items" v-if="!isOpenMobile && visibleLanguage == 'pt-br'">
@@ -247,6 +252,11 @@ setInterval(() => {
                     <span class="mx-1 font-semibold">en</span>
                     <UToggle size="md" v-model="language" @click="changeLanguage()"/>
                     <span class="mx-1 font-semibold">pt-br</span>
+                </div>
+            </li>
+            <li>
+                <div class="flex items-center">
+                    <button class="bg-transparent" @click="() => emit('changeVisibilityHelpModal')"><Icon name="mdi:lightbulb-question" size="2em" color="black"/></button>
                 </div>
             </li>
         </ul>

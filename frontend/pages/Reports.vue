@@ -13,6 +13,7 @@ import GeneralReport from '~/components/reportsComponents/generalReport.vue';
 
 let visibleLanguage = ref(localStorage.getItem('language'));
 let selectedReport = ref('general report');
+let visibilityHelpModal = ref(false);
 
 let projectReports = [
     [{
@@ -118,10 +119,14 @@ const changeLanguage = () => {
     visibleLanguage.value = localStorage.getItem('language');
 }
 
+const changeVisibilityHelpModal = () => {
+    visibilityHelpModal.value = !visibilityHelpModal.value;
+}
+
 </script>
 
 <template>
-    <NavBar @changeLanguageParent="changeLanguage"/>
+    <NavBar @changeLanguageParent="changeLanguage" @changeVisibilityHelpModal="changeVisibilityHelpModal"/>
     <div class="w-screen flex justify-center">
         <div class="w-full flex flex-wrap justify-around mt-14" v-if="visibleLanguage == 'en'">
             <UDropdown :items="projectReports">
@@ -177,5 +182,28 @@ const changeLanguage = () => {
             <ProjectMembersReport :visibleLanguage="visibleLanguage"/>
         </div>
     </div>
+
+    <UModal v-model="visibilityHelpModal">
+        <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
+            <p class="text-center text-2xl font-semibold" v-if="visibleLanguage == 'en'">Page Guide</p>
+            <p class="text-center text-2xl font-semibold" v-if="visibleLanguage == 'pt-br'">Manual da Página</p>
+            <template #footer>
+                <div v-if="visibleLanguage == 'en'">
+                    <p class="text-justify">On the reports screen, upon entering, several reports related to projects and tasks are presented.</p>
+                    <img src="../assets/img/tela relatorio.png" alt="Reports screen" class="mx-auto my-5 border-2">
+                    <p class="text-justify">On the screen, there are buttons with specific report categories, and by clicking on a category, the report options for that category are displayed.</p>
+                    <p class="text-justify">When selecting a report, the specific report is displayed on the screen. Next to the report title, there is a button to print the report.</p>
+                    <img src="../assets/img/relatorio especifico.png" alt="Specific report screen" class="mx-auto my-5 border-2">
+                </div>
+                <div v-if="visibleLanguage == 'pt-br'">
+                    <p class="text-justify">Na tela de relatórios, ao entrar são apresentados vários relatórios referentes a projetos e tarefas.</p>
+                    <img src="../assets/img/tela relatorio.png" alt="Tela de projetos" class="mx-auto my-5 border-2">
+                    <p class="text-justify">Na tela, tem botões com categorias específicas de relatórios e ao clicar em alguma categoria são mostrados as opções de relatórios da categoria.</p>
+                    <p class="text-justify">Ao escolher um relatório, o relatório específico é apresentado na tela. Do lado do título do relatório tem um botão para imprimir o relatório.</p>
+                    <img src="../assets/img/relatorio especifico.png" alt="Tela de projetos" class="mx-auto my-5 border-2">
+                </div>
+            </template>
+        </UCard>
+    </UModal>
 
 </template>

@@ -21,6 +21,11 @@ let exit_id_project = ref(0);
 let isPremiumUser = JSON.parse(localStorage.getItem('userStorage')).premium_user;
 let allProjects = ref([]);
 let visibleLanguage = ref(localStorage.getItem('language'));
+let visibilityHelpModal = ref(false);
+
+const changeVisibilityHelpModal = () => {
+    visibilityHelpModal.value = !visibilityHelpModal.value;
+}
 
 const changeVisibilityModalExitProject = (exit, id_project) => {
     exit_id_project.value = id_project;
@@ -198,7 +203,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-    <NavBar @changeLanguageParent="changeLanguage"/>
+    <NavBar @changeLanguageParent="changeLanguage" @changeVisibilityHelpModal="changeVisibilityHelpModal"/>
     <div class="mt-20 w-10/12 shadow mx-auto rounded-lg">
         <div class="w-full bg-blue-400 flex flex-wrap justify-between p-5 rounded-t-lg" v-if="visibleLanguage == 'en'">
             <div class="mt-2">
@@ -331,6 +336,35 @@ onBeforeMount(() => {
                     <div class="flex justify-around items-center" v-if="visibleLanguage == 'pt-br'">
                         <button type="button" class="bg-green-600 text-white rounded-md w-28 h-10" @click="exitProject">Confirmar</button>
                         <button type="button" class="bg-red-600 text-white rounded-md ml-10 w-28 h-10" @click="changeVisibilityModalExitProject(false, 0)">Cancelar</button>
+                    </div>
+                </template>
+            </UCard>
+        </UModal>
+
+        <UModal v-model="visibilityHelpModal">
+            <UCard :ui="{ ring: '', divide: 'divide-y divide-gray-100 dark:divide-gray-800' }">
+                <p class="text-center text-2xl font-semibold" v-if="visibleLanguage == 'en'">Page Guide</p>
+                <p class="text-center text-2xl font-semibold" v-if="visibleLanguage == 'pt-br'">Manual da Página</p>
+                <template #footer>
+                    <div v-if="visibleLanguage == 'en'">
+                        <p class="text-justify">To use the project filter bar, simply adjust the available filtering options, and the search will occur automatically. If you are using the search bar, select a filter and press Enter to perform the search.</p>
+                        <img src="../assets/img/tela de projeto.png" alt="Project screen" class="mx-auto my-5 border-2">
+                        <p class="text-justify">To create a project, click on the new project button, fill out the project creation form, and click Create Project.</p>
+                        <p class="text-justify">To enter a project's screen, go to the project you want to access and click the enter button.</p>
+                        <p class="text-justify">To leave a project, go to the project you want to exit and click on leave, then confirm.</p>
+                        <img src="../assets/img/criacao de projeto.png" alt="Project creation" class="mx-auto my-5 border-2">
+                        <p class="text-justify">To edit a project, go to the chosen project and click on edit. After that, a form will appear. Fill out the form and click Update Project.</p>
+                        <img src="../assets/img/atualizacao de projeto.png" alt="Project update" class="w-64 mx-auto my-5 border-2">
+                    </div>
+                    <div v-if="visibleLanguage == 'pt-br'">
+                        <p class="text-justify">Para utilizar a barra de filtrar projetos, é só modificar as opções de filtragem disponíveis que a pesquisa já irá ocorrer. Se for usar a barra de pesquisa, seleciona um filtro e clique em Enter para realizar a pesquisa.</p>
+                        <img src="../assets/img/tela de projeto.png" alt="Tela de projetos" class="mx-auto my-5 border-2">
+                        <p class="text-justify">Para criar um projeto, clique no botão novo projeto e preencha o formulário de criação de projeto e clique em Criar Projeto.</p>
+                        <p class="text-justify">Para entrar na tela do projeto, vá no projeto que deseja entrar e clique no botão entrar.</p>
+                        <p class="text-justify">Para sair do projeto, vá no projeto que deseja sair e clique eem sair e depois confirme.</p>
+                        <img src="../assets/img/criacao de projeto.png" alt="Criação de projeto" class="mx-auto my-5 border-2">
+                        <p class="text-justify">Para editar um projeto, vá no projeto escolhido e clique em editar. Após isso irá aparecer um formulário, preeencha o formulário e clique em Atualizar Projeto.</p>
+                        <img src="../assets/img/atualizacao de projeto.png" alt="Atualização de projeto" class="w-64 mx-auto my-5 border-2">
                     </div>
                 </template>
             </UCard>

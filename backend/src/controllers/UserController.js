@@ -86,27 +86,36 @@ async function sendSupportEmail(req, res) {
 
 async function getUsersForReport(req, res) {
     try {
-        const users = await User.findAll({
-            include: [{
-                model: UserProject,
-                as: 'userProjects',
-                required: true,
-                where: {
-                    id_user: req.headers.id_user,
-                    administrator: 1 
-                },
-                include: [{
+        const users = await UserProject.findAll({
+            include: [
+                {
                     model: User,
-                    as: 'user',  
+                    required: true,
+                    as: 'user',
+                     // Use o alias correto se necessário
                 },
+                
                 {
                     model: Project,
-                    as: 'project',   
+                    required: true,
+                    as: 'project', // Use o alias correto se necessário
                 }
-                ]
-            }],
-            distinct: true
+            ],
+            where: {
+                id_project: {
+                    [Op.in]: Sequelize.literal(`(
+                        SELECT user_project.id_project 
+                        FROM project 
+                        JOIN user_project ON user_project.id_project = project.id 
+                        JOIN user ON user.id = user_project.id_user
+                        WHERE user_project.id_user = ${req.headers.id_user} AND user_project.administrator = 1
+                    )`)
+                }
+            },
+            distinct: true,
         });
+        
+        
 
         res.send(users);
     } catch (error) {

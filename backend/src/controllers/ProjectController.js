@@ -266,7 +266,10 @@ async function getMyInvites(req, res){
                 {
                     model: Project,
                     where: {
-                      status: 'in progress',  
+                        [Op.or]: [
+                            { status: 'in progress' },
+                            { status: 'overdue' }
+                        ]  
                     }
                 },
             ],

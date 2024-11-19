@@ -171,6 +171,7 @@ async function searchTasks(req, res){
 
 async function setTaskByGemini(req, res) {
     try {
+        
         let prompt = `Crie ${req.body.quantity_task} tasks para um projeto de desenvolvimento relacionado ao tópico: ${req.body.topic}. `;
 
         let json = `{
@@ -211,6 +212,7 @@ async function setTaskByGemini(req, res) {
 
         
         let errors = [];
+        
         if (response && response !== '' && response !== undefined && Array.isArray(response)) {
             
             response.forEach(async (task) => {
@@ -247,6 +249,74 @@ async function setTaskByGemini(req, res) {
                 }
             });
             
+        }else if(response && response !== '' && response !== undefined && response.task && response.task !== '' && response.task !== undefined && Array.isArray(response.task)){
+            response.task.forEach(async (task) => {
+                try {
+                    let verifyDate = '';
+                    let today = new Date();
+                    if (task && task.expected_end_date && task.expected_end_date.end_date) {
+                        verifyDate = new Date(task.expected_end_date.end_date);
+                    } else {
+                        task.expected_end_date = {
+                            ...task.expected_end_date,
+                            end_date: `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()} 00:00:00`
+                        };
+                    }
+
+                    if (isNaN(verifyDate.getDate())) {
+                        task.expected_end_date.end_date = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()} 00:00:00`;
+                    }
+
+                    let taskData = {
+                        'id_user': req.body.id_user,
+                        'id_project': req.body.id_project,
+                        'title': task?.title || '',
+                        'description': task?.description || '',
+                        'expected_end_date': task?.expected_end_date?.end_date || '',
+                        'type_task': task?.type_task || 'created by gemini',
+                        'status': task?.status === 'to do' ? 'to do' : 'to do',
+                        'project_stage': task?.project_stage || '',
+                    };
+
+                    await Task.create(taskData);
+                } catch (taskError) {
+                    errors.push({ task, error: taskError.message });
+                }
+            });
+        }else if(response && response !== '' && response !== undefined && response.tasks && response.tasks !== '' && response.tasks !== undefined && Array.isArray(response.tasks)){
+            response.tasks.forEach(async (task) => {
+                try {
+                    let verifyDate = '';
+                    let today = new Date();
+                    if (task && task.expected_end_date && task.expected_end_date.end_date) {
+                        verifyDate = new Date(task.expected_end_date.end_date);
+                    } else {
+                        task.expected_end_date = {
+                            ...task.expected_end_date,
+                            end_date: `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()} 00:00:00`
+                        };
+                    }
+
+                    if (isNaN(verifyDate.getDate())) {
+                        task.expected_end_date.end_date = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()} 00:00:00`;
+                    }
+
+                    let taskData = {
+                        'id_user': req.body.id_user,
+                        'id_project': req.body.id_project,
+                        'title': task?.title || '',
+                        'description': task?.description || '',
+                        'expected_end_date': task?.expected_end_date?.end_date || '',
+                        'type_task': task?.type_task || 'created by gemini',
+                        'status': task?.status === 'to do' ? 'to do' : 'to do',
+                        'project_stage': task?.project_stage || '',
+                    };
+
+                    await Task.create(taskData);
+                } catch (taskError) {
+                    errors.push({ task, error: taskError.message });
+                }
+            });
         }
 
         if (errors.length > 0) {

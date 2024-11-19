@@ -26,7 +26,15 @@ const getUsers = async() =>{
         });
 
         if(response && response.data){
-            users.value = response.data;
+            let inserts = [];
+            let finalResponse = [];
+            response.data.forEach((data) => {
+                if(!inserts.includes(data.user.name)){
+                    inserts.push(data.user.name);
+                    finalResponse.push(data);
+                }
+            })
+            users.value = finalResponse;
         }
     }catch(error){
         console.log(error);
@@ -206,7 +214,7 @@ onMounted(() => {
             <div class="w-full flex flex-wrap justify-around mt-1" v-if="visibleLanguage == 'en'">
                 <select name="user_filter" id="user_filter" v-model="idUser" @change="getUsersTable()" class="border-2 rounded-lg p-2 w-full md:w-1/4">
                     <option value="">Filter By User</option>
-                    <option v-for="user in users"  :value="user.id" :key="user.id">{{ user.name }}</option>
+                    <option v-for="user in users"  :value="user.user.id" :key="user.user.id">{{ user.user.name }}</option>
                 </select>
             </div>
             <table class="border-collapse border-2 w-full" id="table-report">
@@ -222,7 +230,7 @@ onMounted(() => {
                     <tr v-for="user in usersTable" :key="user.id" class="border-2">
                         <th class="border-2 p-2">{{ user.user.name }}</th>
                         <th class="border-2 p-2">{{ user.user.email }}</th>
-                        <th class="border-2 p-2">{{ (user.premium_user == 1 ? 'Premium user' : 'Normal user') }}</th>
+                        <th class="border-2 p-2">{{ (user.user.premium_user == 1 ? 'Premium user' : 'Normal user') }}</th>
                         <th class="border-2 p-2">{{ user.project.name.toUpperCase() }}</th>
                     </tr>
                 </tbody>
@@ -232,7 +240,7 @@ onMounted(() => {
             <div class="w-full flex flex-wrap justify-around mt-1" v-if="visibleLanguage == 'pt-br'">
                 <select name="user_filter" id="user_filter" v-model="idUser" @change="getUsersTable()" class="border-2 rounded-lg p-2 w-full md:w-1/4">
                     <option value="">Filtrar pelo usuário</option>
-                    <option v-for="user in users"  :value="user.id" :key="user.id">{{ user.name }}</option>
+                    <option v-for="user in users"  :value="user.user.id" :key="user.user.id">{{ user.user.name }}</option>
                 </select>
             </div>
             <table class="border-collapse border-2 w-full" id="table-report">
@@ -248,7 +256,7 @@ onMounted(() => {
                     <tr v-for="user in usersTable" :key="user.id" class="border-2">
                         <th class="border-2 p-2">{{ user.user.name }}</th>
                         <th class="border-2 p-2">{{ user.user.email }}</th>
-                        <th class="border-2 p-2">{{ (user.premium_user == 1 ? 'Usuário premium' : 'Usuário normal') }}</th>
+                        <th class="border-2 p-2">{{ (user.user.premium_user == 1 ? 'Usuário premium' : 'Usuário normal') }}</th>
                         <th class="border-2 p-2">{{ user.project.name.toUpperCase() }}</th>
                     </tr>
                 </tbody>

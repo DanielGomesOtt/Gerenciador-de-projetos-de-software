@@ -88,13 +88,13 @@ const getUsersReport = async() => {
                     normalActive++;
                 }else if(user.status == 0 && user.premium_user == 0){
                     normalInactive++;
-                }else if(user.status == 1 && user.premium_user == 1 && type_premium == 'monthly'){
+                }else if(user.status == 1 && user.premium_user == 1 && user.type_premium == 'monthly'){
                     premiumMonthlyActive++;
-                }else if(user.status == 0 && user.premium_user == 1 && type_premium == 'monthly'){
+                }else if(user.status == 0 && user.premium_user == 1 && user.type_premium == 'monthly'){
                     premiumMonthlyInactive++;
-                }else if(user.status == 1 && user.premium_user == 1 && type_premium == 'yearly'){
+                }else if(user.status == 1 && user.premium_user == 1 && user.type_premium == 'yearly'){
                     premiumYearlyActive++;
-                }else if(user.status == 0 && user.premium_user == 1 && type_premium == 'yearly'){
+                }else if(user.status == 0 && user.premium_user == 1 && user.type_premium == 'yearly'){
                     premiumYearlyInactive++;
                 }
             });

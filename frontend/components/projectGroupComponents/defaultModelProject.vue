@@ -363,7 +363,7 @@ onBeforeMount(() => {
                     </thead>
                     <tbody>
                         <tr v-for="task in paginatedTasks" :key="task.id" class="border-2 border-gray-400">
-                            <div class="py-1 px-2 h-full w-full text-center font-semibold capitalize bg-yellow-500 text-white rounded-lg" v-if="task.status == 'to do'">{{ task.status }}</div>
+                            <td class="py-1 px-2 border-2 border-gray-400 text-center font-semibold capitalize bg-yellow-500 text-white" v-if="task.status == 'to do'">{{ task.status }}</td>
                             <td class="py-1 px-2 border-2 border-gray-400 text-center font-semibold capitalize bg-blue-500 text-white" v-if="task.status == 'in progress'">{{ task.status }}</td>
                             <td class="py-1 px-2 border-2 border-gray-400 text-center font-semibold capitalize bg-red-500 text-white" v-if="task.status == 'cancelled'">{{ task.status }}</td>
                             <td class="py-1 px-2 border-2 border-gray-400 text-center font-semibold capitalize bg-green-500 text-white" v-if="task.status == 'completed'">{{ task.status }}</td>
@@ -611,7 +611,7 @@ onBeforeMount(() => {
                     </thead>
                     <tbody>
                         <tr v-for="task in paginatedTasks" :key="task.id" class="border-2 border-gray-400">
-                            <div class="py-1 px-2 h-full w-full text-center font-semibold capitalize bg-yellow-500 text-white rounded-lg" v-if="task.status == 'to do'">A fazer</div>
+                            <td class="py-1 px-2 border-2 border-gray-400 text-center font-semibold capitalize bg-yellow-500 text-white" v-if="task.status == 'to do'">A fazer</td>
                             <td class="py-1 px-2 border-2 border-gray-400 text-center font-semibold capitalize bg-blue-500 text-white" v-if="task.status == 'in progress'">Em andamento</td>
                             <td class="py-1 px-2 border-2 border-gray-400 text-center font-semibold capitalize bg-red-500 text-white" v-if="task.status == 'cancelled'">Cancelada</td>
                             <td class="py-1 px-2 border-2 border-gray-400 text-center font-semibold capitalize bg-green-500 text-white" v-if="task.status == 'completed'">Finalizada</td>

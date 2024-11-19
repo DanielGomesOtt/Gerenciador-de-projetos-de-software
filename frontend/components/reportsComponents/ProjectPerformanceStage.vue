@@ -175,31 +175,31 @@ const getProjectStagePerformance = async() => {
                     }
                 });
 
-                initial_planning_completed_data.value = (initial_planning_completed / initial_planning) * 100;
-                initial_planning_overdue_data.value = (initial_planning_overdue / initial_planning) * 100;
+                initial_planning_completed_data.value = Number((initial_planning_completed / initial_planning) * 100).toFixed(2);
+                initial_planning_overdue_data.value = Number((initial_planning_overdue / initial_planning) * 100).toFixed(2);
                 initial_planning = initial_planning_completed_data.value - initial_planning_overdue_data.value;
 
-                project_design_completed_data.value = (project_design_completed / project_design) * 100;
-                project_design_overdue_data.value = (project_design_overdue / project_design) * 100;
+                project_design_completed_data.value = Number((project_design_completed / project_design) * 100).toFixed(2);
+                project_design_overdue_data.value = Number((project_design_overdue / project_design) * 100).toFixed(2);
                 project_design = project_design_completed_data.value - project_design_overdue_data.value;
 
-                development_completed_data.value = (development_completed / development) * 100;
-                development_overdue_data.value = (development_overdue / development) * 100;
+                development_completed_data.value = Number((development_completed / development) * 100).toFixed(2);
+                development_overdue_data.value = Number((development_overdue / development) * 100).toFixed(2);
                 development = development_completed_data.value - development_overdue_data.value;
 
-                tests_completed_data.value = (tests_completed / tests) * 100;
-                tests_overdue_data.value = (tests_overdue / tests) * 100;
+                tests_completed_data.value = Number((tests_completed / tests) * 100).toFixed(2);
+                tests_overdue_data.value = Number((tests_overdue / tests) * 100).toFixed(2);
                 tests = tests_completed_data.value - tests_overdue_data.value;
 
-                deployment_completed_data.value = (deployment_completed / deployment) * 100;
-                deployment_overdue_data.value = (deployment_overdue / deployment) * 100;
+                deployment_completed_data.value = Number((deployment_completed / deployment) * 100).toFixed(2);
+                deployment_overdue_data.value = Number((deployment_overdue / deployment) * 100).toFixed(2);
                 deployment = deployment_completed_data.value - deployment_overdue_data.value;
 
-                maintenance_completed_data.value = (maintenance_completed / maintenance) * 100;
-                maintenance_overdue_data.value = (maintenance_overdue / maintenance) * 100;
+                maintenance_completed_data.value = Number((maintenance_completed / maintenance) * 100).toFixed(2);
+                maintenance_overdue_data.value = Number((maintenance_overdue / maintenance) * 100).toFixed(2);
                 maintenance = maintenance_completed_data.value - maintenance_overdue_data.value;
                 
-                chartData.value = [initial_planning, project_design, development, tests, deployment, maintenance];
+                chartData.value = [initial_planning.toFixed(2), project_design.toFixed(2), development.toFixed(2), tests.toFixed(2), deployment.toFixed(2), maintenance.toFixed(2)];
             }
             createChart(props.visibleLanguage);
         }else{
@@ -409,41 +409,42 @@ watch(() => props.visibleLanguage, (newLanguage) => {
                 </thead>
                 <tbody>
                     <tr class="border-2">
-                        <th class="border-2 p-2">initial planning and requirements gathering</th>
-                        <th class="border-2 text-center p-2">{{ chartData[0] }}%</th>
-                        <th class="border-2 text-center p-2">{{ initial_planning_overdue_data }}%</th>
-                        <th class="border-2 text-center p-2">{{ initial_planning_completed_data }}%</th>
+                        <th class="border-2 p-2">Initial Planning and Requirements Gathering</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(chartData[0]) ? '0.0' : chartData[0] }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(initial_planning_overdue_data) ? '0.0' : initial_planning_overdue_data }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(initial_planning_completed_data) ? '0.0' : initial_planning_completed_data }}%</th>
                     </tr>
                     <tr class="border-2">
-                        <th class="border-2 p-2">Project design</th>
-                        <th class="border-2 text-center p-2">{{ chartData[1] }}%</th>
-                        <th class="border-2 text-center p-2">{{ project_design_overdue_data }}%</th>
-                        <th class="border-2 text-center p-2">{{ project_design_completed_data }}%</th>
+                        <th class="border-2 p-2">Project Design</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(chartData[1]) ? '0.0' : chartData[1] }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(project_design_overdue_data) ? '0.0' : project_design_overdue_data }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(project_design_completed_data) ? '0.0' : project_design_completed_data }}%</th>
                     </tr>
                     <tr class="border-2">
                         <th class="border-2 p-2">Development</th>
-                        <th class="border-2 text-center p-2">{{ chartData[2] }}%</th>
-                        <th class="border-2 text-center p-2">{{ development_overdue_data }}%</th>
-                        <th class="border-2 text-center p-2">{{ development_completed_data }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(chartData[2]) ? '0.0' : chartData[2] }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(development_overdue_data) ? '0.0' : development_overdue_data }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(development_completed_data) ? '0.0' : development_completed_data }}%</th>
                     </tr>
                     <tr class="border-2">
                         <th class="border-2 p-2">Tests</th>
-                        <th class="border-2 text-center p-2">{{ chartData[3] }}%</th>
-                        <th class="border-2 text-center p-2">{{ tests_overdue_data }}%</th>
-                        <th class="border-2 text-center p-2">{{ tests_completed_data }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(chartData[3]) ? '0.0' : chartData[3] }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(tests_overdue_data) ? '0.0' : tests_overdue_data }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(tests_completed_data) ? '0.0' : tests_completed_data }}%</th>
                     </tr>
                     <tr class="border-2">
                         <th class="border-2 p-2">Deployment</th>
-                        <th class="border-2 text-center p-2">{{ chartData[4] }}%</th>
-                        <th class="border-2 text-center p-2">{{ deployment_overdue_data }}%</th>
-                        <th class="border-2 text-center p-2">{{ deployment_completed_data }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(chartData[4]) ? '0.0' : chartData[4] }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(deployment_overdue_data) ? '0.0' : deployment_overdue_data }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(deployment_completed_data) ? '0.0' : deployment_completed_data }}%</th>
                     </tr>
                     <tr class="border-2">
                         <th class="border-2 p-2">Maintenance</th>
-                        <th class="border-2 text-center p-2">{{ chartData[5] }}%</th>
-                        <th class="border-2 text-center p-2">{{ maintenance_overdue_data }}%</th>
-                        <th class="border-2 text-center p-2">{{ maintenance_completed_data }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(chartData[5]) ? '0.0' : chartData[5] }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(maintenance_overdue_data) ? '0.0' : maintenance_overdue_data }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(maintenance_completed_data) ? '0.0' : maintenance_completed_data }}%</th>
                     </tr>
+
                 </tbody>
             </table>
         </div>
@@ -466,40 +467,41 @@ watch(() => props.visibleLanguage, (newLanguage) => {
                 <tbody>
                     <tr class="border-2">
                         <th class="border-2 p-2">Planejamento e levantamento inicial</th>
-                        <th class="border-2 text-center p-2">{{ chartData[0] }}%</th>
-                        <th class="border-2 text-center p-2">{{ initial_planning_overdue_data }}%</th>
-                        <th class="border-2 text-center p-2">{{ initial_planning_completed_data }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(chartData[0]) ? '0.0' : chartData[0] }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(initial_planning_overdue_data) ? '0.0' : initial_planning_overdue_data }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(initial_planning_completed_data) ? '0.0' : initial_planning_completed_data }}%</th>
                     </tr>
                     <tr class="border-2">
                         <th class="border-2 p-2">Design do projeto</th>
-                        <th class="border-2 text-center p-2">{{ chartData[1] }}%</th>
-                        <th class="border-2 text-center p-2">{{ project_design_overdue_data }}%</th>
-                        <th class="border-2 text-center p-2">{{ project_design_completed_data }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(chartData[1]) ? '0.0' : chartData[1] }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(project_design_overdue_data) ? '0.0' : project_design_overdue_data }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(project_design_completed_data) ? '0.0' : project_design_completed_data }}%</th>
                     </tr>
                     <tr class="border-2">
                         <th class="border-2 p-2">Desenvolvimento</th>
-                        <th class="border-2 text-center p-2">{{ chartData[2] }}%</th>
-                        <th class="border-2 text-center p-2">{{ development_overdue_data }}%</th>
-                        <th class="border-2 text-center p-2">{{ development_completed_data }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(chartData[2]) ? '0.0' : chartData[2] }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(development_overdue_data) ? '0.0' : development_overdue_data }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(development_completed_data) ? '0.0' : development_completed_data }}%</th>
                     </tr>
                     <tr class="border-2">
                         <th class="border-2 p-2">Testes</th>
-                        <th class="border-2 text-center p-2">{{ chartData[3] }}%</th>
-                        <th class="border-2 text-center p-2">{{ tests_overdue_data }}%</th>
-                        <th class="border-2 text-center p-2">{{ tests_completed_data }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(chartData[3]) ? '0.0' : chartData[3] }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(tests_overdue_data) ? '0.0' : tests_overdue_data }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(tests_completed_data) ? '0.0' : tests_completed_data }}%</th>
                     </tr>
                     <tr class="border-2">
                         <th class="border-2 p-2">Implantação</th>
-                        <th class="border-2 text-center p-2">{{ chartData[4] }}%</th>
-                        <th class="border-2 text-center p-2">{{ deployment_overdue_data }}%</th>
-                        <th class="border-2 text-center p-2">{{ deployment_completed_data }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(chartData[4]) ? '0.0' : chartData[4] }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(deployment_overdue_data) ? '0.0' : deployment_overdue_data }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(deployment_completed_data) ? '0.0' : deployment_completed_data }}%</th>
                     </tr>
                     <tr class="border-2">
                         <th class="border-2 p-2">Manutenção</th>
-                        <th class="border-2 text-center p-2">{{ chartData[5] }}%</th>
-                        <th class="border-2 text-center p-2">{{ maintenance_overdue_data }}%</th>
-                        <th class="border-2 text-center p-2">{{ maintenance_completed_data }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(chartData[5]) ? '0.0' : chartData[5] }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(maintenance_overdue_data) ? '0.0' : maintenance_overdue_data }}%</th>
+                        <th class="border-2 text-center p-2">{{ isNaN(maintenance_completed_data) ? '0.0' : maintenance_completed_data }}%</th>
                     </tr>
+
                 </tbody>
             </table>
         </div>

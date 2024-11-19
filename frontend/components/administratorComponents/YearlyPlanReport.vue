@@ -25,9 +25,13 @@ const yearlyPlanReport = async () => {
                 let date = new Date(payment.createdAt);
                 if(today.getFullYear() == date.getFullYear() && today.getMonth() == date.getMonth() && today.getDate() == date.getDate()){
                     yearlyPlanToday.value += Number(payment.value);
-                }else if(today.getFullYear() == date.getFullYear() && today.getMonth() == date.getMonth()){
+                }
+                
+                if(today.getFullYear() == date.getFullYear() && today.getMonth() == date.getMonth()){
                     yearlyPlanMonth.value += Number(payment.value);
-                }else if(today.getFullYear() == date.getFullYear()){
+                }
+                
+                if(today.getFullYear() == date.getFullYear()){
                     yearlyPlanYear.value += Number(payment.value);
                 }
             });

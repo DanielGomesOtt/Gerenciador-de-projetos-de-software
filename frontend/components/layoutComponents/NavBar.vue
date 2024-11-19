@@ -52,12 +52,13 @@ const getAvatarPath = async () => {
                 'id': JSON.parse(localStorage.getItem('userStorage')).id,
             }
         });
-
+        
         if (response.status == 200 && response.data && response.data.length > 0) {
             avatarPath.value = runtimeConfig.public.BASE_URL + response.data.replace('\\', '/');
         } else {
             avatarPath.value = '';
         }
+        console.log(avatarPath.value)
     } catch (error) {
         console.log(error);
     }
@@ -141,10 +142,10 @@ onBeforeMount(() => {
         language.value = true;
     }
     getProjectInvites();
-    getAvatarPath();
 });
 
 onMounted(() => {
+    getAvatarPath();
     if(JSON.parse(localStorage.getItem('userStorage')).end_plan_premium !== null && JSON.parse(localStorage.getItem('userStorage')).end_plan_premium !== undefined){
         setRenewAlert();
     }

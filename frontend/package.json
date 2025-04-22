@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@nuxt/ui": "^2.14.2",
-    "axios": "^1.6.2",
+    "axios": "^1.8.4",
     "chart.js": "^4.4.4",
     "socket.io-client": "^4.7.5"
   }
